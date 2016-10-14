@@ -47,15 +47,7 @@ import Data.Tuple (swap)
 
 -- Are there useful monoidal actions I am missing?
 
--- Is Wanderer in this form even helping?
---   Maybe Wanderer should capture the entire optic, as in:
---   type Wanderer (,) s t a b = forall f. Functor f => (a -> f b) -> (s -> f t)
---   How do we specify this?
---   Does walkabout make sense in that setting?
-
 -- Are there other useful Wanderers?
-
--- Is this structure inefficient?
 
 -- Can I encode guarantees that:
 --   Tambara (,) p               implies Tambara Trivial p
@@ -101,8 +93,7 @@ class Action (act :: k -> * -> *) where
                       Proxy act -> Dict (ActionOb act (ActionUnit act))
   unitDict _ = Dict
 
-  -- Could these be Isos?
-
+  -- These coudl be Isos
   assoc   :: (ActionOb act m, ActionOb act n, ActionOb act (ActionCompose act m n)) =>
              act m (act n a) -> act (ActionCompose act m n) a
   unassoc :: (ActionOb act m, ActionOb act n, ActionOb act (ActionCompose act m n)) =>
@@ -187,8 +178,6 @@ instance (FunctorialAction act) => Tambara act (LoneWanderer act a b) where
 --------------------------------------------------------------------------------
 -- Tambara
 --------------------------------------------------------------------------------
-
-type Optical p s t a b = p a b -> p s t
 
 class (Action act, Profunctor p) => Tambara (act :: k -> * -> *) p where
   walk :: ActionOb act m => p a b -> p (act m a) (act m b)
@@ -498,7 +487,7 @@ instance FunctorialAction TraversableAction where
 
 class {- Representational f =>? -} Foldy (f :: * -> *) where
   foldy :: Monoid a => f a -> a
-  foldyDict :: Monoid a => Dict (Monoid (f a))
+  foldyDict :: Monoid a => Dict (Monoid (f a)) -- Or no monoid requiremtn on a?
 
 instance Foldy Identity where
   foldy = runIdentity
@@ -541,6 +530,7 @@ instance Action FoldyAction where
 -- Optics
 --------------------------------------------------------------------------------
 
+type Optical p s t a b = p a b -> p s t
 type Optic act s t a b = forall p. TambaraWander act p => Optical p s t a b
 type Opticish act s t a b = forall p. Tambara act p => Optical p s t a b
 
@@ -552,6 +542,11 @@ type Setter     s t a b = Optic    FunctorAction     s t a b
 type Getter     s t a b = Opticish CopointedAction   s t a b
 type Review     s t a b = Opticish PointedAction     s t a b
 type Fold       s t a b = Opticish FoldyAction       s t a b
+
+type Simple o s a = o s s a a
+
+iso :: (s -> a) -> (b -> t) -> Iso s t a b
+iso = dimap
 
 _1 :: Lens (a, c) (b, c) a b
 _1 = dimap swap swap . walk
@@ -585,5 +580,14 @@ traverse' = wander @TraversableAction
 -- Operations
 --------------------------------------------------------------------------------
 
-get :: Optical (Star (Const a)) s t a b -> s -> a
-get l = getConst . (runStar $ l (Star Const))
+view :: Optical (Star (Const a)) s t a b -> s -> a
+view l = getConst . (runStar $ l (Star Const))
+
+over :: Optical (->) s t a b -> (a -> b) -> s -> t
+over = id
+
+set :: Optical (->) s t a b -> b -> s -> t
+set l b = l (const b)
+
+-- from :: Iso s t a b -> Iso b a t s
+-- from = undefined

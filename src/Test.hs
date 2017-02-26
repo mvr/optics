@@ -119,7 +119,7 @@ class Action (act :: k -> * -> *) where
 ------------------------------
 -- Functorial
 
-class Action act => FunctorialAction act where
+class Action act => FunctorialAction (act :: k -> * -> *) where
   amap :: ActionOb act m => (a -> b) -> act m a -> act m b
 
   default amap :: Functor (act m) => (a -> b) -> act m a -> act m b
@@ -487,7 +487,7 @@ instance FunctorialAction TraversableAction where
 
 class {- Representational f =>? -} Foldy (f :: * -> *) where
   foldy :: Monoid a => f a -> a
-  foldyDict :: Monoid a => Dict (Monoid (f a)) -- Or no monoid requiremtn on a?
+  foldyDict :: Monoid a => Dict (Monoid (f a)) -- Or no monoid requirement on a?
 
 instance Foldy Identity where
   foldy = runIdentity

@@ -23,5 +23,6 @@ library
                      , profunctors
                      , constraints
                      , contravariant
+                     , tagged
   hs-source-dirs:      src
   default-language:    Haskell2010

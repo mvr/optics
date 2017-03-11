@@ -1,8 +1,10 @@
 {-# LANGUAGE GADTs #-}
-{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -12,29 +14,42 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE TypeFamilyDependencies #-}
 {-# LANGUAGE UndecidableSuperClasses #-}
---{-# LANGUAGE DeriveTraversable #-}
---{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module NewTest where
 
 import Data.Constraint
 import Data.Functor.Compose
+import Data.Functor.Const
 import Data.Functor.Identity
 import Data.Profunctor
+import Data.Proxy
+import Data.Tagged
+import Data.Tuple (swap)
+import Data.Type.Bool
+import Data.Type.Equality
 import Data.Void
 import GHC.Exts (Constraint)
+import Unsafe.Coerce
 
-class (c Identity) => Action (c :: (* -> *) -> Constraint) where
+--------------------------------------------------------------------------------
+-- Overview
+--------------------------------------------------------------------------------
+-- * asDFLasd
+-- * laksdjf
+
+
+--------------------------------------------------------------------------------
+-- Action
+--------------------------------------------------------------------------------
+
+class Action (c :: (* -> *) -> Constraint) where
   type Wanderer c (a :: *) (b :: *) = (p :: * -> * -> *) | p -> c a b
   type Wanderer c a b = LoneWanderer c a b
 
-  composeDict :: Dict (c f) ->
-                 Dict (c g) ->
-                 Dict (c (Compose f g))
-
-  functorialDict :: c f => Dict (Functor f)
+  wandererDict :: Dict (Tambara c (Wanderer c a b))
+  default wandererDict :: Dict (Tambara c (LoneWanderer c a b))
+  wandererDict = Dict
 
   -- TODO: make these isos!
   stray :: Wanderer c a b x y -> LoneWanderer c a b x y
@@ -45,47 +60,109 @@ class (c Identity) => Action (c :: (* -> *) -> Constraint) where
   default unstray :: LoneWanderer c a b x y -> LoneWanderer c a b x y
   unstray = id
 
-class (Action c, Profunctor p) => Tambara c p where
+class (Action c, c Identity) => FunctorialAction c where
+  composeDict :: Dict (c f) ->
+                 Dict (c g) ->
+                 Dict (c (Compose f g))
+
+  functorialDict :: c f => Dict (Functor f)
+  default functorialDict :: (Functor f, c f) => Dict (Functor f)
+  functorialDict = Dict
+
+class (Action c, Profunctor p
+      ) => Tambara c p where
+  {-# MINIMAL walk | persuade #-}
   walk :: c f => p a b -> p (f a) (f b)
   walk = persuade @c (unstray $ walk @c sell)
 
   persuade :: (Wanderer c a b) s t -> (p a b -> p s t)
+  persuade w p = lowerPasture $ insertPasture p lw
+    where (LoneWanderer lw) = stray w
+
 
 --------------------------------------------------------------------------------
 -- Exchange, Pastro
 --------------------------------------------------------------------------------
+
+----------------------------------------
+-- Pastro
+
+data Pastro (c :: (* -> *) -> Constraint) p a b where
+  Pastro :: c f => (a -> f x) -> p x y -> (f y -> b) -> Pastro c p a b
+
+instance Profunctor (Pastro c p) where
+  dimap f g (Pastro l m r) = Pastro (l . f) m (g . r)
+
+instance (FunctorialAction c) => Tambara c (Pastro c p) where
+  walk :: forall f a b. c f => Pastro c p a b -> Pastro c p (f a) (f b)
+  walk (Pastro (l :: a -> g x) p (r :: g y -> b))
+    = case functorialDict @c @f of
+        Dict -> case composeDict @c @f @g Dict Dict of
+          Dict -> Pastro (Compose . fmap l) p (fmap r . getCompose)
+
+liftPastro :: (c Identity) => p a b -> Pastro c p a b
+liftPastro p = Pastro Identity p runIdentity
+
+----------------------------------------
+-- Pasture (An even freer Pastro)
+
+data Pasture (c :: (* -> *) -> Constraint) p a b where
+  Pure :: p a b -> Pasture c p a b
+  Dimap :: (a -> x) -> Pasture c p x y -> (y -> b) -> Pasture c p a b
+  Walk :: c f => Pasture c p a b -> Pasture c p (f a) (f b)
+
+instance Profunctor (Pasture c p) where
+  dimap f g (Pure p) = Dimap f (Pure p) g
+  dimap f g (Dimap l p r) = Dimap (l . f) p (g . r)
+  dimap f g (Walk p) = Dimap f (Walk p) g
+
+instance (Action c) => Tambara c (Pasture c p) where
+  walk = Walk
+
+liftPasture :: p a b -> Pasture c p a b
+liftPasture = Pure
+
+-- NOT assumed to be a functorial action!
+lowerPasture :: forall c p a b. (Tambara c p) => Pasture c p a b -> p a b
+lowerPasture (Pure p) = p
+lowerPasture (Dimap l p r) = dimap l r (lowerPasture p)
+lowerPasture (Walk p) = walk @c (lowerPasture p)
+
+hoistPasture :: (forall a b. p a b -> q a b) -> (Pasture c p a b -> Pasture c q a b)
+hoistPasture f (Pure p) = Pure (f p)
+hoistPasture f (Dimap l p r) = Dimap l (hoistPasture f p) r
+hoistPasture f (Walk p) = Walk (hoistPasture f p)
+
+insertPasture :: Profunctor p => p a b -> Pasture c (Exchange a b) s t -> Pasture c p s t
+insertPasture p = hoistPasture (\(Exchange l r) -> dimap l r p)
+
+collapsePasture :: forall c p s t. (FunctorialAction c) => Pasture c p s t -> Pastro c p s t
+collapsePasture = lowerPasture . hoistPasture liftPastro
+
+----------------------------------------
+-- Exchange, LoneWanderer
 
 data Exchange a b s t = Exchange (s -> a) (b -> t)
 
 instance Profunctor (Exchange a b) where
   dimap f g (Exchange l r) = Exchange (l . f) (g . r)
 
-data Pastro (c :: (* -> *) -> Constraint) p a b where
-  Pastro :: c f => (a -> f x) -> p x y -> (f y -> b) ->  Pastro c p a b
+instance Tambara IsIdentity (Exchange a b) where
+  walk = dimap fromIdentity toIdentity
 
-instance Profunctor (Pastro c p) where
-  dimap f g (Pastro l m r) = Pastro (l . f) m (g . r)
-
-data LoneWanderer c a b x y = LoneWanderer (Pastro c (Exchange a b) x y)
+-- I would prefer this to be a `type`, but I need to partially apply
+-- it in `Action`
+data LoneWanderer c a b x y = LoneWanderer (Pasture c (Exchange a b) x y)
 
 instance Profunctor (LoneWanderer c a b) where
   dimap f g (LoneWanderer p) = LoneWanderer (dimap f g p)
 
-sell :: (Action c) => LoneWanderer c a b a b
-sell = LoneWanderer (Pastro Identity (Exchange id id) runIdentity)
-
-lonePersuade :: forall c p s t a b. (Action c, Tambara c p) => (LoneWanderer c a b) s t -> (p a b -> p s t)
-lonePersuade (LoneWanderer (Pastro (l :: x -> f x') (Exchange l' r') (r :: f y' -> y))) p
-  = dimap _ _ (walk @c @p @f p)
-
 instance (Action c) => Tambara c (LoneWanderer c a b) where
-  walk :: forall c f a b x y. (Action c, c f) => LoneWanderer c a b x y -> LoneWanderer c a b (f x) (f y)
-  walk (LoneWanderer (Pastro (l :: x -> g x') p (r :: g y' -> y)))
-    = case functorialDict @c @f of
-        Dict -> case composeDict @c @f @g Dict Dict of
-          Dict -> LoneWanderer (Pastro (Compose . fmap l) p (fmap r . getCompose))
+  walk (LoneWanderer p) = LoneWanderer (walk @c p)
 
-  persuade = undefined
+sell :: (Action c) => LoneWanderer c a b a b
+sell = LoneWanderer (Pure (Exchange id id))
+
 
 --------------------------------------------------------------------------------
 -- Actions
@@ -108,13 +185,13 @@ instance (IsIdentity f, IsIdentity g) => IsIdentity (Compose f g) where
 
 instance Action IsIdentity where
   type Wanderer IsIdentity a b = Exchange a b
+  wandererDict = Dict
+
+  stray p = LoneWanderer (liftPasture p)
+  unstray (LoneWanderer p) = lowerPasture p
+
+instance FunctorialAction IsIdentity where
   composeDict Dict Dict = Dict
-  functorialDict = Dict
-
-  stray e = LoneWanderer (Pastro Identity e runIdentity)
-  unstray (LoneWanderer (Pastro l p r)) = dimap (fromIdentity . l) (r . toIdentity) p
-
-
 
 ------------------------------
 -- Product
@@ -137,18 +214,22 @@ instance IsProduct Identity where
 
 instance (IsProduct f, IsProduct g) => IsProduct (Compose f g) where
   type Complement (Compose f g) = (Complement f, Complement g)
-  toPair = undefined
-  fromPair = undefined
+  toPair (Compose fga)
+    | (f, ga) <- toPair fga
+    , (g, a)  <- toPair ga = ((f, g), a)
+  fromPair ((f, g), a) = Compose $ fromPair (f, fromPair (g, a))
 
-data Context a b x = Context (b -> x) a
+data Context a b x = Context (b -> x) a deriving (Functor)
 
 instance Action IsProduct where
   type Wanderer IsProduct a b = Star (Context a b)
-  composeDict Dict Dict = Dict
-  functorialDict = Dict
+  wandererDict = Dict
 
   stray = undefined
   unstray = undefined
+
+instance FunctorialAction IsProduct where
+  composeDict Dict Dict = Dict
 
 instance (Functor f) => Tambara IsProduct (Star f) where
   walk (Star f) = Star $ \p -> let (c, a) = toPair p in
@@ -175,10 +256,104 @@ instance IsSum Identity where
   fromSum (Right a) = Identity a
 
 ------------------------------
--- Todo
+-- Pointed
 
-class Pointed f where
-class Copointed f where
+-- This section is absolutely outrageous
+-- The dancing around is needed to defeat parametricity!
+
+class PointFor a f where
+  pointfor :: a -> f a
+
+class Pointish f where
+  pointishDict :: Dict (PointFor a f)
+  default pointishDict :: PointFor a f => Dict (PointFor a f)
+  pointishDict = Dict
+
+data Pointer t b a where
+  PNormal :: a -> Pointer t b a
+  PExtra :: ((a == b) ~ True) => t -> Pointer t b a
+
+putExtra :: t -> Pointer t b b
+putExtra = PExtra
+
+instance PointFor a (Pointer t b) where
+  pointfor = PNormal
+
+instance Pointish (Pointer t b)
+
+phantom :: Tambara Pointish p => p a b -> p c b
+phantom =   dimap (putExtra . Tagged) (unTagged . (\(PNormal a) -> a))
+          . walk @Pointish
+          . dimap (unTagged :: Tagged True a -> a) (Tagged :: b -> Tagged False b)
+
+data Forgetter a b x y = Forgetter { runForgetter :: (b -> y) }
+
+instance Profunctor (Forgetter a b) where
+  dimap f g (Forgetter r) = Forgetter (g . r)
+
+instance Tambara Pointish (Forgetter a b) where
+  walk :: forall f a b x y. Pointish f => Forgetter a b x y -> Forgetter a b (f x) (f y)
+  walk (Forgetter r) = case pointishDict @f @y of
+    Dict -> Forgetter (pointfor . r)
+
+instance Action Pointish where
+  type Wanderer Pointish a b = Forgetter a b
+  wandererDict = Dict
+
+  stray (Forgetter r) = phantom $ rmap r sell
+  unstray (LoneWanderer p) = lowerPasture $ hoistPasture f p
+    where f (Exchange l r) = Forgetter r
+
+------------------------------
+-- Copointish
+
+class CopointFor a f where
+  copointfor :: f a -> a
+
+class Copointish f where
+  copointishDict :: Dict (CopointFor a f)
+  default copointishDict :: CopointFor a f => Dict (CopointFor a f)
+  copointishDict = Dict
+
+eqToRefl :: forall a b. (a == b) ~ 'True => a :~: b
+eqToRefl = unsafeCoerce (Refl :: () :~: ())
+
+data Copointer t b a where
+  CPNormal :: ((a == b) ~ False) => a -> Copointer t b a
+  CPExtra :: ((a == b) ~ True) => t -> b -> Copointer t b a
+
+getExtra :: Copointer t b b -> t
+getExtra (CPExtra t b) = t
+
+instance CopointFor a (Copointer t b) where
+  copointfor (CPExtra t b) = case eqToRefl :: a :~: b of Refl -> b
+  copointfor (CPNormal a) = a
+
+-- Some fiddling is needed so that a and b are unequal
+cophantom :: Tambara Copointish p => p a b -> p a c
+cophantom =   dimap (CPNormal . Tagged) (unTagged . getExtra)
+            . walk @Copointish
+            . dimap (unTagged :: Tagged True a -> a) (Tagged :: b -> Tagged False b)
+
+instance Copointish (Copointer t b)
+
+data Coforgetter a b x y = Coforgetter { runCoforgetter :: (x -> a) }
+
+instance Profunctor (Coforgetter a b) where
+  dimap f g (Coforgetter l) = Coforgetter (l . f)
+
+instance Tambara Copointish (Coforgetter a b) where
+  walk :: forall f a b x y. Copointish f => Coforgetter a b x y -> Coforgetter a b (f x) (f y)
+  walk (Coforgetter l) = case copointishDict @f @x of
+    Dict -> Coforgetter (l . copointfor)
+
+instance Action Copointish where
+  type Wanderer Copointish a b = Coforgetter a b
+  wandererDict = Dict
+
+  stray (Coforgetter l) = cophantom $ lmap l sell
+  unstray (LoneWanderer p) = lowerPasture $ hoistPasture f p
+    where f (Exchange l r) = Coforgetter l
 
 --------------------------------------------------------------------------------
 -- Optics
@@ -192,21 +367,49 @@ type Lens       s t a b = Optic IsProduct   s t a b
 type Prism      s t a b = Optic IsSum       s t a b
 type Traversal  s t a b = Optic Traversable s t a b
 type Setter     s t a b = Optic Functor     s t a b
-type Getter     s t a b = Optic Copointed   s t a b
-type Review     s t a b = Optic Pointed     s t a b
-type Fold       s t a b = Optic Foldable    s t a b
+type Getter     s t a b = Optic Copointish  s t a b
+--type Review     s t a b = Optic Pointish    s t a b
+--type Fold       s t a b = Optic Foldable    s t a b
+
+type AnIso       s t a b = Optical (Wanderer IsIdentity  a b) s t a b
+type ALens       s t a b = Optical (Wanderer IsProduct   a b) s t a b
+type APrism      s t a b = Optical (Wanderer IsSum       a b) s t a b
+type ATraversal  s t a b = Optical (Wanderer Traversable a b) s t a b
+type ASetter     s t a b = Optical (Wanderer Functor     a b) s t a b
+type AGetter     s t a b = Optical (Wanderer Copointish  a b) s t a b
+-- type AReview     s t a b = Optical (Wanderer Pointish    a b) s t a b
+-- type AFold       s t a b = Optical (Wanderer Foldish     a b) s t a b
+
+_1 :: Lens (a, c) (b, c) a b
+_1 = dimap swap swap . walk @IsProduct
 
 _2 :: Lens (c, a) (c, b) a b
 _2 = walk @IsProduct
+
+iso :: (s -> a) -> (b -> t) -> Iso s t a b
+iso sa bt = dimap sa bt
+
+from :: Iso s t a b -> Iso b a t s
+from i = iso r l
+  where (Exchange l r) = i (Exchange id id)
+
+--------------------------------------------------------------------------------
+-- Operations
+--------------------------------------------------------------------------------
+
+view :: AGetter s t a b -> s -> a
+view l = runCoforgetter $ l (Coforgetter id)
+-- view l = getConst . (runStar $ l (Star Const))
+
+over :: Optical (->) s t a b -> (a -> b) -> s -> t
+over = id
+
+set :: Optical (->) s t a b -> b -> s -> t
+set l b = l (const b)
 
 --------------------------------------------------------------------------------
 -- Notes
 --------------------------------------------------------------------------------
 
--- The typeclasses IsIdentity, IsProduct and IsSum could all be something like
--- IsoToIdentitiy, IsoToProdut and IsoToSum
--- This would require wrapping/unwrapping everywhere
-
--- LoneWanderer could be Yoneda-reduced to
--- data LoneWanderer c a b x y where
---   LoneWanderer :: c f => (f b -> y) -> (x -> f a) -> LoneWanderer c a b x y
+-- The Dicts in Action would be constraints on the typeclass if that
+-- were possible.

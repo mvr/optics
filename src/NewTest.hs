@@ -38,6 +38,12 @@ import Unsafe.Coerce
 -- * asDFLasd
 -- * laksdjf
 
+-- The Dicts in Action would be constraints on the typeclass if that
+-- were possible.
+
+-- TODO:
+-- * Replace IsIdentity with Functor + Contravariant. Are there
+--   similar tricks for IsProduct and IsSum?
 
 --------------------------------------------------------------------------------
 -- Action
@@ -79,6 +85,9 @@ class (Action c, Profunctor p
   persuade w p = lowerPasture $ insertPasture p lw
     where (LoneWanderer lw) = stray w
 
+instance (FunctorialAction c) => Tambara c (->) where
+  walk :: forall f a b. c f => (->) a b -> (->) (f a) (f b)
+  walk = case functorialDict @c @f of Dict -> fmap
 
 --------------------------------------------------------------------------------
 -- Exchange, Pastro
@@ -219,14 +228,17 @@ instance (IsProduct f, IsProduct g) => IsProduct (Compose f g) where
     , (g, a)  <- toPair ga = ((f, g), a)
   fromPair ((f, g), a) = Compose $ fromPair (f, fromPair (g, a))
 
-data Context a b x = Context (b -> x) a deriving (Functor)
+data Context a b x = Context a (b -> x) deriving (Functor)
 
 instance Action IsProduct where
   type Wanderer IsProduct a b = Star (Context a b)
   wandererDict = Dict
 
-  stray = undefined
-  unstray = undefined
+  stray (Star f) = dimap (\x -> let (Context a _) = f x in (x, a))
+                         (\(x, b) -> let (Context _ g) = f x in g b)
+                         (walk @IsProduct sell)
+  unstray (LoneWanderer p) = lowerPasture $ hoistPasture f p
+    where f (Exchange l r) = Star (\s -> Context (l s) r)
 
 instance FunctorialAction IsProduct where
   composeDict Dict Dict = Dict
@@ -406,10 +418,3 @@ over = id
 
 set :: Optical (->) s t a b -> b -> s -> t
 set l b = l (const b)
-
---------------------------------------------------------------------------------
--- Notes
---------------------------------------------------------------------------------
-
--- The Dicts in Action would be constraints on the typeclass if that
--- were possible.

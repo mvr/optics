@@ -35,8 +35,16 @@ import Unsafe.Coerce
 --------------------------------------------------------------------------------
 -- Overview
 --------------------------------------------------------------------------------
--- * asDFLasd
--- * laksdjf
+-- * Normal optics are specified by an `Action c`, i.e., a subcategory of
+--   [Hask, Hask] that is closed under composition
+-- * An Optic is completely determined by its behaviour on `Wanderer c a b`
+-- * The default, `Pastro (Exchange a b)` always works as the Wanderer,
+--   but can be overridden to something more familiar/efficient
+
+-- * The funny optics, Getter, Review, Fold, are specified by an Action
+--   that is not functorial: instead we have a subcategory of [ob Hask, Hask]
+-- * `Pastro` no longer gives the free "Tambara module", we need
+--   something freer: here it is called `Pasture`
 
 -- The Dicts in Action would be constraints on the typeclass if that
 -- were possible.
@@ -145,7 +153,7 @@ hoistPasture f (Walk p) = Walk (hoistPasture f p)
 insertPasture :: Profunctor p => p a b -> Pasture c (Exchange a b) s t -> Pasture c p s t
 insertPasture p = hoistPasture (\(Exchange l r) -> dimap l r p)
 
-collapsePasture :: forall c p s t. (FunctorialAction c) => Pasture c p s t -> Pastro c p s t
+collapsePasture :: (FunctorialAction c) => Pasture c p s t -> Pastro c p s t
 collapsePasture = lowerPasture . hoistPasture liftPastro
 
 ----------------------------------------
@@ -401,6 +409,9 @@ _2 = walk @IsProduct
 iso :: (s -> a) -> (b -> t) -> Iso s t a b
 iso sa bt = dimap sa bt
 
+to :: (s -> a) -> Getter s t a b
+to f = persuade (Coforgetter f)
+
 from :: Iso s t a b -> Iso b a t s
 from i = iso r l
   where (Exchange l r) = i (Exchange id id)
@@ -411,7 +422,6 @@ from i = iso r l
 
 view :: AGetter s t a b -> s -> a
 view l = runCoforgetter $ l (Coforgetter id)
--- view l = getConst . (runStar $ l (Star Const))
 
 over :: Optical (->) s t a b -> (a -> b) -> s -> t
 over = id

@@ -1,0 +1,646 @@
+\documentclass[11pt,a4paper]{amsart}
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\let\amssquare\square
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{tensor}
+\usepackage[mathscr]{eucal}
+\usepackage{marvosym}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\usepackage{tikz-cd}
+\usetikzlibrary{cd}
+\usetikzlibrary{arrows}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem*{theoremstar}{Theorem}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{examples}[theorem]{Examples}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{idea}[theorem]{Idea}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\id}{\mathrm{id}}
+
+\newcommand{\C}{\mathscr{C}}
+\newcommand{\homC}{\underline{\C}}
+\newcommand{\D}{\mathscr{D}}
+\newcommand{\E}{\mathscr{E}}
+\newcommand{\M}{\mathscr{M}}
+\newcommand{\N}{\mathscr{N}}
+
+\newcommand{\Pastro}{\mathrm{Pastro}}
+
+\newcommand{\Set}{\mathbf{Set}}
+\newcommand{\Cat}{\mathbf{Cat}}
+\newcommand{\Prof}{\mathbf{Prof}}
+\newcommand{\MonCat}{\mathbf{MonCat}}
+\newcommand{\LaxMonCat}{\mathbf{LaxMonCat}}
+
+\newcommand{\Act}{\mathbf{Act}}
+\newcommand{\Lens}{\mathbf{Lens}}
+\newcommand{\Hask}{\mathbf{Hask}}
+\newcommand{\Endo}{\mathbf{Endo}}
+\newcommand{\Strong}{\mathbf{Strong}}
+\newcommand{\Tamb}{\mathbf{Tamb}}
+\newcommand{\Point}{\mathbf{Point}}
+\newcommand{\CoPoint}{\mathbf{CoPoint}}
+\newcommand{\Traversable}{\mathbf{Traversable}}
+
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\ob}{\mathrm{ob}\,}
+
+\newcommand{\fget}{\mathrm{get}}
+\newcommand{\fput}{\mathrm{put}}
+\newcommand{\fmodify}{\mathrm{modify}}
+
+\newcommand{\todo}[1]{\textcolor{red}{\small #1}}
+
+\newcommand{\isoto}{\xrightarrow{
+   \,\smash{\raisebox{-0.65ex}{\ensuremath{\scriptstyle\sim}}}\,}}
+
+\title{Profunctor Lenses}
+\author{Mitchell Riley}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+A good introduction would include:
+
+Motivation for Lenses
+
+Motivation for van Laarhoven Lenses
+
+Motivation for Profunctor Lenses
+
+\subsection{Laws}
+Whatever formulation of standard lenses is used, there are some laws that are expected to hold. When we work in $\Set$ (or $\Hask$), the laws are typically given as follows.
+
+Given:
+\begin{align*}
+\fget &: \Lens(a, b) \times a \to b \\
+\fput &: \Lens(a, b) \times b \times a \to a
+\end{align*}
+we have that
+\begin{align*}
+\fget(l, \fput(l, b, a))   &= b \\
+\fput(l, \fget(l, a), a)   &= a \\
+\fput(l, b', \fput(l, b, a)) &= \fput(l, b', a)
+\end{align*}
+
+To express these laws in a general category with products, however, we must rewrite these in a ``pointfree'' style.
+
+Given:
+\begin{align*}
+\fget &: \Lens(a, b) \to \C(a, b) \\
+\fmodify &: \Lens(a, b) \times \C(b, b) \to \C(a, a)
+\end{align*}
+we have that
+\begin{align*}
+\fget(l) \circ \fmodify(l, f) &= f \circ \fget(l) \\
+\fmodify(l, \id_b) &= \id_a \\
+\fmodify(l, f) \circ \fmodify(l, g) &= \fmodify(l, f \circ g)
+\end{align*}
+We will refer to these as the get/modify laws.
+
+Similarly, the laws for prisms are typically stated as
+\todo{todo}
+
+\subsection{Notation}
+
+We use $\homC(a,b)$ to denote the internal hom of a cartesian closed category $\C$.
+
+\section{Lenses}
+
+\subsection{Monoidal actions}
+
+\begin{definition}
+An \emph{action} of a monoidal category $(\M, \otimes, 1)$ on a category $\C$ is a functor $\cdot : \M \times \C \to \C$ such that there are natural isomorphisms $m \cdot (n \cdot x) \isoto (m \otimes n) \cdot x$ and $1 \cdot x \isoto x$ for any $m, n \in \M$ and $x \in \C$. These isomorphism must satisfy the expected associativity and unit axioms. We will leave these isomorphisms implicit to reduce the amount of noise in our diagram. \todo{draw diagrams?}
+
+Equivalently, an action of a monoidal category is a strong monoidal functor $\M \to [\C, \C]$, where $[\C, \C]$ is equipped with the monoidal structure $([\C, \C], \circ, \id_\C)$.
+\end{definition}
+
+Examples abound: 
+\begin{itemize} 
+\item Any monoidal category acts on itself via left multiplication. 
+\item Any subcategory $\M \subset [\C, \C]$ that is closed under composition is a monoidal category, which acts on $\C$ simply by functor application.
+\item If $\C$ is equipped with an action of $\M$, then any functor category $[\D, \C]$ has an action of $\M$ computed pointwise.
+\end{itemize}
+
+We will also be interested in actions that are \emph{not} functorial in $\C$:
+
+\begin{definition}
+A \emph{dodgy monoidal action} of $\M$ on $\C$ is a functor $\cdot : \M \times \ob \C \to \C$, such that the same conditions hold as above. Here, $\ob \C$ is the category with the same objects as $\C$ but only identity morphisms.
+\end{definition}
+
+Most of what follows is still true for dodgy monoidal actions. \todo{But I am yet to check carefully which parts fail}
+
+\subsection{Lenses}
+
+\begin{definition}
+Let $\C$ be a category equipped with an action of the monoidal category $(\M, \otimes, 1)$. The \emph{category of lenses $\Lens_\C(\M)$} has objects the objects of $\C$, and morphisms $a$ to $b$ given by pairs $(m \in \M, a \isoto m \cdot b)$, where the second component is an isomorphism. However, we identify lenses that can be connected by an isomorphism in $\M$: $(m \in \M, l : a \isoto m \cdot b)$ is identified with $(m' \in \M, l' : a \isoto m' \cdot b)$ iff there exists an isomorphism $\alpha : m \isoto m'$ such that $l' = (\alpha\cdot b)l$. To save on notation, we will simply write $l : a \isoto m \cdot b$ for a representative of a lens $l$.
+
+The identity lens is simply $\id_a : a \isoto 1 \cdot a$, and the composition of two lenses $a \isoto m \cdot b$ and $b \isoto n \cdot c$ is given by
+\begin{align*}
+a \isoto m \cdot b \isoto m \cdot (n \cdot c) \isoto (m \otimes n) \cdot c
+\end{align*}
+It is not difficult to check that this composition is well defined.
+\end{definition}
+\todo{TODO: Consider flipping the direction of a lens to avoid op later?}
+
+We may consider the slice category $\Act(\C) := \MonCat/[\C, \C]$ of monoidal actions on $\C$, where $\MonCat$ is the category of monoidal categories and strong monoidal functors. For any map $F : \M \to \N$ in $\Act(\C)$, we have a functor $\Lens_\C(\M) \to \Lens_\C(\N)$ which sends any lens $a \isoto m \cdot b$ to $a \isoto Fm \cdot b$. Here, the map is identical: $m \cdot b = Fm \cdot b$.  In this way, $\Lens_\C$ forms a functor $\Act(\C) \to \Cat$.
+
+Unfortunately, the above definition of a lens is difficult to work with, both categoricaly and programmatically. Instead, we embed $\Lens_\C(\M)(a, b)$ inside $\int^{m \in M} \C(a, m\cdot b) \times \C(m\cdot b, a)$, and work with the latter.
+
+\begin{lemma}
+The canonical map $I : \Lens_\C(\M)(a, b) \to \int^{m \in M} \C(a, m\cdot b) \times \C(m\cdot b, a)$ that sends $l : a \isoto m \cdot b$ to $[(l, l^{-1})]$ is injective.
+\end{lemma}
+\begin{proof}
+
+\end{proof}
+
+We now wish to characterise the elements of $\int^{m \in M} \C(a, m\cdot b) \times \C(m\cdot b, a)$ that correspond to lenses.
+
+\begin{proposition}\label{characterise-lenses-in-coend}
+An element $[(l, r)] \in \int^{m \in M} \C(a, m\cdot b) \times \C(m\cdot b, a)$ corresponds to a lens iff $rl = \id_A$ and $[lr] = [\id_{m\cdot b}]$ as elements of $\int^{m\in \M} \C(m \cdot b, m \cdot b)$, for some $m \in \M$.
+\end{proposition}
+\begin{proof}
+If an element corresponds to a lens, there is a representative $(l, r)$ such that $rl = \id_a$ and $lr = \id_{m\cdot b}$, so certainly $[lr] = [\id_{m\cdot b}]$ in $\int^{m\in \M} \C(m \cdot b, m \cdot b)$.
+
+\todo{This is wrong} Conversely, suppose $rl = \id_A$ and $[lr] = [\id_{m\cdot b}]$ in $\int^{m\in \M} \C(m \cdot b, m \cdot b)$. The coend relations imply that there exist $p : m \cdot b \to n \cdot b$ and $q : n \cdot b \to m \cdot b$ such that $plrq = \id_{n\cdot b}$ and $qp = \id_{m\cdot b}$. 
+
+The same relations hold in $\int^{m \in M} \C(a, m\cdot b) \times \C(m\cdot b, a)$, so $[(l, r)] = [(pl, rq)]$. Now $plrq = \id_{n\cdot b}$ on the nose, and $rqpl = rl = \id_a$, so $[(l, r)]$ represents the lens $pl : a \isoto n \cdot b$.
+\end{proof}
+
+\section{Examples}
+
+Viewing lenses as a subset of $\int^{m \in M} \C(a, m\cdot b) \times \C(m\cdot b, a)$ allows for some more practical descriptions of lenses for particular choices of $\M$.
+
+\subsection{Isos}
+
+Let $\M = \mathbf{1}$. Then the set of potential lenses between $a, b \in \C$ is 
+\begin{align*}
+\int^{m \in \mathbf{1}} \C(a, m \cdot b) \times \C(m \cdot b, a)
+&\cong \C(a, 1 \cdot b) \times \C(1 \cdot b, a) \\
+&\cong \C(a, b) \times \C(b, a)
+\end{align*}
+
+\subsection{Lenses}
+
+Suppose $\C$ has finite products, and let $\M = (\C, \times, 1)$, then
+\begin{align*}
+(\Pastro_\C(\times)E_b)(a,a) 
+&\cong \int^{m \in \C} \C(a, m \times b) \times \C(m \times b, a) \\
+&\cong \int^{m \in \C} \C(a, m) \times \C(a, b) \times \C(m \times b, a) \\
+&\cong  \C(a, b) \times \C(a \times b, a)
+\end{align*}
+This is the traditional getter/setter form of lenses. 
+
+\begin{proposition}
+An element of $\C(a, b) \times \C(a \times b, a)$ corresponds to a lens iff it satisfies the get/modify lens laws.
+\end{proposition}
+\begin{proof}
+\todo{todo}
+\end{proof}
+
+\subsection{Prisms}
+
+Suppose $\C$ has finite coproducts, and let $\M = (\C, \sqcup, 0)$, then
+\begin{align*}
+(\Pastro_\C(\sqcup)E_b)(a,a) 
+&\cong \int^{m \in \C} \C(a, m \sqcup b) \times \C(m \sqcup b, a) \\
+&\cong \int^{m \in \C} \C(a, m \sqcup b) \times \C(m, a) \times \C(b, a) \\
+&\cong \C(a, a \sqcup b) \times \C(b, a)
+\end{align*}
+
+\todo{Show that the laws follow from our law}
+
+\subsection{Setters}
+To define Setters, we must first define what it means for a functor to be \emph{strong}.
+
+\begin{definition}
+\todo{The extra generality may not be necessary}
+Suppose $\C$ is equipped with an action of $\M$. A \emph{strength} for a functor $F : \C \to \C$ is a natural transformation
+\begin{align*}
+s_{m,a} : m \cdot F a \to F(m \cdot a)
+\end{align*}
+such that both
+\[
+\begin{tikzcd}
+m \cdot n \cdot Fa \ar[r, "s_{n,a}"] \ar[dr, "s_{m\otimes n, a}" below left]  & m \cdot F(n\cdot a) \ar[d, "s_{m, n\cdot a}" right] \\
+& F(m \cdot n \cdot a)
+\end{tikzcd}
+\]
+and
+\[
+\begin{tikzcd}
+1 \cdot F a \ar[r, "s_{1,a}"] \ar[dr, "\cong" below left]  & F(1 \cdot a) \ar[d, "\cong" right] \\
+& F a
+\end{tikzcd}
+\]
+commute.
+\end{definition}
+
+\begin{definition}
+There is a category $\Strong_\C(\M)$ of functors equipped with strengths, where the morphisms are natural transformations that respect the extra structure. There is an evident forgetful functor $U : \Strong_\C(\M) \to [\C, \C]$.
+\end{definition}
+
+The composition of two strong functors itself has a canonical strength, given by the composite
+\begin{align*}
+m \cdot FG a \xrightarrow{s_{m, Ga}} F(m \cdot G a) \xrightarrow{Fs_{m,a}} FG (m \cdot a)
+\end{align*}
+
+In this way, $\Strong_\C(\M)$ is also a monoidal category under composition. This category also acts on $\C$, via the action of the underlying functors.
+
+Now, returning to Setters, suppose $\C$ is cartesian closed, and let $\M = \Strong_\C(\times)$. First, a lemma:
+
+\begin{lemma}
+$\C(a, Fb) \cong \Strong_\C(\times)(a \times \homC(b, -), F)$
+\end{lemma}
+\begin{proof}
+Given a $f \in \C(a, Fb)$, let $\eta$ be the natural transformation with components
+\begin{align*}
+a \times \homC(b, c) \xrightarrow{f \times \id} Fb \times \homC(b, c) \xrightarrow{s_{\homC(b, c), b}}  F(b \times \homC(b, c)) \xrightarrow{F\epsilon} Fc
+\end{align*}
+where $s$ is the strength for $F$ and $\epsilon$ is the evaluation map.
+
+Conversely, given an $\eta$, the component at $b$ is a function $g : a \times \homC(b, b) \to Fb$; we recover $f$ as $f(a) = g(a, \id_b)$.
+
+Again, it is routine to check these are inverses.
+\end{proof}
+
+This is a generalisation of Proposition 2.2 in \cite{MR3482285}, which only considered functors $\Set \to \Set$ (all of which are strong).
+
+Now, the set of (possibly invalid) lenses with respect to this action is:
+\begin{align*}
+\int^{F \in \Strong_\C(\times)} \C(a, F b) \times \C(F b, a) 
+&\cong \int^{F} \Strong_\C(\times)(a \times \homC(b, -), F) \times \C(F b, a) \\ 
+&\cong \C(a \times \homC(b, b), a) \\
+&\cong \C(\homC(b, b), \homC(a, a))
+\end{align*}
+
+\subsection{Views and Reviews}
+
+Here we make use of dodgy monoidal actions. Let $\M=\Point(\C)$ be the category of \emph{pointed assignments}: functors $
+F : \ob C \to C$ equipped with natural transformations $\epsilon : 1 \to F$.
+
+As in earlier sections, we must charactarise $\C(a, Fb)$ as the set of natural transformation from some assignment to $F$. Let $C_{a,b}$ be the pointed assignment such that $C_{a,b}(b) = a \sqcup b$ and $C_{a,b}(c) = c$ for all $c \neq b$.
+
+\begin{lemma}
+$\C(a, Fb) \cong \Point(\C)(C_{a,b}, F)$
+\end{lemma}
+\begin{proof}
+\todo{boring}
+\end{proof}
+
+Then:
+
+\begin{align*}
+\int^{F \in \Point(\C)} \C(a, F b) \times \C(F b, a) 
+&\cong \int^{F} \Point(\C)(C_{a,b}, F) \times \C(F b, a) \\ 
+&\cong \C(a \sqcup b, a) \\
+&\cong \C(a, a) \times \C(b, a)
+\end{align*}
+
+
+
+\section{Profunctors and Tambara Modules}
+
+\begin{definition}
+A \emph{profunctor} between $\C$ and $\D$ is a functor $\C^\op \times \D \to \Set$. We have a category $\Prof(\C, \D) := [\C^\op \times \D, \Set]$.
+\end{definition}
+
+\begin{definition}
+For any $a \in \C$, define the \emph{exchange} profunctor to be $E_a := \C(-,a) \times \C(a,=)$. 
+%\todo{For lack of better names} We also define the \emph{lefty} and \emph{righty} profunctors to be $L_b := \C(-, b)$ and $R_b := \C(b, =)$ respectively.
+\end{definition}
+
+\begin{definition}
+Given profunctors $P \in \Prof(\C, \D)$ and $Q \in \Prof(\D,\E)$, the composite $Q \star P \in \Prof(\C, \E)$ is given by
+\begin{align*}
+(Q \star P)(c,e) = \int^{d \in \D} P(c,d) \times Q(d,e)
+\end{align*}
+In particular, for any $\C$, $\Prof(\C,\C)$ is a monoidal category with respect to $\star$. The identity for this composition is given by $\C(-,=)$. Details and proofs can be found in \cite{loregian2015co}.
+\end{definition}
+
+Any functor $F : \C \to \D$ can be turned into a profunctor in two different ways: $F_* \in \Prof(\D, \C)$ given by $F_* = \D(-,F=)$, and  $F^* \in \Prof(\C, \D)$ given by $F^* = \D(F-,=)$.
+
+\begin{lemma}\label{procomp-downstar-is-comp}
+Let $F : \C \to \D$ and $G : \D \to \E$, so that $F_* \in \Prof(\D, \C)$ and $G_* \in \Prof(\E,\D)$. Then $F_* \star G_* \cong (GF)_*$
+\end{lemma}
+\begin{proof}
+\todo{todo}
+\end{proof}
+
+%It is also easily verified that $L_b \star R_b \cong E_b$, and $R_b \star L_b$ is the constant profunctor at $\C(b,b)$.
+
+The following definition is a generalisation of an idea that appears in \cite{MR2425558}.
+
+\begin{definition}
+Suppose $\C$ is equipped with an action of $\M$, and let $P \in \Prof(\C, \C)$ be a profunctor. A \emph{Tambara module structure} for $P$ with respect to $\M$ is a natural family of maps:
+\begin{align*}
+\alpha_{a,b,m} : P(a, b) \to P(m \cdot a, m \cdot b)
+\end{align*}
+such that $\alpha_{a,b,1} = \id_{P(a,b)}$, and the following diagram commutes:
+\[
+\begin{tikzcd}
+P(a,b) \ar[r, "\alpha_{a,b,m}"] \ar[dr, "\alpha_{m\otimes n, a, b}" below left] & P(m \cdot a, m \cdot b) \ar[d, "\alpha_{n, m \cdot a, m \cdot b}" right] \\
+& P(n \cdot (m \cdot a), n \cdot (m \cdot b))
+\end{tikzcd}
+\]
+\end{definition}
+
+The identity profunctor $\C(-,=)$ has a module structure with respect to any action, as every action is functorial.
+
+If $P \in \Prof(\C, \D)$ and $Q \in \Prof(\D,\E)$ are equipped with module structures $\alpha$ and $\beta$ respectively, there is a canonical module structure on $Q \star P$ given by
+\begin{align*}
+(Q \star P)(c,e) &= \int^{d \in D} P(c,d) \times Q(d,e) \\ 
+&\to \int^{d \in D} P(m \cdot c, m\cdot d) \times Q(m \cdot d, m \cdot e) \\
+&\to \int^{d \in D} P(m \cdot c, d) \times Q(d, m \cdot e) \\
+&= (Q \star P)(m \cdot c, m \cdot e)
+\end{align*}
+Here, the second map is induced by the universal property of the coend: Each $P(m \cdot c, m\cdot d) \times Q(m \cdot d, m \cdot e)$ has a canonical inclusion into $\int^{d \in D} P(m \cdot c, d) \times Q(d, m \cdot e)$.
+
+\begin{definition}
+There is a category $\Tamb_\C(\M)$ of Tambara modules and natural transformations that respect the extra structure, in the sense that the diagram
+\[
+\begin{tikzcd}
+P(a,b) \ar[r, "\alpha_{a,b,m}"] \ar[d, "l_{a,b}" left] & P(m \cdot a, m \cdot b) \ar[d, "l_{m\cdot a,m\cdot b}" right] \\
+Q(a,b) \ar[r, "\alpha_{a,b,m}"] & Q(m \cdot a, m \cdot b)
+\end{tikzcd}
+\]
+commutes.
+\end{definition}
+
+This category is monoidal with respect to $\star$ as given above. There is an evident forgetful functor $U : \Tamb_\C(\M) \to \Prof(\C, \C)$ that is strong monoidal.
+
+\begin{definition}
+Let $\mathrm{Pastro}_\C(\M) : \Prof(\C, \C) \to \Tamb_\C(\M)$ be the functor
+\begin{align*}
+\mathrm{Pastro}_\C(\M)(P) := \int^{m \in \M} \C(m \cdot -, =) \star P \star \C(-, m \cdot =)
+\end{align*}
+Or, in other words, 
+\begin{align*}
+\mathrm{Pastro}_\C(\M)(P)(a,b) := \int^{m \in \M} \int^{c,d \in \C} \C(a, m \cdot c) \times P(c,d) \times  \C(m \cdot d, b)
+\end{align*}
+The module structure $\alpha_{a,b,m} : \mathrm{Pastro}_\C(\M)(P)(a, b) \to \mathrm{Pastro}_\C(\M)(P)(m \cdot a, m \cdot b)
+$ is given by the composite
+\begin{align*}
+\mathrm{Pastro}_\C(\M)(P)(a,b) &= \int^{n \in \M} \int^{c,d \in \C} \C(a, n \cdot c) \times P(c,d) \times  \C(n \cdot d, b) \\
+&\to \int^{n \in \M} \int^{c,d \in \C} \C(m \cdot a, m \cdot (n \cdot c)) \times P(c,d) \times  \C(m \cdot (n \cdot d), m \cdot b) \\
+&\cong \int^{n \in \M} \int^{c,d \in \C} \C(m \cdot a, (m \otimes n) \cdot c) \times P(c,d) \times  \C((m \otimes n) \cdot d, m \cdot b) \\
+&\to \int^{n \in \M} \int^{c,d \in \C} \C(m \cdot a, n \cdot c) \times P(c,d) \times  \C(n \cdot d, m \cdot b) \\
+&= \mathrm{Pastro}_\C(\M)(P)(m \cdot a, m \cdot b)
+\end{align*}
+where the final map is again induced by the universal property of the coend. \todo{This does not work if the action is not functorial in $\C$!!!}
+\end{definition}
+
+\begin{proposition}
+$\Pastro_\C(\M)$ is left adjoint to $U$.
+\end{proposition}
+\begin{proof}
+We prove this directly by providing natural inverse maps
+\begin{align*}
+\alpha : \Tamb_\C(\M)(\Pastro_\C(\M)(P), Q) \cong \Prof(\C, \C)(P, UQ) : \beta
+\end{align*}
+Given a natural transformation $f : \Pastro_\C(\M)(P) \to Q$, let $\alpha(f) : P \to UQ$ be the natural transformation with components
+\begin{align*}
+P(a,b) \xrightarrow{(id, -, id)} \C(a, 1 \cdot a) \times P(a,b) \times \C(1 \cdot b, b) \xrightarrow{f} Q(a,b)
+\end{align*} 
+Given a $g : P \to UQ$, let $\beta(g) : \Pastro_\C(\M)(P) \to Q$ be the natural transformation with components
+\begin{align*}
+\Pastro_\C(\M)(P)(a,b) &= \int^{m \in \M} \int^{c,d \in \C} \C(a, m \cdot c) \times P(c,d) \times  \C(m \cdot d, b) \\
+&\xrightarrow{g}
+\int^{m \in \M} \int^{c,d \in \C} \C(a, m \cdot c) \times Q(c,d) \times  \C(m \cdot d, b) \\
+&\xrightarrow{\alpha}
+\int^{m \in \M} \int^{c,d \in \C} \C(a, m \cdot c) \times Q(m\cdot c,m\cdot d) \times  \C(m \cdot d, b) \\
+&\to Q(a,b) \\
+\end{align*}
+\todo{Prove that $\beta(g)$ preserves the module structure}\\
+It is routine to check that these $\alpha$ and $\beta$ are inverses.
+\end{proof}
+
+
+
+\section{Profunctor Lenses}
+
+For any $a \in \C$, we have a functor $-(a, a) : \Tamb_\C(\M) \to \Set$. Note that this functor is lax monoidal: there is a canonical inclusion \todo{flip P and Q?}
+\begin{align*}
+i_{P,Q} : P(a,a)\times Q(a,a) \to \int^{d \in D} Q(a,d) \times P(d,a) = (P \star Q)(a,a)
+\end{align*}
+and function $i : 1 \to \C(a,a)$ that selects $\id_a$.
+
+\begin{lemma}
+The functor $-(a, a) : \Tamb_\C(\M) \to \Set$ is representable: there is a natural isomorphism
+$-(a, a) \cong \Tamb_\C(\M)(\Pastro_\C(\M)E_b, -)$
+\end{lemma}
+\begin{proof}
+We have the chain of natural isomorphisms:
+\begin{align*}
+&-(a,a) \\
+&\cong \int_{c,d \in \C} \Set(\C(a, c) \times \C(d, a), -(c,d)) \\
+&\cong \int_{c,d \in \C} \Set(E_a(c,d), -(c,d)) \\
+&\cong \Prof(E_a, U-) \\
+&\cong \Tamb_\C(\M)(\Pastro_\C(\M)E_a, -)
+\end{align*}
+\end{proof}
+
+To any lens $l = a \isoto m \cdot b$ we associate a natural transformation $l' : -(b, b) \to -(a, a)$ with components 
+\begin{align*}
+P(b, b) \xrightarrow{\alpha_{b,b,m}} P(m\cdot b, m\cdot b) \xrightarrow{P(l, l^{-1})} P(a,a)
+\end{align*}
+where $\alpha$ is the module structure on $P$.
+
+Given such a natural transformation $-(b, b) \to -(a, a)$, we would like to recover an object $m \in \M$ and maps $a \to m\cdot b$, $m \cdot b \to a$. 
+
+\begin{lemma}
+\begin{align*}
+[\Tamb_\C(\M), \Set](-(b, b),-(a, a)) &\cong \int^{m \in \M} \C(a, m \cdot b) \times \C(m \cdot b, a)
+\end{align*}
+\label{pastro-exchange-characterisation}
+\end{lemma}
+\begin{proof}
+We have the chain of isomorphisms:
+\begin{align*}
+&[\Tamb_\C(\M), \Set](-(b, b),-(a, a)) \\
+&\cong [\Tamb_\C(\M), \Set](\Tamb_\C(\M)(\Pastro_\C(\M)E_b, -), -(a, a)) \\
+&\cong (\Pastro_\C(\M)E_b)(a,a) \\
+&= \int^{m \in \M} \int^{c,d \in \C} \C(a, m \cdot c) \times E_b(c,d) \times \C(m \cdot d, a) \\
+&\cong \int^{m \in \M} \int^{c,d \in \C} \C(a, m \cdot c) \times \C(c,b) \times \C(b, d) \times \C(m \cdot d, a) \\
+&\cong \int^{m \in \M} \C(a, m \cdot b) \times \C(m \cdot b, a)
+\end{align*}
+\end{proof}
+
+\begin{corollary}
+A natural transformation $l : -(b, b) \to -(a, a)$ is determined by the value of the component of $l$ at $\Pastro_\C(\M)E_b$, on the canonical element $(\id_b, (\id_b,\id_b),\id_b) \in (\Pastro_\C(\M)E_b)(b, b)$.
+\end{corollary}
+\begin{proof}
+This is exhibited by the action of the intermediate isomorphism
+\begin{align*}
+[\Tamb_\C(\M), \Set](-(b, b),-(a, a))
+\cong (\Pastro_\C(\M)E_b)(a,a)
+\end{align*}
+\end{proof}
+
+We can now characterise the subset of natural transformations $-(b, b) \to -(a, a)$ that correspond to lenses.
+
+\begin{proposition}
+A natural transformation 
+$l : -(b, b) \to -(a, a)$ corresponds to a lens iff $l$ is a lax monoidal transformation with repect to $\star$ on $\Tamb_\C(\M)$ and $\times$ on $\Set$, i.e., for all $P, Q \in \Tamb_\C(\M)$, both 
+\[
+\begin{tikzcd}
+P(b, b) \times Q(b, b) \ar[d, "i"left ] \ar[r, "l_P \times l_Q" above] & P(a, a) \times Q(a, a) \ar[d, "i"] \\
+(Q\star P)(b, b) \ar[r, "l_{P \star Q}" below]  & (Q\star P)(a, a)
+\end{tikzcd}
+\]
+and
+\[
+\begin{tikzcd}
+& 1 \ar[dl, "i" above left] \ar[dr, "i"] \\
+\C(b,b) \ar[rr, "l" below] & &\C(a,a)
+\end{tikzcd}
+\]
+commute.
+\end{proposition}
+\begin{proof}
+Let $l : a \isoto m \cdot b$ be a representative of a lens such that $l$ is invertible. Then in the following diagram:
+\[
+\begin{tikzcd}[column sep=huge]
+P(b, b) \times Q(b, b) \ar[d, "i" left ] \ar[r, "\alpha \times \alpha" above] & P(m\cdot b, m\cdot b) \times Q(m\cdot b, m\cdot b) \ar[d, "i"] \ar[r, "{P(l, l^{-1})\times Q(l, l^{-1})}" above] & P(a, a) \times Q(a, a) \ar[d, "i"] \\
+(Q\star P)(b, b) \ar[r, "\alpha_{m,b,b}" below] & (Q\star P)(m\cdot b, m\cdot b) \ar[r, "{(Q\star P)(l, l^{-1})}" below] & (Q\star P)(a, a)
+\end{tikzcd}
+\]
+
+The left hand square commutes by the definition of the module structure structure on $Q\star P$. Further factoring the right hand square:
+\[
+\begin{tikzcd}[column sep=huge]
+P(m\cdot b, m\cdot b) \times Q(m\cdot b, m\cdot b) \ar[d, "i"] \ar[r, "{P(l, \id)\times Q(\id, l^{-1})}" above] & P(a, m\cdot b) \times Q(m\cdot b, a) \ar[d, "i"] \ar[r, "{P(\id, l^{-1})\times Q(l, \id)}" above] & P(a, a) \times Q(a, a) \ar[d, "i"] \\
+(Q\star P)(m\cdot b, m\cdot b) \ar[r, "{(Q\star P)(l, l^{-1})}" below] & (Q\star P)(a, a) \ar[r, "\id" below] &(Q\star P)(a, a)
+\end{tikzcd}
+\]
+The left side commutes by functoriality, and the right side commutes by the the definition of coend. Therefore the associated natural transformation is lax monoidal as requried.
+
+Also, the required triangle commutes, as $\id_b \in \C(b,b)$ is sent to 
+\begin{align*}
+(l \circ - \circ l^{-1})\alpha_{b,b,m}(\id_b) = (l \circ - \circ l^{-1})(\id_{m\cdot b}) = l \circ l^{-1} = \id_a
+\end{align*}
+Therefore, the associated natural transformation is lax monoidal.
+
+Conversely, suppose we have a lax monoidal natural transformation $-(b, b) \to -(a, a)$, and let $(l, r) \in \int^{m \in \M} \C(a, m \cdot b) \times \C(m \cdot b, a)$ be a representative of the corresponding element of the coend. The triangle condition exactly states that $rl = \id_a$.
+
+Let $L_b := \int^{m \in \M} \C(-,m\cdot b)$ and $R_b := \int^{m \in \M} \C(m\cdot b,=)$ be elements of $\Tamb_\C(\M)$ with the evident module structures. Note that $R_b \star L_b$ is the constant profunctor at $\int^{m\in \M} \C(m \cdot b, m \cdot b)$. Specialising the above digram to $P = R_b$ and $Q = L_b$, we have:
+\[
+\begin{tikzcd}[column sep=huge]
+R_b(b, b) \times L_b(b, b) \ar[d, "i" left ] \ar[r, "\alpha_{m,b,b} \times \alpha_{m,b,b}" above] & R_b(m\cdot b, m\cdot b) \times L_b(m\cdot b, m\cdot b) \ar[d, "i"] \ar[r, "{R_b(l, r)\times L_b(l, r)}" above] & R_b(a, a) \times L_b(a, a) \ar[d, "i"] \\
+(R_b\star L_b)(b, b) \ar[r, "\alpha_{m,b,b}" above] \ar[d, "\cong" left] & (R_b\star L_b)(m\cdot b, m\cdot b) \ar[r, "{(R_b\star L_b)(l,r)}" above] \ar[d, "\cong" right] & (R_b\star L_b)(a, a) \ar[d, "\cong" right]\\
+\int^{m\in \M} \C(m \cdot b, m \cdot b) \ar[r, "\id" below] & \int^{m\in \M} \C(m \cdot b, m \cdot b) \ar[r, "\id" below] & \int^{m\in \M} \C(m \cdot b, m \cdot b)
+\end{tikzcd}
+\] 
+
+Here, the vertical maps are simply composition of morphisms in $\C$. Inspecting the right-hand rectangle, commutativity of the diagram implies that $[lr] = [\id_{m\cdot b}]$ in $\int^{m\in \M} \C(m \cdot b, m \cdot b)$. 
+
+Therefore, by Proposition \ref{characterise-lenses-in-coend}, $(l,r)$ represents a lens.
+\end{proof}
+
+
+We will refer to the above diagrams as the \emph{lens laws}, and say that natural transformations $-(b, b) \to -(a, a)$ are \emph{valid lenses} if they satisfy it.
+
+\begin{theorem}
+The functor $I : \Lens_\C(\M) \to \LaxMonCat(\Tamb_\C(\M), \Set)^\op$ is full and faithful, where $\LaxMonCat(\Tamb_\C(\M), \Set)$ is the category of lax monoidal functors and monoidal natural transformations.
+\end{theorem}
+\begin{proof}
+\todo{TODO}
+\end{proof}
+
+\subsection{``Polymorphic'' lenses}
+
+\todo{This is an important todo}
+
+
+
+
+
+\section{Haskell Lenses}
+To be completely precise, the above sections should have been written in the enriched setting. Here we will do the usual slight of hand and treat $\Hask$ as equivalent to $\Set$.
+
+One reason that the van Laarhoven/profunctor description of lenses is so effective in Haskell, is the ease with which one can represent ends and coends.
+
+\todo{demonstrate}
+
+\subsection{Lenses in other categories}
+
+\section{Future Work}
+
+"Symmetric" Lenses
+
+
+
+\begin{figure}[b]
+\begin{tabular}{ll}
+\hline
+Haskell Name & Acting Category \\
+\hline
+Iso & $\mathbf{1}$ \\
+Lens & $(\Hask, \times)$ \\
+Prism & $(\Hask, \sqcup)$ \\
+Traversal & $(\Traversable(\Hask), \circ)$ \\
+Setter & $(\Endo(\Hask), \circ)$ \\
+Review & $(\Point(\Hask), \circ)$ \\
+Getter/View & $(\CoPoint(\Hask), \circ)$ \\
+Fold & ??? \\
+\hline
+\end{tabular}
+\caption{Classes of $\Lens$es used in Haskell}
+\end{figure}
+
+\begin{figure}[b]
+\begin{tikzpicture}[node distance=3.5cm,line width=0.5pt]
+\node(1) at (0,0) {$1$};
+\node(Lens) [above left of =1] {$- \times D$};
+\node(Prism) [above right of =1] {$- \sqcup D$};
+\node(Traversal) [above right of =Lens] {$\Traversable(\Hask)$};
+\node(Setter) [above of =Traversal] {$\Endo(\Hask)$};
+\node(Getter) [above left of =Lens] {$\CoPoint(\Hask)$???};
+\node(Fold)   [above of=Getter] {Fold ???};
+\node(Review) [above right of =Prism] {$\Point(\Hask)$???};
+
+
+\draw[right hook->](1) -- (Lens);
+\draw[right hook->](1) -- (Prism);
+\draw[right hook->](Lens) -- (Traversal);
+\draw[right hook->](Prism) -- (Traversal);
+\draw[right hook->](Traversal) -- (Fold);
+\draw[right hook->](Lens) -- (Getter);
+\draw[right hook->](Prism) -- (Review);
+\draw[right hook->](Getter) -- (Fold);
+
+\draw[->](Traversal) -- (Review);
+\draw[->](Traversal) -- (Setter);
+
+
+\end{tikzpicture}
+\caption{Morphisms between various classes of $\Lens$es. Arrows marked with hooks are fully faithful. \todo{figure out if this matters}
+}
+\end{figure}
+
+\nocite{*}
+\bibliographystyle{amsalpha}
+\bibliography{lens}
+\end{document}

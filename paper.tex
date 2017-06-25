@@ -1,0 +1,92 @@
+\documentclass[11pt,a4paper]{amsart}
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\let\amssquare\square
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{tensor}
+\usepackage[mathscr]{eucal}
+\usepackage{marvosym}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\usepackage{tikz-cd}
+\usetikzlibrary{cd}
+\usetikzlibrary{arrows}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem*{theoremstar}{Theorem}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{examples}[theorem]{Examples}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{idea}[theorem]{Idea}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\id}{\mathrm{id}}
+
+\newcommand{\C}{\mathscr{C}}
+\newcommand{\homC}{\underline{\C}}
+\newcommand{\D}{\mathscr{D}}
+\newcommand{\E}{\mathscr{E}}
+\newcommand{\M}{\mathscr{M}}
+\newcommand{\N}{\mathscr{N}}
+
+\newcommand{\Pastro}{\mathrm{Pastro}}
+
+\newcommand{\Set}{\mathbf{Set}}
+\newcommand{\Cat}{\mathbf{Cat}}
+\newcommand{\Prof}{\mathbf{Prof}}
+\newcommand{\MonCat}{\mathbf{MonCat}}
+\newcommand{\LaxMonCat}{\mathbf{LaxMonCat}}
+
+\newcommand{\Act}{\mathbf{Act}}
+\newcommand{\Lens}{\mathbf{Lens}}
+\newcommand{\Hask}{\mathbf{Hask}}
+\newcommand{\Endo}{\mathbf{Endo}}
+\newcommand{\Strong}{\mathbf{Strong}}
+\newcommand{\Tamb}{\mathbf{Tamb}}
+\newcommand{\Point}{\mathbf{Point}}
+\newcommand{\CoPoint}{\mathbf{CoPoint}}
+\newcommand{\Traversable}{\mathbf{Traversable}}
+
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\ob}{\mathrm{ob}\,}
+
+\newcommand{\fget}{\mathrm{get}}
+\newcommand{\fput}{\mathrm{put}}
+\newcommand{\fmodify}{\mathrm{modify}}
+
+\newcommand{\todo}[1]{\textcolor{red}{\small #1}}
+
+\newcommand{\isoto}{\xrightarrow{
+   \,\smash{\raisebox{-0.65ex}{\ensuremath{\scriptstyle\sim}}}\,}}
+
+\title{The Categorical Structure of Profunctor Optics}
+\author{Mitchell Riley}
+\begin{document}
+\maketitle
+
+\section{Introduction}
+\section{Profunctor Optics}
+\section{Optic Families}
+\section{The Challenge of Effectful Optics}
+\section{Indexed Optics}
+
+\nocite{*}
+\bibliographystyle{amsalpha}
+\bibliography{optics}
+\end{document}

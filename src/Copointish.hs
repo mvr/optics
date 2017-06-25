@@ -1,45 +1,38 @@
-------------------------------
--- Copointish
+class CopointFor a f where
+  copointfor :: f a -> a
 
-class {- Representational f =>? -} Copointish v (f :: * -> *) where
-  copointish :: f a -> v
+class Copointish f where
+  copointishDict :: Dict (CopointFor a f)
 
-instance Copointish v (Const v) where
-  copointish = getConst
+instance Action Copointish where
 
-instance (Copointish v f) => Copointish v (Compose f g) where
-  copointish (Compose fga) = copointish fga
+eqToRefl :: forall a b. (a == b) ~ 'True => a :~: b
+eqToRefl = unsafeCoerce (Refl :: () :~: ())
 
-instance Copointish v ((,) v) where
-  copointish (v, _) = v
+data family Copointer' (flag :: Bool) t b x
+data instance Copointer' 'True t b x = CPExtra t b
+data instance Copointer' 'False t b x = CPNormal x
 
-newtype CopointishAction (v :: *) f a = CopointishAction { unCopointishAction :: f a }
+data Copointer t b x = Copointer (Copointer' (x == b) t b x)
 
-instance Copointish v f => Copointish v (CopointishAction v f) where
-  copointish (CopointishAction fa) = copointish fa
+class CopointerHelper (flag :: Bool) t b a where
+  copointfor' :: Proxy flag -> (Copointer' flag t b a) -> a
 
-newtype Coforgetter v a b x y = Coforgetter { runCoforgetter :: x -> v }
+instance ((a == b) ~ 'True) => CopointerHelper 'True t b a where
+  copointfor' _ (CPExtra t b) = case eqToRefl :: a :~: b of
+    Refl -> b
 
-instance Profunctor (Coforgetter v a b) where
-  dimap f _ (Coforgetter r) = Coforgetter (r . f)
+instance CopointerHelper 'False t b a where
+  copointfor' _ (CPNormal x) = x
 
-instance Tambara (CopointishAction v) (Coforgetter v a b) where
-  walk (Coforgetter r) = Coforgetter copointish
+instance ((a == b) ~ flag, CopointerHelper flag t b a) => CopointFor a (Copointer t b) where
+  copointfor (Copointer c) = copointfor' (Proxy :: Proxy flag) c
 
-instance Action (CopointishAction v) where
-  type ActionOb      (CopointishAction v)     = Copointish v
-  type ActionCompose (CopointishAction v) f g = Compose f g
-  type ActionUnit    (CopointishAction v)     = ((,) v)
+instance Copointish (Copointer t b) where
+  copointishDict = Dict
 
-  composeDict _ Dict Dict = Dict
-  unitDict _ = Dict
+-- instance CopointFor b (Copointer t b) where
+--   copointfor (Copointer (CPExtra t b)) = b
 
-  assoc   = unsafeCoerce
-  unassoc = unsafeCoerce
-  unit (CopointishAction (_, a)) = a
-  ununit _ = undefined
-
-  type Wanderer (CopointishAction v) a b = Coforgetter v a b
-  walkabout (Coforgetter r) = LoneWanderer _ (Const . r)
-  -- walkabout (Coforgetter r) = LoneWanderer (\(CopointedAction (y,_)) -> y) undefined
-  -- unwalkabout (LoneWanderer l r) = Coforgetter undefined
+-- instance CopointFor x (Copointer t b) where
+--   copointfor (Copointer (CPNormal x)) = x

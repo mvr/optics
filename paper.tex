@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{amsart}
+\documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsthm}
 \usepackage{amsfonts}
@@ -6,10 +6,10 @@
 \usepackage{amssymb}
 \let\amssquare\square
 \usepackage{mathtools}
-\usepackage{stmaryrd}
-\usepackage{tensor}
+%\usepackage{stmaryrd}
+%\usepackage{tensor}
 \usepackage[mathscr]{eucal}
-\usepackage{marvosym}
+%\usepackage{marvosym}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \usepackage{tikz-cd}
@@ -36,7 +36,6 @@
 \newtheorem{idea}[theorem]{Idea}
 \newtheorem{question}[theorem]{Question}
 
-\newcommand{\id}{\mathrm{id}}
 
 \newcommand{\C}{\mathscr{C}}
 \newcommand{\homC}{\underline{\C}}
@@ -45,7 +44,9 @@
 \newcommand{\M}{\mathscr{M}}
 \newcommand{\N}{\mathscr{N}}
 
-\newcommand{\Pastro}{\mathrm{Pastro}}
+\newcommand{\Pastro}{\Phi}
+%\newcommand{\Pastro}{\mathrm{Pastro}}
+\newcommand{\Double}{\mathcal{D}}
 
 \newcommand{\Set}{\mathbf{Set}}
 \newcommand{\Cat}{\mathbf{Cat}}
@@ -54,6 +55,8 @@
 \newcommand{\LaxMonCat}{\mathbf{LaxMonCat}}
 
 \newcommand{\Act}{\mathbf{Act}}
+\newcommand{\PreOptic}{\mathbf{PreOptic}}
+\newcommand{\Optic}{\mathbf{Optic}}
 \newcommand{\Lens}{\mathbf{Lens}}
 \newcommand{\Hask}{\mathbf{Hask}}
 \newcommand{\Endo}{\mathbf{Endo}}
@@ -63,17 +66,29 @@
 \newcommand{\CoPoint}{\mathbf{CoPoint}}
 \newcommand{\Traversable}{\mathbf{Traversable}}
 
+\newcommand{\id}{\mathrm{id}}
 \newcommand{\op}{\mathrm{op}}
-\newcommand{\ob}{\mathrm{ob}\,}
+\newcommand{\const}{\mathrm{const}}
+\DeclareMathOperator{\ob}{ob}
+\DeclareMathOperator{\copr}{copr}
 
-\newcommand{\fget}{\mathrm{get}}
-\newcommand{\fput}{\mathrm{put}}
-\newcommand{\fmodify}{\mathrm{modify}}
+\newcommand{\fget}{\mathrm{\underline{get}}}
+\newcommand{\fput}{\mathrm{\underline{put}}}
+\newcommand{\fmodify}{\underline{\mathrm{modify}}}
 
 \newcommand{\todo}[1]{\textcolor{red}{\small #1}}
 
 \newcommand{\isoto}{\xrightarrow{
    \,\smash{\raisebox{-0.65ex}{\ensuremath{\scriptstyle\sim}}}\,}}
+
+\makeatletter
+\providecommand{\leftsquigarrow}{%
+  \mathrel{\mathpalette\reflect@squig\relax}%
+}
+\newcommand{\reflect@squig}[2]{%
+  \reflectbox{$\m@th#1\rightsquigarrow$}%
+}
+\makeatother
 
 \title{The Categorical Structure of Profunctor Optics}
 \author{Mitchell Riley}
@@ -81,12 +96,457 @@
 \maketitle
 
 \section{Introduction}
+
+\todo{Might have to adjust the entire thing because the action of $\M$ on $\C$ is not strictly monoidal. On the other hand, through the entire Pastro/Street paper pretends associativity/etc is strict, so maybe who cares? What we really want is just a (nonstrict) monoidal functor $\M \to [\C, \C]$ from some $\M$.}
+
+\todo{There might be a lot more to say in terms of Mike's stuff on framed bicategories. The ``external product'' operation on profunctors seems key. This could be the mechanism behind the indexed stuff?}
+
+\section{Optics}
+
+\begin{proposition}
+Let $\C$ be a category and $\M$ a subcategory of $[\C, \C]$ closed under composition. There is a category $\PreOptic_\M$ that has the same objects as $\C \times \C$, with homsets given by
+\begin{align*}
+\PreOptic_\M((S, S'), (A, A')) = \int^{M \in \M} \C(S, M A) \times \C(M A', S')
+\end{align*}
+\end{proposition}
+If $f : S \to M A$ and $g : M A' \to S'$, we write $\langle l, r \rangle$ for their image in $\PreOptic_\M((S, S'), (A, A'))$. We will refer to $M$ as the \emph{complement} for the pair $(l, r)$.
+\begin{proof}
+\todo{Following the doubles paper, this should be the Kleisli category for the monad on $\Prof$ given by:
+\begin{align*}
+\Phi(S, S', A, A') = \int^{M \in \M} \C(S, M A) \times \C(M A', S')
+\end{align*}
+}
+
+Explicitly, the composition map
+\begin{align*}
+\int^{M \in \M} \left(\C(S, M A) \times \C(M A', S')\right) \times \int^{M \in \M} \left( \C(R, M S) \times \C(M S', R')\right) \to \int^{M \in \M} \C(R, M A) \times \C(M A', R')
+\end{align*}
+of preoptics is induced by the following morphisms for every $M, N \in \M$:
+\begin{align*}
+&\C(S, M A) \times \C(M A', S') \times \C(R, N S) \times \C(N S', R')\\
+\xrightarrow{\text{functoriality}} \quad& \C(NS, NM A) \times \C(NM A', NS') \times \C(R, N S) \times \C(N S', R')\\
+\xrightarrow{\text{composition}} \quad& \C(R, N M A) \times \C(N M A', R') \\
+\xrightarrow{\copr_{NM}} \quad&\int^{M \in \M} \C(R, M A) \times \C(M A', R')
+\end{align*}
+In other words, let $\langle l, r \rangle \in \PreOptic_\M((R, R'), (S, S'))$ and $\langle l', r' \rangle \in \PreOptic_\M((S, S'), (A, A'))$ with $M$ the complement for $(f, g)$. The composite is then: $\langle l', r' \rangle \circ \langle l, r \rangle = \langle (M l')l, r(Mr') \rangle$
+\end{proof}
+
+In \cite{Doubles}, a very similar category was considered. The \emph{double} $\Double$ of a monoidal category $(\C, \otimes, I)$ is a special case of the above, where $\M$ is chosen to be all functors of the form $X \otimes (-)$ for $X \in \C$. 
+
+\todo{Mention the game theory stuff}
+
+For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $outside : \PreOptic_\M((S, S), (A, A)) \to \C(S, S)$. By composition in the other direction we have a map $\C(S, M A) \times \C(M A, S) \to \C(M A, M A)$. Including this object $\C(M A, M A)$ into the coend $\int^{M \in \M} \C(M A, M A)$, we induce a map $inside : \PreOptic_\M((S, S), (A,A)) \to \int^{M \in \M} \C(M A, M A)$.
+
+\begin{definition}
+An \emph{optic} from $S$ to $A$ is a preoptic $p$ from $(S, S)$ to $(A, A)$ such that $outside(p) = \id_S$, and $inside(p) = \langle \id_{MA} \rangle$ for some $M \in \M$.
+\end{definition}
+
+\begin{proposition}
+\label{prop-onthenose}
+If $p \in \PreOptic_\M(S, A)$ is an optic, then there exists a representative $p = \langle l, r \rangle$ such that $r \circ l = \id_{MA}$ on the nose for some $M$.
+\end{proposition}
+\begin{proof}
+\todo{This is long and painful but seems important. There may be a more general principle at work here but I couldn't see it.}
+
+\todo{Put in an appendix?}
+
+In fact we will prove the more general statement that for $p \in \PreOptic_\M(S, A)$, if $outside(p) = \id_S$ and $inside(p) = \langle t \rangle$ where $t : MA \to MA$ is idempotent, then we can find a representative $\langle l, r \rangle$ with $l \circ r = t$ on the nose.
+
+There is a well known formula for the coend as the coequaliser in the diagram
+\[
+\begin{tikzcd}
+\coprod_{M \to N} S(N, M) \ar[r,shift left=.75ex]  \ar[r,shift right=.75ex] & \coprod_{M \in \M} S(M, M) \ar[r] & \int^{M \in \M} S(M, M)
+\end{tikzcd}
+\]
+where $S$ is some functor $\M^\op \times \M \to \E$.
+
+In our case $\E = \Set$, and unwinding the coequaliser this states that $\int^{M \in \M} \C(M A, M A)$ is a quotient of the set $\coprod_{M \in \M} \C(M A, M A)$. Two morphisms $f : M A \to M A$ and $g : N A \to N A$ are identified when there exists a $k : N A \to M A$ and natural transformation $\phi : M \to N$ such that the diagram
+\[
+\begin{tikzcd}
+M A \ar[r, "\phi_A"] \ar[d, "f", swap] & N A \ar[d, "g"] \ar[dl, "k"] \\
+M A \ar[r, "\phi_A", swap] & N A
+\end{tikzcd}
+\]
+commutes. This gives a binary relation $f \rightsquigarrow g$ that is not likely to be symmetric or transitive. The coend is obtained by identifying all morphisms related in this way, so in all, $\langle f \rangle = \langle g \rangle$ iff there exists a zigzag $f \leftrightsquigarrow u_1 \leftrightsquigarrow \dots \leftrightsquigarrow u_n \leftrightsquigarrow g$ where the relation may apply in either direction. \todo{replace this with $f = u_1 \leftrightsquigarrow \dots u_n = g$ for clarity}
+
+If $f \rightsquigarrow g$ then $f^2 \rightsquigarrow g^2$: this is clear by stacking the above diagram, and then taking $k' = fk = kg$. This argument extends to show that $f^n \rightsquigarrow g^n$ for any $n$.
+
+Similarly unwinding the coequaliser for $\int^{M \in \M} \C(S, M A) \times \C(M A, S)$, two pairs $(l, r) : (S \to M A, MA \to S)$ and $(l', r') : (S \to NA, NA \to S)$ in $\coprod_{M \in \M} \C(S, M A) \times \C(M A, S)$ are identified when there exists a $\phi : M \to N$ such that
+\[
+\begin{tikzcd}
+M A \ar[r, "\phi_A"] \ar[d, "r", swap] & N A \ar[d, "r'"] \\
+S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "l'"]  \\
+MA \ar[r, "\phi_A"] & N A
+\end{tikzcd}
+\]
+commutes. \todo{split the diagram in the middle?}
+
+We will now prove the result by induction. Because $inside(p) = \langle t \rangle$, there is a representative $\langle l, r \rangle$ so that $\langle lr \rangle = \langle t \rangle$. There therefore must exist a finite chain of relations $lr \leftrightsquigarrow u_1 \leftrightsquigarrow \dots \leftrightsquigarrow u_n \leftrightsquigarrow t$.
+Supposing that the first relation faces rightwards, we have a diagram:
+\[
+\begin{tikzcd}
+M A \ar[r, "\phi_A"] \ar[d, "r", swap] & N A \ar[dd, "u_1"] \ar[ddl, "k"] \\
+S \ar[d,"l",swap] & \\
+M A \ar[r, "\phi_A", swap] & N A
+\end{tikzcd}
+\]
+Note that $r = rlr = rk\phi_A$. We therefore have the commutative diagram
+\[
+\begin{tikzcd}
+M A \ar[r, "\phi_A"] \ar[d, "r", swap] & N A \ar[d, "rk"] \\
+S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "\phi_Al"] \\
+MA \ar[r, "\phi_A", swap] & N A
+\end{tikzcd}
+\]
+where the composite of the morphisms on the right is $\phi_A l r k = \phi_A k \phi_A k = u_1^2$. Composing in the other direction we have $r k \phi_A l = rlrl = \id_S$. We have shown that whenever $rl = \id_S$ and $lr \rightsquigarrow u_1$, then there exist $l_1$ and $r_1$ so that $r_1l_1 = \id_S$, $l_1r_1 = u_1^2$ and $(l, r) \rightsquigarrow (l_1, r_1)$. A symmetric argument shows that if instead $lr \leftsquigarrow g$, there exist $l_1$ and $r_1$ so that $r_1l_1 = \id_S$, $l_1r_1 = u_1^2$ and $(l, r) \leftsquigarrow (l_1, r_1)$.
+
+We can now inductively apply the above argument to the chain $u_1^2 \leftrightsquigarrow \dots \leftrightsquigarrow u_n^2 \leftrightsquigarrow t^2 = t$, obtained by squaring each morphism in the original chain. We eventually obtain a chain $(l, r) \leftrightsquigarrow (l_1, r_1)\leftrightsquigarrow \dots \leftrightsquigarrow (l_n, r_n) \leftrightsquigarrow (l_t, r_t)$, where $r_tl_t = \id_S$ and $l_t r_t = t$. This pair $(l_t, r_t)$ is the required representative.
+\end{proof}
+
+The above argument has a similar form to those that appear in \cite{OnTheTrace}, which considered (among other things) coends of the form $\int^{c \in \C} \C(c, Fc)$ for an endofunctor $F : \C \to \C$.
+
+In view of this Proposition, whenever we posit a representative $\langle l, r \rangle$ of an optic, we will assume that $l$ and $r$ are mutual two-sided inverses. 
+
+\begin{proposition}
+There is an subcategory $\Optic_\M$ of $\PreOptic_\M$ given by objects of the form $(X, X)$ and optics between them.
+\end{proposition}
+\begin{proof}
+The identity preoptic $\langle \id_X, \id_X \rangle$ is clearly an optic. Suppose we have two optics $\langle l, r \rangle \in \Optic_\M(R, S)$ and $\langle l', r' \rangle \in \Optic_\M(S, A)$, where $\langle l, r \rangle$ has complement $M$. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is certainly also an optic:
+\begin{align*}
+(Ml')l r (Mr') &= (Ml')(Mr') = M(l'r') = \id
+\intertext{and}
+r (Mr')(Ml')l &= r M(r'l') l = rl = \id
+\end{align*}
+\end{proof}
+
+\subsection{Examples}
+
+\todo{For lenses, not actually the full subcategory of $[\C, \C]$, just morphisms of the form $f \times \id$. This is a disadvantage of doing it as functors and not as an action.}
+
+\subsection{Equivalence of Optics}
+
+One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\langle l, r \rangle, \langle l', r' \rangle \in \Optic_\M(S, A)$ are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
+
+\todo{This may work in general with some huge number of conditions: something like $-A$ reflects monomorphisms and preserves binary coproducts, all subobjects in $\M$ have complements.}
+
+\begin{proposition}
+Suppose all epimorphisms split in $\C$, and that $- \times A : \C \to \C$ reflects epis. Then two lenses $p = \langle l, r \rangle$ and $q = \langle l', r' \rangle \in \Optic_\times(S, A)$ with complements $M$ and $N$ respectively are equal iff there exists an morphism $\phi : M \to N$ such that $(\phi \times A)l = l'$ and $r = r' (\phi \times A)$.
+\end{proposition}
+\begin{proof}
+The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
+
+%note that $p$ and $q$ must have identical $\fget$ and $\fput$ functions:
+%\begin{align*}
+%\fget &= \pi_2 l = \pi_2 l' \\
+%\fput &= r (\pi_1 l \times A) = r' (\pi_1 l' \times A)
+%\end{align*}
+For the forward direction, note that the map $(\pi_1 l \times A)$ is a retraction: it has the section $(r, \pi_2)$:
+\begin{align*}
+(\pi_1 l \times A)(r, \pi_2) = (\pi_1 l r, \pi_2) = (\pi_1, \pi_2) = \id_{S \times A}
+\end{align*}
+Now by assumption, $\pi_1 l : S \to M$ is an epi, so has a retraction $f : M \to S$. The claim is that $\phi = \pi_1 l' f$ is the required morphism $M \to N$.
+
+The situation is summarised in the following diagram, which other than the dashed line, we know commutes.
+\[
+\begin{tikzcd}
+M \times A \ar[r, "{(f, \id_A)}", dashed, bend left = 50] \ar[d, "r", swap] & S \times A \ar[d, "\fput"] \ar[r, "{(\pi_1 l', \id_A)}"] \ar[l, "{(\pi_1 l, \id_A)}", swap] & N \times A \ar[d, "r'"] \\
+S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "{(\id_S, \fget)}"] \ar[r, equal] & S \ar[d, "l'"] \\
+M \times A & S \times A \ar[r] \ar[l] & N \times A
+\end{tikzcd}
+\]
+We can now calculate:
+\begin{align*}
+r = r(\pi_1 l f \times A) = \fput (f \times A) = r' (\pi_1 l' f \times A) = r'(\phi \times A)
+\end{align*}
+as required. The equation relating $l$ and $l'$ follows immediately as they are the inverses of $r$ and $r'$.
+\end{proof}
+
+The conditions of the above Proposition hold in $\Set$, so long as $A$ is not empty.
+
+% Old attempt:
+%\begin{definition}
+%A functor $F : \C \to \D$ satisfies the \emph{splitting morphism condition} (SM) if, for every $f : A \to B$ in $\C$ such that $Ff$ is a split monomorphism, there exists a $g : B \to A$ such that $F(gf) = \id_{FA}$.
+%
+%Similarly, $F$ satisfies the \emph{splitting epimorphism condition} (SE) if for every $f : A \to B$ in $\C$ such that $Ff$ is a split epimorphism, there exists a $g : B \to A$ such that $F(fg) = \id_{FB}$.
+%\end{definition}
+%
+%These definitions are identical to ones given in a (as far as I can tell totally unrelated) paper on triangulated categories \cite{ObjectiveTriangleFunctors}. The conditions are not too difficult to satisfy:
+%
+%\begin{proposition}[\todo{cite}]
+%If $F$ is full then it satisfies (SM) and (SE).
+%\end{proposition}
+%\begin{proof}
+%
+%\end{proof}
+%
+%\begin{proposition}[\todo{cite}]
+%If $F$ is faithful then it satisfies (SM) and (SE).
+%\end{proposition}
+%\begin{proof}
+%
+%\end{proof}
+%
+%\begin{theorem}
+%Suppose we have two optics $\langle l, r \rangle$ and $\langle l', r' \rangle \in \Optic_\M(S, A)$ with complements $M$ and $N$ respectively, and suppose $\M$ has the property that the ``evaluation-at-$A$'' functor $(-A) : \M \to \C$ satisfies (SM) and (SE). Then the two optics are equal iff there exists an morphism $\phi : M \to N$ such that $\phi_A l = l'$ and $r = r' \phi_A$.
+%\end{theorem}
+%\begin{proof}
+%The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
+%
+%For the forward direction, as in Proposition \ref{prop-onthenose} we induct on a zigzag \[(l, r) = (l_1, r_1) \leftrightsquigarrow \dots \leftrightsquigarrow (l_n, r_n) = (l', r'),\] where each pair $(l_i, r_i)$ has complement $M_i$. As a base case, we can take the identity $\id_M : M \to M = M_1$. Now suppose we already have a morphism $\phi : M \to M_{i-1}$ that satisfies $\phi_A l = l_{i-1}$ and $r = r_{i-1} \phi_A$. There are two cases to consider:
+%
+%If $(l_{i-1}, r_{i-1}) \rightsquigarrow (l_i, r_i)$, then by definition we have a $\psi : M_{i-1}\to M_i$ that satisfies the equations $\psi_A l_{i-1} = l_i$ and $r_{i-1} = r_i \psi_A$. Therefore the composite $\psi\phi$ satisfies $(\psi\phi)_A l = \psi_A l_{i-1} = l_i$ and $r = r_{i-1} \phi_A = r_i (\psi \phi)_A$, so $\psi\phi : M \to M_i$ is the required morphism.
+%
+%If instead $(l_{i-1}, r_{i-1}) \leftsquigarrow (l_i, r_i)$, we have a morphism in the opposite direction $\psi : M_i \to M_{i-1}$, with $\psi_A l_i = l_{i-1}$ and $r_i = r_{i-1} \psi_A$, as shown in the following commutative diagram
+%\[
+%\begin{tikzcd}
+%M A \ar[r, "\phi_A"] \ar[d, "r", swap] & M_{i-1} A \ar[d, "r_{i-1}"] & M_i A \ar[l, "\psi_A", swap] \ar[d, "r_i"]\\
+%S \ar[r, equal] \ar[d, "l", swap] & S \ar[r, equal] \ar[d, "l_{i-1}"] & S \ar[d, "l_i"] \\
+%M A \ar[r, "\phi_A", swap] & M_{i-1} A & M_i A \ar[l, "\psi_A"]
+%\end{tikzcd}
+%\]
+%To construct a morphism $M \to M_i$ we have to perform a slightly awkward switchback maneuver. First note that $\phi_A$ is a split monomorphism, as $(l r_{i-1}) \phi_A = lr = \id_{MA}$.
+%
+%By condition (SM), therefore, there is a morphism $\gamma : M_{i-1} \to M$ such that $\gamma_A \phi_A = \id_{MA}$. But now, the composite $\gamma_A \psi_A : M_i \to M$ is a split epimorphism:
+%\begin{align*}
+%(\gamma_A \psi_A)(l_i r) = \gamma_A l_{i-1} r = \gamma_A \phi_A l r = \gamma_A \phi_A = \id_{MA}
+%\end{align*}
+%and by condition (SE), there is a morphism $\theta : M \to M_i$ with $\gamma_A \psi_A \theta_A = \id_{MA}$. It remains to show that $\theta_A l = l_i$ and $r = r_i \theta_A$. First some intermediate steps:
+%\begin{align*}
+%r \gamma_A = r_{i-1} l_{i-1} r \gamma_A = r_{i-1} \phi_A l r \gamma_A = r_{i-1} \phi_A \gamma_A = 
+%\end{align*}
+%So finally:
+%\begin{align*}
+%r &= r \gamma_A \psi_A \theta_A	
+%\end{align*}
+%\todo{picture}
+%\end{proof}
+
 \section{Profunctor Optics}
+
+\subsection{Profunctors}
+
+\todo{recall definitions} We use $I$ to refer to the identity profunctor $\C(-,{=})$, and $\odot$ for horizontal profunctor composition.
+
+\subsection{Tambara Modules}
+The following section generalises definitions that first appeared in \cite{Doubles}.
+\begin{definition}
+Suppose $\C$ is acted on by $\M$, a subcategory of $[\C, \C]$ closed under composition, and let $P \in \Prof(\C, \C)$ be a profunctor. A \emph{Tambara module structure for $\M$} on $P$ is a natural family of maps:
+\begin{align*}
+\alpha_{A,B,M} : P(A,B) \to P(MA, MB)
+\end{align*}
+such that $\alpha_{A,B,\id_\C} = \id_{P(A,B)}$, and the following diagram commutes:
+\[
+\begin{tikzcd}
+P(A,B) \ar[r, "\alpha_{A,B,M}"] \ar[dr, "\alpha_{A, B, MN}" below left] & P(MA, MB) \ar[d, "\alpha_{MA, MB, N}" right] \\
+& P(NMA, NMB)
+\end{tikzcd}
+\]
+\end{definition}
+
+Note that the hom profunctor $I := \C(-, =) : \C^\op \times \C \to \Set$ has a canonical Tambara module structure for any $\M$, given by functoriality.
+
+If $P, Q \in \Prof(\C, \C)$ are equipped with module structures $\alpha$ and $\beta$ respectively, there is a canonical module structure on $P \odot Q$. Given $M \in \M$ and $A,B \in \C$, the structure map $(\alpha \odot \beta)_{A,B,M}$ is induced by
+\begin{align*}
+&P(A,C) \times Q(C,B)  \\
+\xrightarrow{\alpha_{A,C,M} \times \beta_{C,B,M}} \quad& P(MA, MC) \times Q(MC, MB) \\
+\xrightarrow{\copr_{MC}} \quad&\int^{C \in \C} P(MA, C) \times Q(C, MB) \\
+= \quad&(P \odot Q)(MA, MB)
+\end{align*}
+
+\begin{definition}
+There is a category $\Tamb_\C(\M)$ of Tambara modules and natural transformations that respect the extra structure, in the sense that for any $l : P \to Q$, the diagram
+\[
+\begin{tikzcd}
+P(A,B) \ar[r, "\alpha_{A,B,M}"] \ar[d, "l_{A,B}" left] & P(MA, MB) \ar[d, "l_{MA, MB}" right] \\
+Q(A,B) \ar[r, "\beta_{A,B,M}"] & Q(MA, MB)
+\end{tikzcd}
+\]
+commutes.
+\end{definition}
+
+This category is monoidal with respect to $\odot$ as given above, and the monoidal unit is given by $I$. There is an evident forgetful functor $U : \Tamb_\C(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; particularly important for us is the left adjoint:
+
+\begin{definition}
+Let $\Pastro_\M : \Prof(\C, \C) \to \Tamb_\C(\M)$ be the functor \todo{change notation? drop $\C$ if we use the same one the whole time?}
+\begin{align*}
+\Pastro_\M(P) := \int^{M \in \M}  \C(-, M{=}) \odot P \odot \C(M-, {=}) 
+\end{align*}
+Or, in other words, 
+\begin{align*}
+\mathrm{Pastro}_\C(\M)(P)(A,B) := \int^{M \in \M} \int^{C,D \in \C} \C(A, MC) \times P(C,D) \times  \C(MD, B)
+\end{align*}
+The module structure $\alpha_{A,B,M} : \Pastro_\M(P)(A,B) \to \Pastro_\M(P)(MA, MB)
+$ is given by map induced by 
+\begin{align*}
+&\int^{C,D \in \C} \C(A, NC) \times P(C,D) \times  \C(ND, B) \\
+\xrightarrow{\text{functoriality}} \quad& \int^{C,D \in \C} \C(MA, MNC) \times P(C,D) \times  \C(MND, MB) \\
+\xrightarrow{\copr_{MN}} \quad&\int^{N \in \M} \int^{C,D \in \C} \C(MA, NC) \times P(C,D) \times  \C(ND, MB) \\
+= \quad&\Pastro_\M(P)(MA, MB)
+\end{align*}
+for all $N \in \M$.
+\end{definition}
+
+\begin{proposition}
+$\Pastro_\M : \Prof(\C, \C) \to \Tamb_\C(\M)$ is left adjoint to $U : \Tamb_\C(\M) \to \Prof(\C, \C)$.
+\end{proposition}
+\begin{proof}
+\todo{Could crunch through this manually, may be a neat way to do it using techniques from P/S}
+\end{proof}
+
+\begin{corollary}
+$\Pastro_\M$ is oplax monoidal.
+\end{corollary}
+\begin{proof}
+This follows by abstract nonsense as a left adjoint of a strong monoidal functor. \todo{reference?}
+\end{proof}
+
+
+
+\subsection{Preoptics}
+
+\begin{definition}
+For an object $A \in \C$, the \emph{exchange profunctor} $E_A$ is defined to be $\C(-, A) \times \C(A, {=})$.
+\end{definition}
+
+Given a profunctor, or indeed a Tambara module, we can evaluate it at any two objects of $\C$. This process is functorial in the choice of Tambara module, giving a functor $(U-)(A,A) : \Tamb_\C(\M) \to \Set$.
+
+\begin{lemma}
+\label{lemma-rep}
+The functor $(U-)(A,A) : \Tamb_\C(\M) \to \Set$ is representable: there is a natural isomorphism
+$(U-)(A,A) \cong \Tamb_\C(\M)(\Pastro_\M E_A, -)$
+\end{lemma}
+\begin{proof}
+We have the chain of natural isomorphisms:
+\begin{align*}
+&(U-)(A,A) \\
+\cong \;&\int_{X,Y \in \C} \Set(\C(X,A) \times \C(A,Y), (U-)(X,Y)) && \text{(by Yoneda (un)reduction twice)} \\
+=\;&\int_{X,Y \in \C} \Set(E_A(X,Y), (U-)(X,Y)) && \text{(by definition)}\\
+\cong \;&\Prof(E_A, U-) && \text{(natural transformations as ends)} \\
+\cong \;&\Tamb_\C(\M)(\Pastro_\M E_A, -) && \text{(by adjointness)} 
+\end{align*}
+by the co-Yoneda lemma twice followed by the adjunction $\Pastro_\M \dashv U$.
+\end{proof}
+
+We can now show that profunctor preoptics are precisely preoptics in the ordinary sense.
+
+\begin{proposition}
+\label{prop-profunctor-optics-are-optics}
+\begin{align*}
+[\Tamb_\C(\M), \Set]((U-)(A,A),(U-)(S,S)) &\cong \PreOptic_\M((S, S), (A, A))
+\end{align*}
+\end{proposition}
+\begin{proof}
+We have the chain of isomorphisms:
+\begin{align*}
+&[\Tamb_\C(\M), \Set]((U-)(A,A),(U-)(S,S)) \\
+\cong \;&[\Tamb_\C(\M), \Set](\Tamb_\C(\M)(\Pastro_\M E_A, -), (U-)(S,S))  && \text{(by Lemma \ref{lemma-rep})}\\
+\cong \;&(U\Pastro_\M E_A)(S,S)  && \text{(by Yoneda)} \\
+= \;&\int^{M \in \M} \int^{C,D \in \C} \C(S, MC) \times E_A(C,D) \times \C(MD,S) \\
+= \;&\int^{M \in \M} \int^{C,D \in \C} \C(S, MC) \times \C(C,A) \times \C(A,D) \times \C(MD,S) \\
+\cong \;&\int^{M \in \M} \C(S, MA) \times \C(MA, S)  && \text{(by co-Yoneda twice)} \\
+= \;&\PreOptic_\M((S, S), (A, A))
+\end{align*}
+\todo{This works for $\PreOptic_\M((S, S'), (A, A'))$ just fine, fixing the definition of $E_A$.}
+\end{proof}
+
+\begin{corollary}
+A profunctor preoptic is completely determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determine by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
+\end{corollary}
+\begin{proof}
+This is the content of the first two isomorphisms above.
+\end{proof}
+
+\subsection{Optics}
+
+The next question is: can we characterise the profunctor preoptics that actually correspond to the lawful optics? The plan is to chase through the above isomorphisms to see where the lawful optics end up.
+
+The exchange profunctor has a canonical comonoid structure. The comultiplication $\Delta : E_A \to E_A \odot E_A$ is given by the composite
+\begin{align*}
+&E_A(X,Y) \\
+= \quad& \C(X, A) \times \C(A, Y) \\
+\xrightarrow{[\pi_1, \const_{\id_A}, \const_{\id_A}, \pi_2]} \quad& \C(X, A) \times \C(A, A) \times \C(A, A) \times \C(A, Y) \\
+\xrightarrow{\copr_A} \quad& \int^{C \in \C} \C(X, A) \times \C(A, C) \times \C(C, A) \times \C(A, Y) \\
+= \quad& \int^{C \in \C} E_A(X,C) \times E_A(C,Y) \\
+= \quad&  (E_A \odot E_A)(X,Y)
+\end{align*}
+and the counit $\varepsilon : E_A \to I$ simply composes the two morphisms. Because $\Pastro_\M$ is oplax monoidal, the Tambara module $\Pastro_\M E_A$ has an induced comonoid structure.
+
+\begin{lemma}
+For an object $X$ in a monoidal category $\C$, a comonoid structure $(X,\Delta,\varepsilon)$ is equivalent to a lax monoidal structure on $\C(X, -)$.
+\end{lemma}
+\begin{proof}
+\todo{not hard}
+\end{proof}
+
+Therefore the functor $\Tamb_\C(\M)(\Pastro_\M E_A, -)$ is canonically lax monoidal, and so the isomorphic functor $(U-)(A,A)$ is also.
+
+\begin{proposition}
+Any optic $p : (U-)(A,A) \to (U-)(S,S)$ is a lax monoidal transformation with respect to Tambara module composition in the domain and the cartesian product in the codomain.
+\end{proposition}
+\begin{proof}
+The final few isomorphisms used in Proposition \ref{prop-profunctor-optics-are-optics} are essentially window dressing. Suppose we have an element of 
+\begin{align*}
+(U\Pastro_\M E_A)(S,S) = \int^{M \in \M} \int^{C,D \in \C} \C(S, MC) \times E_A(C,D) \times \C(MD,S)
+\end{align*}
+and let $\phi : (U\Pastro_\M E_A)(S,S) \cong \PreOptic_\M((S, S), (A, A))$ be the isomorphism given in the proposition. If we have an element of $(U\Pastro_\M E_A)(S,S)$ with representative $\langle l, e_1, e_2, r \rangle$, the round-trip through the isomorphism $\phi$ yields $\langle (M e_1)l, \id_A, \id_A, r(M e_2)\rangle$. Hence we may always assume we have a representative of the form $\langle l, \id_A, \id_A, r \rangle$. This representative corresponds to an optic via the isomorphism $\phi$ iff both $rl = \id_S$ and $\langle lr\rangle = \langle \id_{NA} \rangle$ in $\int^{M \in \M} \C(M A, M A)$. Note that just as we can ``strictify'' a representative of an optic, if we have an element of $(U\Pastro_\M E_A)(S,S)$ that corresponds to an optic we may always choose a representative so that the latter identity holds on the nose.
+
+Now, by the definition of the Yoneda isomorphism, a natural transformation \[ \Tamb_\C(\M)(\Pastro_\M E_A, -) \to (U-)(S,S) \] will correspond to an optic iff the image of the identity morphism in $(U\Pastro_\M E_A)(S, S)$ corresponds to an optic. The very first isomorphism in Proposition \ref{prop-profunctor-optics-are-optics} is given by precomposition by the isomorphism of Lemma \ref{lemma-rep}, so in all, a profunctor preoptic $p : (U-)(A, A) \to (U-)(S,S)$ is a lawful optic iff $p(\langle \id_A, \id_A, \id_A, \id_A \rangle)$ is an optic in $(U\Pastro_\M E_A)(S, S)$. Our goal is to show that this happens exactly when the natural transformation is monoidal.
+
+Let $\langle l, \id_A, \id_A, r \rangle = p(\langle \id_A, \id_A, \id_A, \id_A \rangle)$ be a representative, where $l : S \to M A$ and $r : M A \to S$. We can calculate the component of $p$ at a Tambara module $P$ explicitly:
+\begin{align*}
+p_P = (UP)(l,r) \alpha_{A,A,M}
+\end{align*}
+where $\alpha$ is the module structure for $P$.
+
+To show $p$ is monoidal, we must show that both diagrams
+\[
+\begin{tikzcd}
+UP(A,A) \times UQ(A,A) \ar[r, "p_P \times p_Q"] \ar[d, swap] & UP(S, S) \times UQ(S, S)  \ar[d] \\
+U(P \odot Q)(A,A)  \ar[r, "p_{P \odot Q}", swap] & U(P \odot Q)(S,S)
+\end{tikzcd}
+\]
+and
+\[
+\begin{tikzcd}
+1 \ar[d] \ar[dr] & \\
+UI(A,A)  \ar[r, "p_I", swap] & UI(S,S)
+\end{tikzcd}
+\]
+commute. For the first we have
+\begin{align*}
+\langle (p_P \times p_Q)(x, y) \rangle &= \langle (UP)(l,r) \alpha_{A,A,M} x,  (UQ)(l,r) \beta_{A,A,M} y\rangle \\
+&= \langle (UP)(l,lr) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations \todo{more carefully})} \\
+&= \langle (UP)(l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \id_{MA}$)} \\
+&= (U(P \odot Q))(l,r) \langle \alpha_{A,A,M} x, \beta_{A,A,M} y \rangle && \text{(by definition of $P \odot Q$)} \\
+&= (U(P \odot Q))(l,r) (\alpha_{A,A,M} \odot \beta_{A,A,M}) \langle x, y \rangle && \text{(by definition of $\alpha \odot \beta$)} \\
+&= p_{P \odot Q} \langle x, y \rangle
+\end{align*}
+And for the second:
+\begin{align*}
+p_I(\id_A) = (UI)(l,r) (M \id_A) = r \id_{MA} l = rl = \id_S
+\end{align*}
+as required.
+\end{proof}
+
+\todo{I don't see why the converse should be true in general, but it seems to be true in specific situations:}
+
+\begin{proposition}
+Suppose $p \in \Optic_\times(S,A)$ is a pre-lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is a lens.
+\end{proposition}
+\begin{proof}
+\todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
+\end{proof}
+
+% \section{Degenerate Optics}
 \section{Optic Families}
-\section{The Challenge of Effectful Optics}
 \section{Indexed Optics}
 
-\nocite{*}
-\bibliographystyle{amsalpha}
-\bibliography{optics}
+\todo{These maybe involve profunctors from $\D \times \C$ to $\C$ where the composition does something funny with $\D$.}
+
+%\section{Merely Well-Behaved Optics}
+\section{The Challenge of Effectful Optics}
+%\section{Symmetric Optics}
+
+\bibliographystyle{alpha}
+\bibliography{optics.bib}
 \end{document}

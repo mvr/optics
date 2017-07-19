@@ -1,5 +1,5 @@
 \documentclass[11pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
 \usepackage{amsthm}
 \usepackage{amsfonts}
 \usepackage{amsmath}
@@ -9,6 +9,7 @@
 %\usepackage{stmaryrd}
 %\usepackage{tensor}
 \usepackage[mathscr]{eucal}
+\usepackage{url}
 %\usepackage{marvosym}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
@@ -44,10 +45,15 @@
 \newcommand{\M}{\mathscr{M}}
 \newcommand{\N}{\mathscr{N}}
 
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+
+
 \newcommand{\Pastro}{\Phi}
 %\newcommand{\Pastro}{\mathrm{Pastro}}
 \newcommand{\Double}{\mathcal{D}}
 
+% Categories
 \newcommand{\Set}{\mathbf{Set}}
 \newcommand{\Cat}{\mathbf{Cat}}
 \newcommand{\Prof}{\mathbf{Prof}}
@@ -57,6 +63,7 @@
 \newcommand{\Act}{\mathbf{Act}}
 \newcommand{\PreOptic}{\mathbf{PreOptic}}
 \newcommand{\Optic}{\mathbf{Optic}}
+\newcommand{\SemiOptic}{\mathbf{SemiOptic}}
 \newcommand{\Lens}{\mathbf{Lens}}
 \newcommand{\Hask}{\mathbf{Hask}}
 \newcommand{\Endo}{\mathbf{Endo}}
@@ -72,15 +79,14 @@
 \DeclareMathOperator{\ob}{ob}
 \DeclareMathOperator{\copr}{copr}
 
-\newcommand{\fget}{\mathrm{\underline{get}}}
-\newcommand{\fput}{\mathrm{\underline{put}}}
-\newcommand{\fmodify}{\underline{\mathrm{modify}}}
+\newcommand{\fget}{\textsc{Get}}
+\newcommand{\fput}{\textsc{Put}}
+\newcommand{\fmodify}{\textsc{Modify}}
 
-\newcommand{\todo}[1]{\textcolor{red}{\small #1}}
-
+% Special arrows
 \newcommand{\isoto}{\xrightarrow{
    \,\smash{\raisebox{-0.65ex}{\ensuremath{\scriptstyle\sim}}}\,}}
-
+\newcommand{\hto}{\ensuremath{\,\mathaccent\shortmid\rightarrow\,}}
 \makeatletter
 \providecommand{\leftsquigarrow}{%
   \mathrel{\mathpalette\reflect@squig\relax}%
@@ -90,6 +96,18 @@
 }
 \makeatother
 
+% Draft helpers
+\newcommand{\todo}[1]{\textcolor{red}{\small #1}}
+
+\newif\ifhideproofs
+%\hideproofstrue %uncomment to hide proofs
+\ifhideproofs
+\usepackage{environ}
+\NewEnviron{hide}{}
+\let\proof\hide
+\let\endproof\endhide
+\fi
+
 \title{The Categorical Structure of Profunctor Optics}
 \author{Mitchell Riley}
 \begin{document}
@@ -97,19 +115,48 @@
 
 \section{Introduction}
 
-\todo{Might have to adjust the entire thing because the action of $\M$ on $\C$ is not strictly monoidal. On the other hand, through the entire Pastro/Street paper pretends associativity/etc is strict, so maybe who cares? What we really want is just a (nonstrict) monoidal functor $\M \to [\C, \C]$ from some $\M$.}
+\todo{Might have to adjust the entire thing because the action of $\M$ on $\C$ is not strictly monoidal. On the other hand, through the entire Pastro/Street paper pretends associativity/etc is strict, so maybe who cares? What we really want is just a (non-strict) monoidal functor $\M \to [\C, \C]$ from some $\M$.}
 
-\todo{There might be a lot more to say in terms of Mike's stuff on framed bicategories. The ``external product'' operation on profunctors seems key. This could be the mechanism behind the indexed stuff?}
+\todo{People to credit:
+\begin{itemize}
+\item The Haskell lens people: edwardk, shachaf, xplat, roconnor... (TODO: find out who these people are)
+\item The Doubles paper
+\item Bartosz's blog post which was written about the same time I started this. (Only tensor-like optics, no discussion of laws, confusion about enrichment(?))
+\item The profunctor optics paper out of Oxford. (No generality, nothing categorical, no discussion of laws)
+\end{itemize}
+}
 
+\todo{Contributions:
+\begin{itemize}
+\item ...
+\end{itemize}
+}
+
+\todo{Introduction should include:
+\begin{itemize}
+\item Previous attempts to generalise optics
+\item ...
+\end{itemize}
+}
+
+\subsection{Notation}
+\todo{I am open to changing any/all of these}
+\begin{itemize}
+\item Given $f : A \to B$ and $g : A \to C$, I write $[f, g] : A \to B \times C$.
+\item Given $f : A \to B$ and $g : C \to D$, I write $f \times g : A \times C \to B \times D$.
+\item Given a $x \in P(C, C)$, I write $\langle x \rangle \in \int^C P(C, C)$ for its image, and $\copr_C : P(C,C) \to \int^C P(C, C)$
+\end{itemize}
 \section{Optics}
 
 \begin{proposition}
-Let $\C$ be a category and $\M$ a subcategory of $[\C, \C]$ closed under composition. There is a category $\PreOptic_\M$ that has the same objects as $\C \times \C$, with homsets given by
+Let $\C$ be a category and $\M$ a monoidal category that acts on $\C$. There is a category $\PreOptic_\M$ that has the same objects as $\C \times \C$, with homsets given by
 \begin{align*}
 \PreOptic_\M((S, S'), (A, A')) = \int^{M \in \M} \C(S, M A) \times \C(M A', S')
 \end{align*}
 \end{proposition}
-If $f : S \to M A$ and $g : M A' \to S'$, we write $\langle l, r \rangle$ for their image in $\PreOptic_\M((S, S'), (A, A'))$. We will refer to $M$ as the \emph{complement} for the pair $(l, r)$.
+To distinguish these from morphisms in $\C$, we will write preoptics with a crossed arrow: $p : (S, S') \hto (A, A')$.
+
+If $f : S \to M A$ and $g : M A' \to S'$, we write $\langle l, r \rangle$ for their image in $\PreOptic_\M((S, S'), (A, A'))$. We will refer to $M$ as the \emph{complement} for the representative $\langle l, r \rangle$.
 \begin{proof}
 \todo{Following the doubles paper, this should be the Kleisli category for the monad on $\Prof$ given by:
 \begin{align*}
@@ -128,7 +175,7 @@ of preoptics is induced by the following morphisms for every $M, N \in \M$:
 \xrightarrow{\text{composition}} \quad& \C(R, N M A) \times \C(N M A', R') \\
 \xrightarrow{\copr_{NM}} \quad&\int^{M \in \M} \C(R, M A) \times \C(M A', R')
 \end{align*}
-In other words, let $\langle l, r \rangle \in \PreOptic_\M((R, R'), (S, S'))$ and $\langle l', r' \rangle \in \PreOptic_\M((S, S'), (A, A'))$ with $M$ the complement for $(f, g)$. The composite is then: $\langle l', r' \rangle \circ \langle l, r \rangle = \langle (M l')l, r(Mr') \rangle$
+In other words, let $\langle l, r \rangle : (R, R') \hto (S, S')$ and $\langle l', r' \rangle : (S, S') \hto (A, A')$ with $M$ the complement for $\langle l, r \rangle$. The composite is then: $\langle l', r' \rangle \circ \langle l, r \rangle = \langle (M l')l, r(Mr') \rangle$
 \end{proof}
 
 In \cite{Doubles}, a very similar category was considered. The \emph{double} $\Double$ of a monoidal category $(\C, \otimes, I)$ is a special case of the above, where $\M$ is chosen to be all functors of the form $X \otimes (-)$ for $X \in \C$. 
@@ -143,14 +190,14 @@ An \emph{optic} from $S$ to $A$ is a preoptic $p$ from $(S, S)$ to $(A, A)$ such
 
 \begin{proposition}
 \label{prop-onthenose}
-If $p \in \PreOptic_\M(S, A)$ is an optic, then there exists a representative $p = \langle l, r \rangle$ such that $r \circ l = \id_{MA}$ on the nose for some $M$.
+If $p : (S,S) \hto (A,A)$ is an optic, then there exists a representative $p = \langle l, r \rangle$ such that $r \circ l = \id_{MA}$ on the nose for some $M$.
 \end{proposition}
 \begin{proof}
 \todo{This is long and painful but seems important. There may be a more general principle at work here but I couldn't see it.}
 
 \todo{Put in an appendix?}
 
-In fact we will prove the more general statement that for $p \in \PreOptic_\M(S, A)$, if $outside(p) = \id_S$ and $inside(p) = \langle t \rangle$ where $t : MA \to MA$ is idempotent, then we can find a representative $\langle l, r \rangle$ with $l \circ r = t$ on the nose.
+In fact we will prove the more general statement that for $p : (S,S) \hto (A,A)$, if $outside(p) = \id_S$ and $inside(p) = \langle t \rangle$ where $t : MA \to MA$ is idempotent, then we can find a representative $\langle l, r \rangle$ with $l \circ r = t$ on the nose.
 
 There is a well known formula for the coend as the coequaliser in the diagram
 \[
@@ -211,26 +258,65 @@ In view of this Proposition, whenever we posit a representative $\langle l, r \r
 There is an subcategory $\Optic_\M$ of $\PreOptic_\M$ given by objects of the form $(X, X)$ and optics between them.
 \end{proposition}
 \begin{proof}
-The identity preoptic $\langle \id_X, \id_X \rangle$ is clearly an optic. Suppose we have two optics $\langle l, r \rangle \in \Optic_\M(R, S)$ and $\langle l', r' \rangle \in \Optic_\M(S, A)$, where $\langle l, r \rangle$ has complement $M$. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is certainly also an optic:
+The identity preoptic $\langle \id_X, \id_X \rangle$ is clearly an optic. Suppose we have two optics $\langle l, r \rangle : R \hto S$ and $\langle l', r' \rangle : S \hto A$ with complements $M$ and $N$ respectively. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is certainly also an optic:
 \begin{align*}
-(Ml')l r (Mr') &= (Ml')(Mr') = M(l'r') = \id
+(Ml')l r (Mr') &= (Ml')(Mr') = M(l'r') = \id_{MNA}
 \intertext{and}
-r (Mr')(Ml')l &= r M(r'l') l = rl = \id
+r (Mr')(Ml')l &= r M(r'l') l = rl = \id_S
 \end{align*}
 \end{proof}
 
 \subsection{Examples}
 
-\todo{For lenses, not actually the full subcategory of $[\C, \C]$, just morphisms of the form $f \times \id$. This is a disadvantage of doing it as functors and not as an action.}
+\subsubsection{Lenses}
+
+Lenses form the ur-example of optics. 
+
+\begin{definition}
+Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} in $\C$ is the category of optics with respect to this action: $\Lens = \Optic_\times$.
+\end{definition}
+
+As remarked in the introduction \todo{(todo: remark in the introduction)}, the preoptics for this action are exactly pairs of $\fget$ and $\fput$ functions.
+\begin{align*}
+\PreOptic_\M((S, S), (A, A)) &= \int^{M \in \M} \C(S, M \times A) \times \C(M \times A, S) \\
+&\cong \int^{M \in \M} \C(S, M) \times \C(S, A) \times \C(M \times A, S) && \text{(universal property of product)} \\
+&\cong \C(S, A) \times \C(S \times A, S) && \text{(co-Yoneda)}
+\end{align*}
+
+Explicitly, given a prelens $\langle l, r \rangle : S \hto A$ these are given by $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Conversely, given $\fget$ and $\fput$, the corresponding element in the coend has representative $\langle l, r \rangle$, where $l = [\id_s, \fget]$ and $r = \fput$. Note that even if the $\fget$ and $\fput$ correspond to a law-abiding lens, this particular representative will not be an isomorphism.
+
+\todo{talk about ``constant complement'' idea}
+
+\begin{proposition}
+If $\langle l, r \rangle : S \hto A$ is a lens then the associated $\fget$ and $\fput$ functions satisfy the $\fget\fput$, $\fput\fget$ and $\fput\fput$ laws.
+\end{proposition}
+\begin{proof}
+\todo{Straightforward, written out at \cite{IsomorphismLensesPost}, definitely not the origin.}
+\end{proof}
+
+In favourable conditions, the converse holds as we can construct a complement:
+
+\begin{proposition}
+\todo{This is a guess:} Suppose $\C$ has finite limits and coequalisers, and that there is a morphism $1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $\langle l, r \rangle : S \hto A$ is a lens.
+\end{proposition}
+\begin{proof}
+\todo{would be nice if this were true}
+\end{proof}
+
+In particular, this holds in $\Set$ so long as $A$ is not empty. In \cite[Corollary 13]{AlgebrasAndUpdateStrategies} a similar fact is proven for lenses expressed as algebras for a particular monad.
+
+\subsubsection{Prisms}
+\subsubsection{Traversals}
+\subsubsection{Setters}
 
 \subsection{Equivalence of Optics}
 
-One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\langle l, r \rangle, \langle l', r' \rangle \in \Optic_\M(S, A)$ are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
+One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\langle l, r \rangle, \langle l', r' \rangle : S \hto A$ are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
 
 \todo{This may work in general with some huge number of conditions: something like $-A$ reflects monomorphisms and preserves binary coproducts, all subobjects in $\M$ have complements.}
 
 \begin{proposition}
-Suppose all epimorphisms split in $\C$, and that $- \times A : \C \to \C$ reflects epis. Then two lenses $p = \langle l, r \rangle$ and $q = \langle l', r' \rangle \in \Optic_\times(S, A)$ with complements $M$ and $N$ respectively are equal iff there exists an morphism $\phi : M \to N$ such that $(\phi \times A)l = l'$ and $r = r' (\phi \times A)$.
+Suppose all epimorphisms split in $\C$, and that $- \times A : \C \to \C$ reflects epis. Then two lenses $\langle l, r \rangle$ and $\langle l', r' \rangle :  S \hto A$ with complements $M$ and $N$ respectively are equal iff there exists an morphism $\phi : M \to N$ such that $(\phi \times A)l = l'$ and $r = r' (\phi \times A)$.
 \end{proposition}
 \begin{proof}
 The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
@@ -325,7 +411,7 @@ The conditions of the above Proposition hold in $\Set$, so long as $A$ is not em
 
 \subsection{Profunctors}
 
-\todo{recall definitions} We use $I$ to refer to the identity profunctor $\C(-,{=})$, and $\odot$ for horizontal profunctor composition.
+\todo{recall definitions} We use $I$ to refer to the identity profunctor $\C(-,{=})$, and $\odot$ for horizontal profunctor composition. Profunctor composition is written in diagramatic order.
 
 \subsection{Tambara Modules}
 The following section generalises definitions that first appeared in \cite{Doubles}.
@@ -397,7 +483,7 @@ $\Pastro_\M : \Prof(\C, \C) \to \Tamb_\C(\M)$ is left adjoint to $U : \Tamb_\C(\
 $\Pastro_\M$ is oplax monoidal.
 \end{corollary}
 \begin{proof}
-This follows by abstract nonsense as a left adjoint of a strong monoidal functor. \todo{reference?}
+This follows abstractly as a left adjoint of a strong monoidal functor. \todo{reference?}
 \end{proof}
 
 
@@ -424,7 +510,6 @@ We have the chain of natural isomorphisms:
 \cong \;&\Prof(E_A, U-) && \text{(natural transformations as ends)} \\
 \cong \;&\Tamb_\C(\M)(\Pastro_\M E_A, -) && \text{(by adjointness)} 
 \end{align*}
-by the co-Yoneda lemma twice followed by the adjunction $\Pastro_\M \dashv U$.
 \end{proof}
 
 We can now show that profunctor preoptics are precisely preoptics in the ordinary sense.
@@ -450,7 +535,7 @@ We have the chain of isomorphisms:
 \end{proof}
 
 \begin{corollary}
-A profunctor preoptic is completely determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determine by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
+A profunctor preoptic is completely determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
 \end{corollary}
 \begin{proof}
 This is the content of the first two isomorphisms above.
@@ -531,21 +616,68 @@ as required.
 \todo{I don't see why the converse should be true in general, but it seems to be true in specific situations:}
 
 \begin{proposition}
-Suppose $p \in \Optic_\times(S,A)$ is a pre-lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is a lens.
+Suppose $p : S \hto A$ is a pre-lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is a lens.
 \end{proposition}
 \begin{proof}
 \todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
 \end{proof}
 
-% \section{Degenerate Optics}
-\section{Optic Families}
+\section{Degenerate Optics}
+% \section{Optic Families}
 \section{Indexed Optics}
+\todo{
+This possibly looks like
+\begin{align*}
+\int^{M \in \M} \C(S, M(IA)) \times \C(M A', S')
+\end{align*}
+with another monoidal action $I$. The $I$ would need to distribute over $M$ in some way.
+}
+\section{Merely Well-Behaved Optics}
+\todo{
+The lenses that the UPenn crew look at are less restricted. They obey the $\fput\fget$ and $\fget\fput$ laws but not the $\fput\fput$ law. 
+}
 
-\todo{These maybe involve profunctors from $\D \times \C$ to $\C$ where the composition does something funny with $\D$.}
+\begin{example}
+The following example is taken from \cite{AClearPictureOfLensLaws}. The ``change counter'' lens $\bN \times A \hto A$ for a set $A$ has $\fput$ and $\fget$ given by:
+\begin{align*}
+\fget(n, a) &= a \\
+\fput((n, a), a') &= \begin{cases}
+(n, a) & \text{if } a = a' \\
+(n+1, a') & \text{otherwise}
+\end{cases}
+\end{align*}
+This example is typical of (merely) well-behaved lenses: there is metadata carried along with the target of a lens that mutates as the lens is used.
+\end{example}
 
-%\section{Merely Well-Behaved Optics}
+\begin{proposition}
+A pre-lens $p : S \hto A$ obeys the $\fput\fget$ and $\fget\fput$ laws iff $outside(p) = \id_S$ and $inside(p) = \langle t \times A \rangle$.
+\end{proposition}
+\begin{proof}
+\todo{I haven't actually checked this yet}
+\end{proof}
+
+This suggests the following definition of merely well-behaved optics, which we \todo{may as well} call semi-optics.
+
+\begin{definition}
+A \emph{semioptic} is a preoptic $p : S \hto A$ such that that $outside(p) = \id_S$ and $inside(p) = \langle t_A \rangle$ for some $t : M \to M$.
+\end{definition}
+
+Note that $t_A$ is necessarily idempotent, so if the ``evaluation-at-$A$'' functor is faithful then $t$ itself is idempotent.
+
+\begin{proposition}
+There is an subcategory $\SemiOptic_\M$ of $\PreOptic_\M$ given by objects of the form $(X, X)$ and semioptics between them.
+\end{proposition}
+
 \section{The Challenge of Effectful Optics}
-%\section{Symmetric Optics}
+
+Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This seems to me a bit ad-hoc; it is not obvious what the laws ought to be, and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
+
+\section{The Double-Categorical Perspective}
+
+\todo{There might be a lot more to say in terms of Mike's stuff on framed bicategories. The ``external product'' operation on profunctors seems key. This could be the mechanism behind the indexed stuff?}
+
+
+\section{Conclusion}
 
 \bibliographystyle{alpha}
 \bibliography{optics.bib}

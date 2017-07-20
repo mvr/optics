@@ -142,7 +142,7 @@
 \subsection{Notation}
 \todo{I am open to changing any/all of these}
 \begin{itemize}
-\item Given $f : A \to B$ and $g : A \to C$, I write $[f, g] : A \to B \times C$.
+\item Given $f : A \to B$ and $g : A \to C$, I write $[f, g] : A \to B \times C$ and $!_A : A \to 1$.
 \item Given $f : A \to B$ and $g : C \to D$, I write $f \times g : A \times C \to B \times D$.
 \item Given a $x \in P(C, C)$, I write $\langle x \rangle \in \int^C P(C, C)$ for its image, and $\copr_C : P(C,C) \to \int^C P(C, C)$
 \end{itemize}
@@ -294,16 +294,66 @@ If $\langle l, r \rangle : S \hto A$ is a lens then the associated $\fget$ and $
 \todo{Straightforward, written out at \cite{IsomorphismLensesPost}, definitely not the origin.}
 \end{proof}
 
-In favourable conditions, the converse holds as we can construct a complement:
+In favourable conditions, we can show the converse holds by constructing a complement. This is similar to the result proved in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
 
-\begin{proposition}
-\todo{This is a guess:} Suppose $\C$ has finite limits and coequalisers, and that there is a morphism $1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $\langle l, r \rangle : S \hto A$ is a lens.
-\end{proposition}
+\begin{lemma}
+\todo{maybe delete this lemma, not so important}
+Suppose $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the $\fget\fput$, $\fput\fget$ and $\fput\fput$ laws. If we have $x_1, x_2 : 1 \to A$. Then the pullbacks $\fget^*(x_1)$ and $\fget^*(x_2)$ are isomorphic.
+\end{lemma}
 \begin{proof}
-\todo{would be nice if this were true}
+We construct a map $f : \fget^*(x_2) \to \fget^*(x_1)$ as the induced map in the diagram
+\[
+\begin{tikzcd}
+\fget^*(x_2) \ar[ddr, bend right = 20] \ar[dr, dashed] \ar[r, "{[x_2^*, x_1 !]}"] & S \times A \ar[dr, "\fput"] & \\
+& \fget^*(x_1) \ar[r, swap] \ar[d] \arrow[dr, phantom, "\lrcorner", very near start] & S \ar[d, "\fget"] \\
+& 1\ar[r, "x_1", swap] & A
+\end{tikzcd}
+\]
+That the outside composite commutes is exactly the $\fput\fget$ law. Similarly, we have a map $g : \fget^*(x_1) \to \fget^*(x_2)$.
+
+\todo{they are inverses by the other laws}
 \end{proof}
 
-In particular, this holds in $\Set$ so long as $A$ is not empty. In \cite[Corollary 13]{AlgebrasAndUpdateStrategies} a similar fact is proven for lenses expressed as algebras for a particular monad.
+\begin{proposition}
+Suppose $\C$ has finite limits and that there is a morphism $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ is a lens.
+\end{proposition}
+\begin{proof}
+Set $C$ to be the pullback of $\fget$ along $x$, so there is a map $i : C \to S$ with $\fget \, i = x !_C$. There is also a map $j : S \to C$ induced by the following diagram:
+\[
+\begin{tikzcd}
+S \ar[ddr, bend right = 20] \ar[dr, "j", dashed] \ar[r, "{[\id_S, x !_S]}"] & S \times A \ar[dr, "\fput"] & \\
+& C \ar[r, "i"] \ar[d] \arrow[dr, phantom, "\lrcorner", very near start] & S \ar[d, "\fget"] \\
+& 1\ar[r, "x", swap] & A
+\end{tikzcd}
+\]
+which commutes by the $\fput\fget$ law. Note that $ji = \id_C$ by the universal property of pullbacks. Now the commutative diagram
+\[
+\begin{tikzcd}
+C \times A \ar[r, "i \times A"] \ar[d, "\fput (i \times A)", swap] & S \times A \ar[d, "\fput"] \\
+S \ar[r, equal] \ar[d, "{[j,\fget]}", swap] & S \ar[d, "{[\id_S, \fget]}"]  \\
+C \times A \ar[r, "i \times A", swap] & S \times A
+\end{tikzcd}
+\]
+is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput, [\id_S, \fget] \rangle$ as elements of $\PreOptic_\M((S, S), (A, A))$. It remains to show that the maps on the left are mutual inverses:
+\begin{align*}
+\fput (i \times A)[j,\fget] &= \fput [ij,\fget] \\
+&= \fput [\fput [\id_S, x!_S],\fget] && \text{(by definition of $j$)} \\
+&= \fput [\id_S,\fget] && \text{(by $\fput\fput$)} \\
+&= \id_S && \text{(by $\fget\fput$)}
+\intertext{and}
+[j,\fget]\fput (i \times A) &= [j\fput (i \times A),\fget\,\fput (i \times A)] && \text{(by universal property of product)} \\
+&= [j\fput (i \times A), \pi_2 (i \times A)] && \text{(by $\fput\fget$)} \\
+&= [j\fput (i \times A), \pi_2] && \\
+&= [jij\fput (i \times A), \pi_2] && \\
+&= [j\fput [\id_S,x !_S] \fput (i \times A), \pi_2] && \\
+&= [j\fput [\id_S, x !_S] \pi_1 (i \times A), \pi_2] && \text{(by $\fput\fput$ \todo{todo: detail})}\\
+&= [jij \pi_1 (i \times A), \pi_2] && \\
+&= [jiji \pi_1, \pi_2] && \\
+&= [\pi_1, \pi_2] && \\
+&= \id_{C \times A}
+\end{align*}
+Therefore $\langle \fput (i \times A), [j,\fget] \rangle$ is an optic, so  $\langle \fput, [\id_S, \fget] \rangle$ is an optic, as we were hoping to show. \todo{maybe do the above in pictures}
+\end{proof}
 
 \subsubsection{Prisms}
 \subsubsection{Traversals}
@@ -335,8 +385,8 @@ Now by assumption, $\pi_1 l : S \to M$ is an epi, so has a retraction $f : M \to
 The situation is summarised in the following diagram, which other than the dashed line, we know commutes.
 \[
 \begin{tikzcd}
-M \times A \ar[r, "{(f, \id_A)}", dashed, bend left = 50] \ar[d, "r", swap] & S \times A \ar[d, "\fput"] \ar[r, "{(\pi_1 l', \id_A)}"] \ar[l, "{(\pi_1 l, \id_A)}", swap] & N \times A \ar[d, "r'"] \\
-S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "{(\id_S, \fget)}"] \ar[r, equal] & S \ar[d, "l'"] \\
+M \times A \ar[r, "{f \times A}", dashed, bend left = 50] \ar[d, "r", swap] & S \times A \ar[d, "\fput"] \ar[r, "{\pi_1 l' \times A}"] \ar[l, "{\pi_1 l \times A}", swap] & N \times A \ar[d, "r'"] \\
+S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "{[\id_S, \fget]}"] \ar[r, equal] & S \ar[d, "l'"] \\
 M \times A & S \times A \ar[r] \ar[l] & N \times A
 \end{tikzcd}
 \]

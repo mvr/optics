@@ -138,6 +138,14 @@
 \item ...
 \end{itemize}
 }
+A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$ that typically obeys three laws (whose names are in diagrammatic order):
+\begin{itemize}
+\item ``$\fput\fget$'': $\fget \; \fput = \pi_2$ as maps $S \times A \to A$, so that any update to $A$ should be \todo{represented faithfully in $S$},
+\item ``$\fget\fput$'': $\fput [\id_S, \fget] = \id_S$ as maps $S \to S$, so that if $A$ is not changed then $S$ should not change; and,
+\item ``$\fput\fput$'': $\fput (\fput \times \id_A) = \fput \, \pi_{1, 3}$ as maps $S \times A \times A \to S$, so any update to $A$ completely overwrites previous updates.
+\end{itemize}
+
+\todo{talk about ``constant complement'' idea}
 
 \subsection{Notation}
 \todo{I am open to changing any/all of these}
@@ -202,7 +210,7 @@ In fact we will prove the more general statement that for $p : (S,S) \hto (A,A)$
 There is a well known formula for the coend as the coequaliser in the diagram
 \[
 \begin{tikzcd}
-\coprod_{M \to N} S(N, M) \ar[r,shift left=.75ex]  \ar[r,shift right=.75ex] & \coprod_{M \in \M} S(M, M) \ar[r] & \int^{M \in \M} S(M, M)
+\coprod_{M \to N} P(N, M) \ar[r,shift left=.75ex]  \ar[r,shift right=.75ex] & \coprod_{M \in \M} P(M, M) \ar[r] & \int^{M \in \M} P(M, M)
 \end{tikzcd}
 \]
 where $S$ is some functor $\M^\op \times \M \to \E$.
@@ -285,13 +293,31 @@ As remarked in the introduction \todo{(todo: remark in the introduction)}, the p
 
 Explicitly, given a prelens $\langle l, r \rangle : S \hto A$ these are given by $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Conversely, given $\fget$ and $\fput$, the corresponding element in the coend has representative $\langle l, r \rangle$, where $l = [\id_s, \fget]$ and $r = \fput$. Note that even if the $\fget$ and $\fput$ correspond to a law-abiding lens, this particular representative will not be an isomorphism.
 
-\todo{talk about ``constant complement'' idea}
-
 \begin{proposition}
+\label{prop-OpticImpliesLensLaws}
 If $\langle l, r \rangle : S \hto A$ is a lens then the associated $\fget$ and $\fput$ functions satisfy the $\fget\fput$, $\fput\fget$ and $\fput\fput$ laws.
 \end{proposition}
 \begin{proof}
-\todo{Straightforward, written out at \cite{IsomorphismLensesPost}, definitely not the origin.}
+Let $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Verification of the laws is straightforward:
+\begin{align*}
+\fget \; \fput 
+&= \pi_2 l r (\pi_1 l \times A) \\
+&= \pi_2 (\pi_1 l \times A) \\
+&= \pi_2 \\
+\fput [\id_S, \fget] 
+&= r (\pi_1 l \times A) [\id_S, \pi_2 l] \\
+&= r [\pi_1 l, \pi_2 l] \\
+&= rl \\
+&= \id_S \\
+\fput (\fput \times A) 
+&= r (\pi_1 l \times A) (r (\pi_1 l \times A) \times A) \\
+&= r (\pi_1 l  r (\pi_1 l \times A) \times A) \\
+&= r (\pi_1 (\pi_1 l \times A) \times A) \\
+&= r (\pi_1 l \times A) \pi_{1,3} \\
+&= \fput \, \pi_{1, 3}
+\end{align*}
+
+\todo{Written out at \cite{IsomorphismLensesPost}, definitely not the first place though.}
 \end{proof}
 
 In favourable conditions, we can show the converse holds by constructing a complement. This is similar to the result proved in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
@@ -352,7 +378,7 @@ is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput
 &= [\pi_1, \pi_2] && \\
 &= \id_{C \times A}
 \end{align*}
-Therefore $\langle \fput (i \times A), [j,\fget] \rangle$ is an optic, so  $\langle \fput, [\id_S, \fget] \rangle$ is an optic, as we were hoping to show. \todo{maybe do the above in pictures}
+Therefore $\langle \fput (i \times A), [j,\fget] \rangle$ is a lens, so  $\langle \fput, [\id_S, \fget] \rangle$ is a lens as we were hoping to show. \todo{maybe do the above in pictures}
 \end{proof}
 
 \subsubsection{Prisms}
@@ -536,8 +562,6 @@ $\Pastro_\M$ is oplax monoidal.
 This follows abstractly as a left adjoint of a strong monoidal functor. \todo{reference?}
 \end{proof}
 
-
-
 \subsection{Preoptics}
 
 \begin{definition}
@@ -699,11 +723,53 @@ The following example is taken from \cite{AClearPictureOfLensLaws}. The ``change
 This example is typical of (merely) well-behaved lenses: there is metadata carried along with the target of a lens that mutates as the lens is used.
 \end{example}
 
+\begin{example}
+A minimal example is the following:
+\begin{align*}
+\fget : \{A,B,C\} &\to \{X, Y\} \\
+A &\mapsto X \\
+B &\mapsto X \\
+C &\mapsto Y 
+\end{align*}
+\begin{align*}
+\fput : \{A,B,C\} \times \{X, Y\} &\to \{A,B,C\} \\
+(A,X) &\mapsto A \\
+(B,X) &\mapsto B \\
+(C,X) &\mapsto B \\
+(A,Y) &\mapsto C \\
+(B,Y) &\mapsto C \\
+(C,Y) &\mapsto C
+\end{align*}
+\end{example}
+
+\todo{THE FOLLOWING IS TOTALLY WRONG, does not capture the right thing, fails for the above example}
+
 \begin{proposition}
-A pre-lens $p : S \hto A$ obeys the $\fput\fget$ and $\fget\fput$ laws iff $outside(p) = \id_S$ and $inside(p) = \langle t \times A \rangle$.
+Suppose the pre-lens $\langle l, r \rangle : S \hto A$ satisfies $rl = \id_S$ and $\langle lr \rangle = \langle t \times A \rangle$ as an element of $\int^{M \in \M} \C(M \times A, M \times A)$. Then $p$ obeys the $\fput\fget$ and $\fget\fput$ laws.
 \end{proposition}
 \begin{proof}
-\todo{I haven't actually checked this yet}
+This is nearly identical to Proposition \ref{prop-OpticImpliesLensLaws}. As was mentioned in the proof of Proposition \ref{prop-onthenose}, we may assume that $lr = t \times A$ on the nose.
+
+Now, again letting $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$,
+\begin{align*}
+\fget \; \fput 
+&= \pi_2 l r (\pi_1 l \times A) \\
+&= \pi_2 (t \times A) (\pi_1 l \times A) \\
+&= \pi_2 (t \pi_1 l \times A) \\
+&= \pi_2 \\
+\fput [\id_S, \fget] 
+&= r (\pi_1 l \times A) [\id_S, \pi_2 l] \\
+&= r [\pi_1 l, \pi_2 l] \\
+&= rl \\
+&= \id_S
+\end{align*}
+\end{proof}
+
+\begin{proposition}
+The converse is true.
+\end{proposition}
+\begin{proof}
+
 \end{proof}
 
 This suggests the following definition of merely well-behaved optics, which we \todo{may as well} call semi-optics.
@@ -720,7 +786,7 @@ There is an subcategory $\SemiOptic_\M$ of $\PreOptic_\M$ given by objects of th
 
 \section{The Challenge of Effectful Optics}
 
-Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This seems to me a bit ad-hoc; it is not obvious what the laws ought to be, and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
+Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
 
 \section{The Double-Categorical Perspective}
 

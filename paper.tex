@@ -124,7 +124,7 @@
 
 \todo{TODO: Think about size issues, we are taking some very big coends...}
 
-\todo{People to credit:
+\todo{Past work:
 \begin{itemize}
 \item The Haskell lens people: edwardk, shachaf, xplat, roconnor... (TODO: find out who these people are)
 \item The Doubles paper
@@ -161,6 +161,11 @@ A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times
 \item Given $f : A \to B$ and $g : C \to D$, I write $f \times g : A \times C \to B \times D$.
 \item Given a $x \in P(C, C)$, I write $\langle x \rangle \in \int^C P(C, C)$ for its image, and $\copr_C : P(C,C) \to \int^C P(C, C)$
 \end{itemize}
+
+\todo{
+\subsection{(Co)ends and (Co)Yoneda}
+}
+
 \section{Optics}
 
 \begin{proposition}
@@ -791,7 +796,6 @@ Suppose $p : S \hto A$ is a pre-lens such that the associated natural transforma
 
 \section{Degenerate Optics}
 \todo{The Haskell lens library has some other `optics' that aren't proper optics, but still integrate nicely with the rest of the ecosystem, e.g. Getters, Reviews and Folds}
-
 
 \section{Optic Families}
 \section{Indexed Optics}

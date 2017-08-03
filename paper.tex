@@ -19,23 +19,23 @@
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
-\newtheorem{axiom}[theorem]{Axiom}
+%\newtheorem{axiom}[theorem]{Axiom}
 \newtheorem*{theoremstar}{Theorem}
-\newtheorem{fact}[theorem]{Fact}
+%\newtheorem{fact}[theorem]{Fact}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
-\newtheorem{convention}[theorem]{Convention}
-\newtheorem{construction}[theorem]{Construction}
+%\newtheorem{convention}[theorem]{Convention}
+%\newtheorem{construction}[theorem]{Construction}
 \newtheorem{example}[theorem]{Example}
-\newtheorem{examples}[theorem]{Examples}
-\newtheorem{notation}[theorem]{Notation}
+%\newtheorem{examples}[theorem]{Examples}
+%\newtheorem{notation}[theorem]{Notation}
 \newtheorem{remark}[theorem]{Remark}
-\newtheorem{idea}[theorem]{Idea}
-\newtheorem{question}[theorem]{Question}
+%\newtheorem{idea}[theorem]{Idea}
+%\newtheorem{question}[theorem]{Question}
 
 
 \newcommand{\C}{\mathscr{C}}
@@ -400,26 +400,43 @@ Prisms are dual to lenses:
 Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} in $\C$ is the category of optics with respect to this action: $\Prism = \Optic_\sqcup$.
 \end{definition}
 
-Just as lenses are given by two concrete maps $\fget : S \to A$ and $\fput : S \times A \to S$, prisms are constructed by two maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \texttt{lens} library.
+Just as lenses are constructed by two concrete maps $\fget : S \to A$ and $\fput : S \times A \to S$, prisms are constructed by two maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \texttt{lens} library.
 \begin{align*}
 \PreOptic_\sqcup((S, S), (A, A)) &= \int^{M \in \M} \C(S, M \sqcup A) \times \C(M \sqcup A, S) \\
 &\cong \int^{M \in \M} \C(S, M \sqcup A) \times \C(M, S) \times \C(A, S) && \text{(universal property of coproduct)} \\
 &\cong \C(S, S \sqcup A) \times \C(A, S) && \text{(co-Yoneda)}
 \end{align*}
-So, if we are given a pre-prism $\langle l, r \rangle : (S, S) \hto (A, A)$ then associated $\freview$ and $\fmatching$ morphisms are given by $\freview = r \inr$ and $\fmatching = [r\inl, \id_S]l$
+So, if we are given a pre-prism $\langle l, r \rangle : (S, S) \hto (A, A)$ then associated $\freview$ and $\fmatching$ morphisms are given by $\freview = r \inr$ and $\fmatching = (r\inl \sqcup \id_A)l$
 
 The laws for prisms are:
 \begin{align*}
 \fmatching \; \freview = \inr \\
 [\id_S, \freview] \fmatching = \id_S
 \end{align*}
+\todo{Are we missing a law?? Analogous to PutPut? I believe we are}
+\todo{
+\begin{proposition}
+When $\C = \Set$, the third law is implied by the other two.
+\end{proposition}
+}
 
 \begin{proposition}
-\label{prop-OpticImpliesLensLaws}
+\label{prop-OpticImpliesPrismLaws}
 If $\langle l, r \rangle : S \hto A$ is a prism then the associated $\fmatching$ and $\freview$ functions satisfy the above laws.
 \end{proposition}
 \begin{proof}
-\todo{Should be straightforward}
+\todo{Again it seems it is good enough if we only have $lr = t \sqcup A$}
+\begin{align*}
+\fmatching \; \freview 
+&= (r\inl \sqcup \id_A)l r \inr \\
+&= (r\inl \sqcup \id_A) \inr \\
+&= \inr \\
+[\id_S, \freview] \fmatching
+&= [\id_S, r \inr] (r\inl \sqcup \id_A)l \\ 
+&= [r\inl, r \inr] l \\ 
+&= rl \\
+&= \id_S
+\end{align*}
 \end{proof}
 
 \todo{unfinished}
@@ -580,6 +597,57 @@ The conditions of the above Proposition hold in $\Set$, so long as $A$ is not em
 %\end{align*}
 %\todo{picture}
 %\end{proof}
+
+\subsection{Change of Action}
+
+\todo{
+\section{Weaker Condition??}
+}
+\begin{proposition}
+Suppose the pre-lens $\langle l, r \rangle : S \hto A$ satisfies $rl = \id_S$ and $\langle lr \rangle = \langle t \times A \rangle$ as an element of $\int^{M \in \M} \C(M \times A, M \times A)$. Then $p$ obeys the three lens laws.
+\end{proposition}
+\begin{proof}
+This is nearly identical to Proposition \ref{prop-OpticImpliesLensLaws}. As was mentioned in the proof of Proposition \ref{prop-onthenose}, we may assume that $lr = t \times A$ on the nose.
+
+Now, again letting $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$,
+\begin{align*}
+\fget \; \fput 
+&= \pi_2 l r (\pi_1 l \times A) \\
+&= \pi_2 (t \times A) (\pi_1 l \times A) \\
+&= \pi_2 (t \pi_1 l \times A) \\
+&= \pi_2 \\
+\fput [\id_S, \fget] 
+&= r (\pi_1 l \times A) [\id_S, \pi_2 l] \\
+&= r [\pi_1 l, \pi_2 l] \\
+&= rl \\
+&= \id_S \\
+\fput (\fput \times A) 
+&= r (\pi_1 l \times A) (r (\pi_1 l \times A) \times A) \\
+&= r (\pi_1 l  r (\pi_1 l \times A) \times A) \\
+&= r (\pi_1 (t\pi_1 l \times A) \times A) \\
+&= r (t\pi_1 l \times A) \pi_{1,3} \\
+&= r lr(\pi_1 l \times A) \pi_{1,3} \\
+&= r(\pi_1 l \times A) \pi_{1,3} \\
+&= \fput \, \pi_{1, 3}
+\end{align*}
+\end{proof}
+
+\begin{proposition}
+Suppose there exists a map $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ obeys the above weaker condition.
+\end{proposition}
+\begin{proof}
+Recall that the corresponding optic $p : S \hto A$ has representative $\langle [\id_s, \fget], \fput \rangle$.
+
+Let $\fput_x : S \to S$ be the composite $S \to S \times 1 \xrightarrow{x} S \times A \xrightarrow{\fput} S$. The commutative diagram
+\[
+\begin{tikzcd}
+S \times A \ar[r, "\fput_x \times A "] \ar[d, "lr", swap] & S \times A \ar[d, "\fput_x \times A"] \ar[dl, "lr"] \\
+S \times A \ar[r, "\fput_x \times A", swap] & S \times A
+\end{tikzcd}
+\]
+proves that $\langle lr \rangle = \langle \fput_x \times A \rangle$ in $\int^{M \in \M} \C(M A, M A)$.
+\todo{Is there some property of $\times$ used here we can abstract?}
+\end{proof}
 
 \section{Profunctor Optics}
 
@@ -858,41 +926,6 @@ C &\mapsto Y
 
 \todo{The condition on $\langle l, r \rangle$ seems to be that $rl = \id_S$ and $\pi_2lr = \pi_2$. I can't see how to generalise this second condition to optics other than lenses.}
 
-\todo{The following original attempt is wrong, does not capture the right thing}
-
-\begin{proposition}
-Suppose the pre-lens $\langle l, r \rangle : S \hto A$ satisfies $rl = \id_S$ and $\langle lr \rangle = \langle t \times A \rangle$ as an element of $\int^{M \in \M} \C(M \times A, M \times A)$. Then $p$ obeys the $\fput\fget$ and $\fget\fput$ laws.
-\end{proposition}
-\begin{proof}
-This is nearly identical to Proposition \ref{prop-OpticImpliesLensLaws}. As was mentioned in the proof of Proposition \ref{prop-onthenose}, we may assume that $lr = t \times A$ on the nose.
-
-Now, again letting $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$,
-\begin{align*}
-\fget \; \fput 
-&= \pi_2 l r (\pi_1 l \times A) \\
-&= \pi_2 (t \times A) (\pi_1 l \times A) \\
-&= \pi_2 (t \pi_1 l \times A) \\
-&= \pi_2 \\
-\fput [\id_S, \fget] 
-&= r (\pi_1 l \times A) [\id_S, \pi_2 l] \\
-&= r [\pi_1 l, \pi_2 l] \\
-&= rl \\
-&= \id_S
-\end{align*}
-\end{proof}
-
-This suggests the following definition of merely well-behaved optics, which we may as well call semi-optics.
-
-\begin{definition}
-A \emph{semioptic} is a preoptic $p : S \hto A$ such that that $outside(p) = \id_S$ and $inside(p) = \langle t_A \rangle$ for some $t : M \to M$.
-\end{definition}
-
-Note that $t_A$ is necessarily idempotent, so if the ``evaluation-at-$A$'' functor is faithful then $t$ itself is idempotent.
-
-\begin{proposition}
-There is an subcategory $\SemiOptic_\M$ of $\PreOptic_\M$ given by objects of the form $(X, X)$ and semioptics between them.
-\end{proposition}
-
 \section{The Challenge of Effectful Optics}
 
 Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
@@ -900,6 +933,11 @@ Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have 
 \section{The Double-Categorical Perspective}
 
 \todo{There might be a lot more to say in terms of Mike's stuff on framed bicategories. The ``external product'' operation on profunctors seems key. This could be the mechanism behind the indexed stuff?}
+
+Some thoughts: obvious thing to try is a double category where objects are the objects of $\C \times \C$, vertical morphisms $(S,T) \to (A, B)$ are maps $S \to A$ and $B \to T$, horizontal morphisms are preoptics. This I think is framed, you can always turn a pair of maps into a preoptic.
+
+Note the pair of maps above is also the set of morphisms $E_{S, T} \to E_{A, B}$. Maybe the objects should be profunctors??
+
 
 
 \section{Conclusion}

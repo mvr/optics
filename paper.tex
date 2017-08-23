@@ -120,7 +120,7 @@
 
 \section{Introduction}
 
-\todo{TODO: Might have to adjust the entire thing because the action of $\M$ on $\C$ is not strictly monoidal. On the other hand, through the entire Pastro/Street paper pretends associativity/etc is strict, so maybe who cares? What we really want is just a (non-strict) monoidal functor $\M \to [\C, \C]$ from some $\M$.}
+\todo{TODO: Might have to adjust the entire thing because the action of $\M$ on $\C$ is not strictly monoidal. On the other hand, through the entire Pastro/Street paper pretends associativity/etc is strict, so maybe who cares? What we really want is just a (non-strict) monoidal functor $\M \to [\C, \C]$ from some $\M$. I may also want to put $\otimes$ and $\cdot$ everywhere instead of just writing $MA$ and $NMA$.}
 
 \todo{TODO: Think about size issues, we are taking some very big coends...}
 
@@ -142,7 +142,7 @@
 \todo{Introduction should include:
 \begin{itemize}
 \item Previous attempts to generalise optics
-\item ...
+\item Some remark about how it's hard to isolate exactly what $\Set$-like properties are being used
 \end{itemize}
 }
 A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$ that typically obeys three laws (whose names are in diagrammatic order):
@@ -169,14 +169,14 @@ A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times
 \section{Optics}
 
 \begin{proposition}
-Let $\C$ be a category and $\M$ a monoidal category that acts on $\C$. There is a category $\PreOptic_\M$ that has the same objects as $\C \times \C$, with homsets given by
+Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category that acts on $\C$. There is a category $\PreOptic_\M$ that has the same objects as $\C \times \C$, with homsets given by
 \begin{align*}
 \PreOptic_\M((S, S'), (A, A')) = \int^{M \in \M} \C(S, M A) \times \C(M A', S')
 \end{align*}
 \end{proposition}
-To distinguish these from morphisms in $\C$, we will write preoptics with a crossed arrow: $p : (S, S') \hto (A, A')$.
+To distinguish these from morphisms in $\C \times \C$, we will write preoptics with a crossed arrow: $p : (S, S') \hto (A, A')$.
 
-If $f : S \to M A$ and $g : M A' \to S'$, we write $\langle l, r \rangle$ for their image in $\PreOptic_\M((S, S'), (A, A'))$. We will refer to $M$ as the \emph{complement} for the representative $\langle l, r \rangle$.
+If $f : S \to M A$ and $g : M A' \to S'$, we write $\langle l, r \rangle$ for their image in $\PreOptic_\M((S, S'), (A, A'))$.
 \begin{proof}
 \todo{Following the doubles paper, this should be the Kleisli category for the monad on $\Prof$ given by:
 \begin{align*}
@@ -198,26 +198,24 @@ of preoptics is induced by the following morphisms for every $M, N \in \M$:
 In other words, let $\langle l, r \rangle : (R, R') \hto (S, S')$ and $\langle l', r' \rangle : (S, S') \hto (A, A')$ with $M$ the complement for $\langle l, r \rangle$. The composite is then: $\langle l', r' \rangle \circ \langle l, r \rangle = \langle (M l')l, r(Mr') \rangle$
 \end{proof}
 
-In \cite{Doubles}, a very similar category was considered. The \emph{double} $\Double$ of a monoidal category $(\C, \otimes, I)$ is a special case of the above, where $\M$ is chosen to be all functors of the form $X \otimes (-)$ for $X \in \C$. 
+In \cite{Doubles}, a very similar category was considered. The \emph{double} $\Double$ of a monoidal category $(\C, \otimes, I)$ is a special case of the above, where $\C$ acts on itself by $\otimes$.
 
 \todo{Mention the game theory stuff}
 
 For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $outside : \PreOptic_\M((S, S), (A, A)) \to \C(S, S)$. By composition in the other direction we have a map $\C(S, M A) \times \C(M A, S) \to \C(M A, M A)$. Including this object $\C(M A, M A)$ into the coend $\int^{M \in \M} \C(M A, M A)$, we induce a map $inside : \PreOptic_\M((S, S), (A,A)) \to \int^{M \in \M} \C(M A, M A)$.
 
 \begin{definition}
-An \emph{optic} from $S$ to $A$ is a preoptic $p$ from $(S, S)$ to $(A, A)$ such that $outside(p) = \id_S$, and $inside(p) = \langle \id_{MA} \rangle$ for some $M \in \M$.
+An \emph{optic} from $S$ to $A$ is a preoptic $p$ from $(S, S)$ to $(A, A)$ such that $outside(p) = \id_S$, and $inside(p) = \langle t A \rangle$ for some $t : M \to M \in \M$.
 \end{definition}
 
 \begin{proposition}
 \label{prop-onthenose}
-If $p : (S,S) \hto (A,A)$ is an optic, then there exists a representative $p = \langle l, r \rangle$ such that $r \circ l = \id_{MA}$ on the nose for some $M$.
+If $p : (S,S) \hto (A,A)$ is an optic, then there exists a representative $p = \langle l, r \rangle$ such that $rl = \phi A$ on the nose for some $\phi : M \to M$.
 \end{proposition}
 \begin{proof}
-\todo{This is long and painful but seems important. There may be a more general principle at work here but I couldn't see it.}
+\todo{This is painful but seems important. There may be a more general principle at work here but I couldn't see it.}
 
 \todo{Put in an appendix?}
-
-In fact we will prove the more general statement that for $p : (S,S) \hto (A,A)$, if $outside(p) = \id_S$ and $inside(p) = \langle t \rangle$ where $t : MA \to MA$ is idempotent, then we can find a representative $\langle l, r \rangle$ with $l \circ r = t$ on the nose.
 
 There is a well known formula for the coend as the coequaliser in the diagram
 \[
@@ -246,7 +244,7 @@ S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "l'"]  \\
 MA \ar[r, "\phi_A"] & N A
 \end{tikzcd}
 \]
-commutes. \todo{split the diagram in the middle?}
+commutes. \todo{put the $S$ on the outside?}
 
 We will now prove the result by induction. Because $inside(p) = \langle t \rangle$, there is a representative $\langle l, r \rangle$ so that $\langle lr \rangle = \langle t \rangle$. There therefore must exist a finite chain of relations $lr \leftrightsquigarrow u_1 \leftrightsquigarrow \dots \leftrightsquigarrow u_n \leftrightsquigarrow t$.
 Supposing that the first relation faces rightwards, we have a diagram:
@@ -270,30 +268,33 @@ where the composite of the morphisms on the right is $\phi_A l r k = \phi_A k \p
 We can now inductively apply the above argument to the chain $u_1^2 \leftrightsquigarrow \dots \leftrightsquigarrow u_n^2 \leftrightsquigarrow t^2 = t$, obtained by squaring each morphism in the original chain. We eventually obtain a chain $(l, r) \leftrightsquigarrow (l_1, r_1)\leftrightsquigarrow \dots \leftrightsquigarrow (l_n, r_n) \leftrightsquigarrow (l_t, r_t)$, where $r_tl_t = \id_S$ and $l_t r_t = t$. This pair $(l_t, r_t)$ is the required representative.
 \end{proof}
 
-The above argument has a similar form to those that appear in \cite{OnTheTrace}, which considered (among other things) coends of the form $\int^{c \in \C} \C(c, Fc)$ for an endofunctor $F : \C \to \C$.
+The above argument has a similar form to some that appear in \cite{OnTheTrace}, which considered (among other things) coends of the form $\int^{c \in \C} \C(c, Fc)$ for an endofunctor $F : \C \to \C$.
 
-In view of this Proposition, whenever we posit a representative $\langle l, r \rangle$ of an optic, we will assume that $l$ and $r$ are mutual two-sided inverses. 
+In view of this Proposition, whenever we posit a representative $\langle l, r \rangle$ of an optic, we may assume that $lr = \phi A$ on the nose, for some $\phi : M \to M$.
 
 \begin{proposition}
 There is an subcategory $\Optic_\M$ of $\PreOptic_\M$ given by objects of the form $(X, X)$ and optics between them.
 \end{proposition}
 \begin{proof}
-The identity preoptic $\langle \id_X, \id_X \rangle$ is clearly an optic. Suppose we have two optics $\langle l, r \rangle : R \hto S$ and $\langle l', r' \rangle : S \hto A$ with complements $M$ and $N$ respectively. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is certainly also an optic:
+The identity preoptic $\langle \id_X : X \to IX, \id_X : IX \to X \rangle$ is clearly an optic. 
+
+Suppose we have two optics $\langle l, r \rangle : R \hto S$ and $\langle l', r' \rangle : S \hto A$, where $l : R \to MS$ and $l' : S \to NA$, and such that $lr = \phi S$ and $l'r' = \psi A$. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is also an optic:
 \begin{align*}
-(Ml')l r (Mr') &= (Ml')(Mr') = M(l'r') = \id_{MNA}
-\intertext{and}
 r (Mr')(Ml')l &= r M(r'l') l = rl = \id_S
+\intertext{and}
+(Ml')l r (Mr') &= (Ml')(\phi S)(Mr') = (\phi NA) M(l')M(r') = (\phi NA) M(l'r') = (\phi NA) M(\psi A) = \phi(\psi A)
 \end{align*}
+by the naturality of the action of $\M$.
 \end{proof}
 
 \subsection{Examples}
 
 \subsubsection{Lenses}
 
-Lenses form the ur-example of optics. 
+Lenses are the ur-example of a class of optics.
 
 \begin{definition}
-Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} in $\C$ is the category of optics with respect to this action: $\Lens = \Optic_\times$.
+Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} $\Lens$ in $\C$ is the category of optics with respect to this action: $\Lens = \Optic_\times$.
 \end{definition}
 
 As remarked in the introduction \todo{(todo: remark in the introduction)}, the preoptics for this action are exactly pairs of $\fget$ and $\fput$ functions.
@@ -303,18 +304,21 @@ As remarked in the introduction \todo{(todo: remark in the introduction)}, the p
 &\cong \C(S, A) \times \C(S \times A, S) && \text{(co-Yoneda)}
 \end{align*}
 
-Explicitly, given a prelens $\langle l, r \rangle : S \hto A$ these are given by $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Conversely, given $\fget$ and $\fput$, the corresponding element in the coend has representative $\langle l, r \rangle$, where $l = [\id_s, \fget]$ and $r = \fput$. Note that even if the $\fget$ and $\fput$ correspond to a law-abiding lens, this particular representative will not be an isomorphism.
+Explicitly this isomorphism states that, given a prelens $\langle l, r \rangle : S \hto A$, the corresponding $\fget$ and $\fput$ functions are given by $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $\fget$ and $\fput$, the corresponding element in the coend has representative $\langle l, r \rangle$, where $l = [\id_s, \fget]$ and $r = \fput$. Note that even if the $\fget$ and $\fput$ correspond to a law-abiding lens, this particular representative will not be an isomorphism.
 
 \begin{proposition}
 \label{prop-OpticImpliesLensLaws}
-If $\langle l, r \rangle : S \hto A$ is a lens then the associated $\fget$ and $\fput$ functions satisfy the $\fget\fput$, $\fput\fget$ and $\fput\fput$ laws.
+Suppose $\langle l, r \rangle : S \hto A$ is a pre-lens such that $rl = \id_S$ and $\langle lr \rangle = \langle \phi \times A \rangle$ as an element of $\int^{M \in \M} \C(M \times A, M \times A)$, for some $\phi : M \to M$. Then $p$ obeys the three lens laws.
 \end{proposition}
 \begin{proof}
+By Proposition \ref{prop-onthenose}, we may assume that $lr = \phi \times A$ on the nose.
+
 Let $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Verification of the laws is straightforward:
 \begin{align*}
 \fget \; \fput 
 &= \pi_2 l r (\pi_1 l \times A) \\
-&= \pi_2 (\pi_1 l \times A) \\
+&= \pi_2 (t \times A) (\pi_1 l \times A) \\
+&= \pi_2 (t \pi_1 l \times A) \\
 &= \pi_2 \\
 \fput [\id_S, \fget] 
 &= r (\pi_1 l \times A) [\id_S, \pi_2 l] \\
@@ -324,38 +328,41 @@ Let $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Verification of the la
 \fput (\fput \times A) 
 &= r (\pi_1 l \times A) (r (\pi_1 l \times A) \times A) \\
 &= r (\pi_1 l  r (\pi_1 l \times A) \times A) \\
-&= r (\pi_1 (\pi_1 l \times A) \times A) \\
-&= r (\pi_1 l \times A) \pi_{1,3} \\
+&= r (\pi_1 (t\pi_1 l \times A) \times A) \\
+&= r (t\pi_1 l \times A) \pi_{1,3} \\
+&= r lr(\pi_1 l \times A) \pi_{1,3} \\
+&= r(\pi_1 l \times A) \pi_{1,3} \\
 &= \fput \, \pi_{1, 3}
 \end{align*}
 
 \todo{Written out at \cite{IsomorphismLensesPost}, definitely not the first place though.}
 \end{proof}
 
-In favourable conditions, we can show the converse holds by constructing a complement. This is similar to the result proved in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
-
-\begin{lemma}
-\todo{maybe delete this lemma, not so important}
-Suppose $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the $\fget\fput$, $\fput\fget$ and $\fput\fput$ laws. If we have $x_1, x_2 : 1 \to A$. Then the pullbacks $\fget^*(x_1)$ and $\fget^*(x_2)$ are isomorphic.
-\end{lemma}
-\begin{proof}
-We construct a map $f : \fget^*(x_2) \to \fget^*(x_1)$ as the induced map in the diagram
-\[
-\begin{tikzcd}
-\fget^*(x_2) \ar[ddr, bend right = 20] \ar[dr, dashed] \ar[r, "{[x_2^*, x_1 !]}"] & S \times A \ar[dr, "\fput"] & \\
-& \fget^*(x_1) \ar[r, swap] \ar[d] \arrow[dr, phantom, "\lrcorner", very near start] & S \ar[d, "\fget"] \\
-& 1\ar[r, "x_1", swap] & A
-\end{tikzcd}
-\]
-That the outside composite commutes is exactly the $\fput\fget$ law. Similarly, we have a map $g : \fget^*(x_1) \to \fget^*(x_2)$.
-
-\todo{they are inverses by the other laws}
-\end{proof}
-
 \begin{proposition}
-Suppose $\C$ has finite limits and that there is a morphism $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ is a lens.
+Suppose there exists a map $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ is a prelens.
 \end{proposition}
 \begin{proof}
+Recall that the corresponding optic $p : S \hto A$ has representative $\langle [\id_s, \fget], \fput \rangle$.
+
+Let $\fput_x : S \to S$ be the composite $S \to S \times 1 \xrightarrow{x} S \times A \xrightarrow{\fput} S$. The commutative diagram
+\[
+\begin{tikzcd}
+S \times A \ar[r, "\fput_x \times A "] \ar[d, "lr", swap] & S \times A \ar[d, "\fput_x \times A"] \ar[dl, "lr"] \\
+S \times A \ar[r, "\fput_x \times A", swap] & S \times A
+\end{tikzcd}
+\]
+is a witness that $\langle lr \rangle = \langle \fput_x \times A \rangle$ in $\int^{M \in \M} \C(M A, M A)$.
+\todo{Is there some property of $\times$ used here we can abstract?}
+\end{proof}
+
+In favourable conditions, we can upgrade this result to show that a lens $S \hto A$ in fact implies that $S \cong M \times A$ for some $M$. This is similar to the result proved in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
+
+\begin{proposition}
+Suppose $\C$ has finite limits and that there is a morphism $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
+\end{proposition}
+\begin{proof}
+\todo{TODO: This isn't really what we want to show, we want to start from an optic, not from something obeying the $\fget/\fput$ laws.}
+
 Set $C$ to be the pullback of $\fget$ along $x$, so there is a map $i : C \to S$ with $\fget \, i = x !_C$. There is also a map $j : S \to C$ induced by the following diagram:
 \[
 \begin{tikzcd}
@@ -364,15 +371,7 @@ S \ar[ddr, bend right = 20] \ar[dr, "j", dashed] \ar[r, "{[\id_S, x !_S]}"] & S 
 & 1\ar[r, "x", swap] & A
 \end{tikzcd}
 \]
-which commutes by the $\fput\fget$ law. Note that $ji = \id_C$ by the universal property of pullbacks. Now the commutative diagram
-\[
-\begin{tikzcd}
-C \times A \ar[r, "i \times A"] \ar[d, "\fput (i \times A)", swap] & S \times A \ar[d, "\fput"] \\
-S \ar[r, equal] \ar[d, "{[j,\fget]}", swap] & S \ar[d, "{[\id_S, \fget]}"]  \\
-C \times A \ar[r, "i \times A", swap] & S \times A
-\end{tikzcd}
-\]
-is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput, [\id_S, \fget] \rangle$ as elements of $\PreOptic_\M((S, S), (A, A))$. It remains to show that the maps on the left are mutual inverses:
+which commutes by the $\fput\fget$ law. Note that $ji = \id_C$ by the universal property of pullbacks. The claim is that $\fput (i \times A) : C \times A \to S$ and $[j,\fget] : S \to C \times A$ are mutual inverses. This is easily checked:
 \begin{align*}
 \fput (i \times A)[j,\fget] &= \fput [ij,\fget] \\
 &= \fput [\fput [\id_S, x!_S],\fget] && \text{(by definition of $j$)} \\
@@ -390,7 +389,16 @@ is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput
 &= [\pi_1, \pi_2] && \\
 &= \id_{C \times A}
 \end{align*}
-Therefore $\langle \fput (i \times A), [j,\fget] \rangle$ is a lens, so  $\langle \fput, [\id_S, \fget] \rangle$ is a lens as we were hoping to show. \todo{maybe do the above in pictures}
+
+Additionally, the commutative diagram
+\[
+\begin{tikzcd}
+C \times A \ar[r, "i \times A"] \ar[d, "\fput (i \times A)", swap] & S \times A \ar[d, "\fput"] \\
+S \ar[r, equal] \ar[d, "{[j,\fget]}", swap] & S \ar[d, "{[\id_S, \fget]}"]  \\
+C \times A \ar[r, "i \times A", swap] & S \times A
+\end{tikzcd}
+\]
+is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput, [\id_S, \fget] \rangle$ as elements of $\PreOptic_\M((S, S), (A, A))$.
 \end{proof}
 
 \subsubsection{Prisms}
@@ -408,15 +416,15 @@ Just as lenses are constructed by two concrete maps $\fget : S \to A$ and $\fput
 \end{align*}
 So, if we are given a pre-prism $\langle l, r \rangle : (S, S) \hto (A, A)$ then associated $\freview$ and $\fmatching$ morphisms are given by $\freview = r \inr$ and $\fmatching = (r\inl \sqcup \id_A)l$
 
-The laws for prisms are:
+The laws for prisms are the obvious duals to the lens laws. 
 \begin{align*}
-\fmatching \; \freview = \inr \\
-[\id_S, \freview] \fmatching = \id_S
+\fmatching \; \freview &= \inr \\
+[\id_S, \freview] \fmatching &= \id_S \\
+(\fmatching \sqcup \id_A) \fmatching &= \mathrm{in}_{1,3} \, \fmatching
 \end{align*}
-\todo{Are we missing a law?? Analogous to PutPut? I believe we are}
 \todo{
 \begin{proposition}
-When $\C = \Set$, the third law is implied by the other two.
+When $\C = \Set$, and probably more generally, the third law is implied by the other two.
 \end{proposition}
 }
 
@@ -600,55 +608,6 @@ The conditions of the above Proposition hold in $\Set$, so long as $A$ is not em
 
 \subsection{Change of Action}
 
-\todo{
-\section{Weaker Condition??}
-}
-\begin{proposition}
-Suppose the pre-lens $\langle l, r \rangle : S \hto A$ satisfies $rl = \id_S$ and $\langle lr \rangle = \langle t \times A \rangle$ as an element of $\int^{M \in \M} \C(M \times A, M \times A)$. Then $p$ obeys the three lens laws.
-\end{proposition}
-\begin{proof}
-This is nearly identical to Proposition \ref{prop-OpticImpliesLensLaws}. As was mentioned in the proof of Proposition \ref{prop-onthenose}, we may assume that $lr = t \times A$ on the nose.
-
-Now, again letting $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$,
-\begin{align*}
-\fget \; \fput 
-&= \pi_2 l r (\pi_1 l \times A) \\
-&= \pi_2 (t \times A) (\pi_1 l \times A) \\
-&= \pi_2 (t \pi_1 l \times A) \\
-&= \pi_2 \\
-\fput [\id_S, \fget] 
-&= r (\pi_1 l \times A) [\id_S, \pi_2 l] \\
-&= r [\pi_1 l, \pi_2 l] \\
-&= rl \\
-&= \id_S \\
-\fput (\fput \times A) 
-&= r (\pi_1 l \times A) (r (\pi_1 l \times A) \times A) \\
-&= r (\pi_1 l  r (\pi_1 l \times A) \times A) \\
-&= r (\pi_1 (t\pi_1 l \times A) \times A) \\
-&= r (t\pi_1 l \times A) \pi_{1,3} \\
-&= r lr(\pi_1 l \times A) \pi_{1,3} \\
-&= r(\pi_1 l \times A) \pi_{1,3} \\
-&= \fput \, \pi_{1, 3}
-\end{align*}
-\end{proof}
-
-\begin{proposition}
-Suppose there exists a map $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ obeys the above weaker condition.
-\end{proposition}
-\begin{proof}
-Recall that the corresponding optic $p : S \hto A$ has representative $\langle [\id_s, \fget], \fput \rangle$.
-
-Let $\fput_x : S \to S$ be the composite $S \to S \times 1 \xrightarrow{x} S \times A \xrightarrow{\fput} S$. The commutative diagram
-\[
-\begin{tikzcd}
-S \times A \ar[r, "\fput_x \times A "] \ar[d, "lr", swap] & S \times A \ar[d, "\fput_x \times A"] \ar[dl, "lr"] \\
-S \times A \ar[r, "\fput_x \times A", swap] & S \times A
-\end{tikzcd}
-\]
-proves that $\langle lr \rangle = \langle \fput_x \times A \rangle$ in $\int^{M \in \M} \C(M A, M A)$.
-\todo{Is there some property of $\times$ used here we can abstract?}
-\end{proof}
-
 \section{Profunctor Optics}
 
 \subsection{Profunctors}
@@ -771,7 +730,7 @@ We have the chain of isomorphisms:
 \cong \;&\int^{M \in \M} \C(S, MA) \times \C(MA, S)  && \text{(by co-Yoneda twice)} \\
 = \;&\PreOptic_\M((S, S), (A, A))
 \end{align*}
-\todo{This works for $\PreOptic_\M((S, S'), (A, A'))$ just fine, fixing the definition of $E_A$.}
+\todo{This works for $\PreOptic_\M((S, S'), (A, A'))$ just fine, just define $E_{A,A'}$ in the obvious way.}
 \end{proof}
 
 \begin{corollary}
@@ -840,8 +799,11 @@ UI(A,A)  \ar[r, "p_I", swap] & UI(S,S)
 commute. For the first we have
 \begin{align*}
 \langle (p_P \times p_Q)(x, y) \rangle &= \langle (UP)(l,r) \alpha_{A,A,M} x,  (UQ)(l,r) \beta_{A,A,M} y\rangle \\
-&= \langle (UP)(l,lr) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations \todo{more carefully})} \\
-&= \langle (UP)(l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \id_{MA}$)} \\
+&= \langle (UP)(l,lr) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations)} \\
+&= \langle (UP)(l,\phi A) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$)} \\
+&= \langle (UP)((\phi A)l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations again)} \\
+&= \langle (UP)(lrl,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$ again)} \\
+&= \langle (UP)(l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $rl = \id_S$)} \\
 &= (U(P \odot Q))(l,r) \langle \alpha_{A,A,M} x, \beta_{A,A,M} y \rangle && \text{(by definition of $P \odot Q$)} \\
 &= (U(P \odot Q))(l,r) (\alpha_{A,A,M} \odot \beta_{A,A,M}) \langle x, y \rangle && \text{(by definition of $\alpha \odot \beta$)} \\
 &= p_{P \odot Q} \langle x, y \rangle
@@ -862,8 +824,9 @@ Suppose $p : S \hto A$ is a pre-lens such that the associated natural transforma
 \todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
 \end{proof}
 
+\todo{
 \section{Degenerate Optics}
-\todo{The Haskell lens library has some other `optics' that aren't proper optics, but still integrate nicely with the rest of the ecosystem, e.g. Getters, Reviews and Folds}
+The Haskell lens library has some other `optics' that aren't proper optics, but still integrate nicely with the rest of the ecosystem, e.g. Getters, Reviews and Folds. I am starting to doubt those fit into this framework though.}
 
 \section{Optic Families}
 \section{Indexed Optics}

@@ -731,14 +731,24 @@ We have the chain of isomorphisms:
 = \;&\PreOptic_\M((S, S), (A, A))
 \end{align*}
 \todo{This works for $\PreOptic_\M((S, S'), (A, A'))$ just fine, just define $E_{A,A'}$ in the obvious way.}
+
+\todo{Flip the order of the isomorphisms top to bottom?}
 \end{proof}
 
 \begin{corollary}
-A profunctor preoptic is completely determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
+A profunctor preoptic is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
 \end{corollary}
 \begin{proof}
 This is the content of the first two isomorphisms above.
+
+Explicitly, let $p_{\Pastro_\M E_A}(\langle \id_A, \id_A, \id_A, \id_A \rangle) = \langle l, \id_A, \id_A, r \rangle$, where $l : S \to M A$ and $r : M A \to S$. Then the component of $p$ at any other Tambara module $P$ is given by
+\begin{align*}
+p_P = (UP)(l,r) \alpha_{A,A,M}
+\end{align*}
+where $\alpha$ is the module structure for $P$.
 \end{proof}
+
+
 
 \subsection{Optics}
 
@@ -765,22 +775,19 @@ For an object $X$ in a monoidal category $\C$, a comonoid structure $(X,\Delta,\
 Therefore the functor $\Tamb_\C(\M)(\Pastro_\M E_A, -)$ is canonically lax monoidal, and so the isomorphic functor $(U-)(A,A)$ is also.
 
 \begin{proposition}
-Any optic $p : (U-)(A,A) \to (U-)(S,S)$ is a lax monoidal transformation with respect to Tambara module composition in the domain and the cartesian product in the codomain.
+If $p : S \hto A$ is an optic then the associated natural transformation $(U-)(A,A) \to (U-)(S,S)$ is a lax monoidal.
 \end{proposition}
 \begin{proof}
-The final few isomorphisms used in Proposition \ref{prop-profunctor-optics-are-optics} are essentially window dressing. Suppose we have an element of 
+The final few isomorphisms used in Proposition \ref{prop-profunctor-optics-are-optics} are essentially window dressing. Suppose we have an element $\langle l, e_1, e_2, r \rangle$ of 
 \begin{align*}
-(U\Pastro_\M E_A)(S,S) = \int^{M \in \M} \int^{C,D \in \C} \C(S, MC) \times E_A(C,D) \times \C(MD,S)
+(U\Pastro_\M E_A)(S,S) = \int^{M \in \M} \int^{C,D \in \C} \C(S, MC) \times E_A(C,D) \times \C(MD,S).
 \end{align*}
-and let $\phi : (U\Pastro_\M E_A)(S,S) \cong \PreOptic_\M((S, S), (A, A))$ be the isomorphism given in the proposition. If we have an element of $(U\Pastro_\M E_A)(S,S)$ with representative $\langle l, e_1, e_2, r \rangle$, the round-trip through the isomorphism $\phi$ yields $\langle (M e_1)l, \id_A, \id_A, r(M e_2)\rangle$. Hence we may always assume we have a representative of the form $\langle l, \id_A, \id_A, r \rangle$. This representative corresponds to an optic via the isomorphism $\phi$ iff both $rl = \id_S$ and $\langle lr\rangle = \langle \id_{NA} \rangle$ in $\int^{M \in \M} \C(M A, M A)$. Note that just as we can ``strictify'' a representative of an optic, if we have an element of $(U\Pastro_\M E_A)(S,S)$ that corresponds to an optic we may always choose a representative so that the latter identity holds on the nose.
+The round trip through the isomorphism $\Phi : (U\Pastro_\M E_A)(S,S) \cong \PreOptic_\M((S, S), (A, A))$ demonstrates that $\langle l, e_1, e_2, r \rangle = \langle (M e_1)l, \id_A, \id_A, r(M e_2)\rangle$. Hence we may always assume we have a representative of the form $\langle l, \id_A, \id_A, r \rangle$. This representative corresponds to an optic via the isomorphism $\Phi$ if both $rl = \id_S$ and $\langle lr\rangle = \langle \phi A \rangle$ in $\int^{M \in \M} \C(M A, M A)$. Note that just as we can ``strictify'' a representative of an optic, if we have an element of $(U\Pastro_\M E_A)(S,S)$ that corresponds to an optic we may always choose a representative so that the latter identity holds on the nose.
 
-Now, by the definition of the Yoneda isomorphism, a natural transformation \[ \Tamb_\C(\M)(\Pastro_\M E_A, -) \to (U-)(S,S) \] will correspond to an optic iff the image of the identity morphism in $(U\Pastro_\M E_A)(S, S)$ corresponds to an optic. The very first isomorphism in Proposition \ref{prop-profunctor-optics-are-optics} is given by precomposition by the isomorphism of Lemma \ref{lemma-rep}, so in all, a profunctor preoptic $p : (U-)(A, A) \to (U-)(S,S)$ is a lawful optic iff $p(\langle \id_A, \id_A, \id_A, \id_A \rangle)$ is an optic in $(U\Pastro_\M E_A)(S, S)$. Our goal is to show that this happens exactly when the natural transformation is monoidal.
+Next we examine the image of the optics through the Yoneda isomorphism \[ (U\Pastro_\M E_A)(S,S) \cong [\Tamb_\C(\M), \Set](\Tamb_\C(\M)(\Pastro_\M E_A, -), (U-)(S,S)) \] 
+By the definition of the Yoneda isomorphism, a natural transformation \[ p : \Tamb_\C(\M)(\Pastro_\M E_A, -) \to (U-)(S,S) \] will correspond to an optic iff the image of the identity morphism $\id : \Pastro_\M E_A \to \Pastro_\M E_A$ through the component $p_{\Pastro_\M E_A}$ is an optic in $(U\Pastro_\M E_A)(S, S)$. 
 
-Let $\langle l, \id_A, \id_A, r \rangle = p(\langle \id_A, \id_A, \id_A, \id_A \rangle)$ be a representative, where $l : S \to M A$ and $r : M A \to S$. We can calculate the component of $p$ at a Tambara module $P$ explicitly:
-\begin{align*}
-p_P = (UP)(l,r) \alpha_{A,A,M}
-\end{align*}
-where $\alpha$ is the module structure for $P$.
+Finally the isomorphism \[ [\Tamb_\C(\M), \Set](\Tamb_\C(\M)(\Pastro_\M E_A, -), (U-)(S,S)) \cong \; [\Tamb_\C(\M), \Set]((U-)(A,A),(U-)(S,S)) \] is given by precomposition by the isomorphism of Lemma \ref{lemma-rep}, so in summary, a ``profunctor preoptic'' $p : (U-)(A, A) \to (U-)(S,S)$ is a lawful optic iff $p_{\Pastro_\M E_A}(\langle \id_A, \id_A, \id_A, \id_A \rangle)$ is an optic in $(U\Pastro_\M E_A)(S, S)$. 
 
 To show $p$ is monoidal, we must show that both diagrams
 \[
@@ -893,6 +900,8 @@ C &\mapsto Y
 
 Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
 
+\section{Lenses in Linear Types}
+
 \section{The Double-Categorical Perspective}
 
 \todo{There might be a lot more to say in terms of Mike's stuff on framed bicategories. The ``external product'' operation on profunctors seems key. This could be the mechanism behind the indexed stuff?}
@@ -900,8 +909,6 @@ Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have 
 Some thoughts: obvious thing to try is a double category where objects are the objects of $\C \times \C$, vertical morphisms $(S,T) \to (A, B)$ are maps $S \to A$ and $B \to T$, horizontal morphisms are preoptics. This I think is framed, you can always turn a pair of maps into a preoptic.
 
 Note the pair of maps above is also the set of morphisms $E_{S, T} \to E_{A, B}$. Maybe the objects should be profunctors??
-
-
 
 \section{Conclusion}
 

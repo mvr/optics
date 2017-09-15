@@ -160,6 +160,7 @@ A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times
 \item Given $f : A \to B$ and $g : A \to C$, I write $[f, g] : A \to B \times C$ and $!_A : A \to 1$.
 \item Given $f : A \to B$ and $g : C \to D$, I write $f \times g : A \times C \to B \times D$.
 \item Given a $x \in P(C, C)$, I write $\langle x \rangle \in \int^C P(C, C)$ for its image, and $\copr_C : P(C,C) \to \int^C P(C, C)$
+\item For a monoidal category, the structure maps are $\alpha$, $\lambda$ and $\rho$. A symmetry is $s$.
 \end{itemize}
 
 \todo{
@@ -168,23 +169,21 @@ A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times
 
 \section{Optics}
 
+\todo{ Notation: For a monoidal category, the structure maps are $\alpha$, $\lambda$ and $\rho$, symmetry is $s$. For an action of $(\M, \otimes, I)$ on $\C$ we have two structure maps that are isomorphisms: $\epsilon_A : A \to IA$ and $\mu_{M,N,A} = MNA \to (M \otimes N)A$. }
+
+\todo{ We elide boring uses of the structure maps so we can stay sane...}
+
 \begin{proposition}
-Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category that acts on $\C$. There is a category $\PreOptic_\M$ that has the same objects as $\C \times \C$, with homsets given by
+Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category that acts on $\C$. There is a category $\PreOptic_\M$ that has the same objects as $\C \times \C^\op$, with homsets given by
 \begin{align*}
 \PreOptic_\M((S, S'), (A, A')) = \int^{M \in \M} \C(S, M A) \times \C(M A', S')
 \end{align*}
 \end{proposition}
-To distinguish these from morphisms in $\C \times \C$, we will write preoptics with a crossed arrow: $p : (S, S') \hto (A, A')$.
-
-If $f : S \to M A$ and $g : M A' \to S'$, we write $\langle l, r \rangle$ for their image in $\PreOptic_\M((S, S'), (A, A'))$.
+To distinguish these from morphisms in $\C \times \C^\op$, we will write preoptics with a crossed arrow: $p : (S, S') \hto (A, A')$. If $(l,r) : (S \to M A, M A' \to S')$, we write $\langle l, r \rangle : (S, S') \hto (A, A')$ for their image in $\PreOptic_\M((S, S'), (A, A'))$, and say that $M$ is the complement for this representative.
 \begin{proof}
-\todo{Following the doubles paper, this should be the Kleisli category for the monad on $\Prof$ given by:
-\begin{align*}
-\Phi(S, S', A, A') = \int^{M \in \M} \C(S, M A) \times \C(M A', S')
-\end{align*}
-}
+In \cite[Section 6]{Doubles} this is proven abstractly, by exhibiting this category as the Kleisli category for a monad in the bicategory $\Prof$. Here we give a direct proof.
 
-Explicitly, the composition map
+The composition map
 \begin{align*}
 \int^{M \in \M} \left(\C(S, M A) \times \C(M A', S')\right) \times \int^{M \in \M} \left( \C(R, M S) \times \C(M S', R')\right) \to \int^{M \in \M} \C(R, M A) \times \C(M A', R')
 \end{align*}
@@ -195,15 +194,124 @@ of preoptics is induced by the following morphisms for every $M, N \in \M$:
 \xrightarrow{\text{composition}} \quad& \C(R, N M A) \times \C(N M A', R') \\
 \xrightarrow{\copr_{NM}} \quad&\int^{M \in \M} \C(R, M A) \times \C(M A', R')
 \end{align*}
-In other words, let $\langle l, r \rangle : (R, R') \hto (S, S')$ and $\langle l', r' \rangle : (S, S') \hto (A, A')$ with $M$ the complement for $\langle l, r \rangle$. The composite is then: $\langle l', r' \rangle \circ \langle l, r \rangle = \langle (M l')l, r(Mr') \rangle$
+In other words, let $\langle l, r \rangle : (R, R') \hto (S, S')$ and $\langle l', r' \rangle : (S, S') \hto (A, A')$ with $M$ the complement for $\langle l, r \rangle$. The composite is then: $\langle l', r' \rangle \circ \langle l, r \rangle = \langle (M l')l, r(Mr') \rangle$.
+
+The identity morphism $(S, S') \hto (S, S')$ is given by $\langle \epsilon_S, \epsilon_{S'}^{-1} \rangle$. \todo{which will later be described as $(\id_S, \id_{S'})_*$}
+
+Associativity of composition can be checked equationally. Given $(l_1, r_1) : (R \to MS, MS' \to R')$ and $(l_2, r_2) : (S \to NA, NA' \to S')$ and $(l_3, r_3) : (A \to PB, PB' \to S')$:
+\begin{align*}
+(\langle l_3, r_3 \rangle \circ \langle l_2, r_2 \rangle) \circ \langle l_1, r_1 \rangle 
+&= \langle (N l_3)l_2, r_2(Nr_3) \rangle \circ \langle l_1, r_1 \rangle \\
+&= \langle M((N l_3)l_2)l_1, r_1M(r_2(Nr_3)) \rangle \\
+&= \langle (M N l_3)(M l_2)l_1, r_1(M r_2)(MNr_3)) \rangle \\
+&= \langle l_3, r_3 \rangle \circ (\langle (M l_2)l_1, r_1(Mr_2) \rangle) \\
+&= \langle l_3, r_3 \rangle \circ (\langle l_2, r_2 \rangle \circ \langle l_1, r_1 \rangle)
+\end{align*}
+
+\todo{To justify this kind of equational reasoning: We use that products in $\Set$ preserve colimits, so the coends can be floated to the outside and we may pick representatives for all 3 preoptics simultaneously. In the middle we include into the coend then immediately pick a representative, so by the universal property of coends we may as well use the representative we already have. It seems like this would also work in an enriched setting (if you really wanted it to)}
+
+Finally, we have the unit laws. For $(l, r) : (S \to MA, MA' \to S')$ we calculate:
+\begin{align*}
+\id_{A, A'} \circ \langle l, r\rangle 
+&= \langle \epsilon_A, \epsilon_{A'}^{-1} \rangle \circ \langle l, r\rangle \\
+&= \langle (M\epsilon_A) l, r (M\epsilon_{A'}^{-1})\rangle \\
+&= \langle (\lambda_M A) l, r (\lambda_M^{-1} A')\rangle \\
+&= \langle l, r (\lambda_M^{-1} A') (\lambda_M A')\rangle \\
+&= \langle l, r \rangle  \\
+\langle l, r \rangle \circ \id_{S, S'} 
+&= \langle l, r \rangle \circ \langle \epsilon_S, \epsilon_{S'}^{-1} \rangle  \\
+&= \langle (Il)\epsilon_S, \epsilon_{S'}^{-1} (Ir) \rangle \\
+&= \langle (\lambda_M S)l, r (\lambda_{S'}^{-1} S') \rangle \\
+&= \langle l, r (\lambda_{S'}^{-1} S')(\lambda_M S') \rangle \\
+&= \langle l, r \rangle
+\end{align*}
+Where in both cases we have used the coend relations to move $\lambda_M$ to the other side.
 \end{proof}
 
-In \cite{Doubles}, a very similar category was considered. The \emph{double} $\Double$ of a monoidal category $(\C, \otimes, I)$ is a special case of the above, where $\C$ acts on itself by $\otimes$.
+In \cite[Section 6]{Doubles} a very similar category was considered. The \emph{double} $\Double_l \C$ of a monoidal category $(\C, \otimes, I)$ is \todo{the opposite category of} a special case of the above, where $\C$ is allowed to act on itself via left tensor. We will denote this case by $\PreOptic_\otimes$.
 
-\todo{Mention the game theory stuff}
+\begin{proposition}
+For any $\C$ and $\M$, there is a functor $(-, -)_* : \C \times \C^\op \to \PreOptic_\M$, which is given on objects by $(S, S')_* = (S, S')$ and for a morphism $(f, g) : (S, S') \to (A, A')$ by $(f, g)_* = \langle \epsilon_A f, g \epsilon_{A'}^{-1} \rangle$.
+\end{proposition}
+\begin{proof}
+To check functoriality, suppose we have $(f, g) : (S, S') \to (A, A')$ and $(f', g') : (A, A') \to (B, B')$ in $\C \times \C^\op$. Then:
+\begin{align*}
+(f', g')_* \circ (f, g)_* 
+&= \langle \epsilon_B f', g' \epsilon_{B'}^{-1} \rangle \circ \langle \epsilon_A f, g \epsilon_{A'}^{-1} \rangle \\
+&= \langle (I(\epsilon_B f'))\epsilon_A f, g \epsilon_{A'}^{-1} (I(g' \epsilon_{B'}^{-1}))\rangle && \text{(By definition of $\circ$)}\\
+&= \langle (I\epsilon_B) (I f')\epsilon_A f, g \epsilon_{A'}^{-1} (I g')(I\epsilon_{B'}^{-1})\rangle && \text{(Functoriality of action of $I$)}\\
+&= \langle (I\epsilon_B) \epsilon_B f' f, g g' \epsilon_{B'}^{-1} (I\epsilon_{B'}^{-1})\rangle && \text{(Naturality of $\epsilon$)}\\
+&= \langle (\lambda_I B) \epsilon_B f' f, g g' \epsilon_{B'}^{-1} (\lambda_I^{-1}B')\rangle && \text{(Unitality of action)} \\
+&= \langle \epsilon_B f' f, g g' \epsilon_{B'}^{-1} (\lambda_I^{-1}B') (\lambda_I B') \rangle && \text{(Coend relation)}  \\
+&= \langle \epsilon_B f'f, g g' \epsilon_{B'}^{-1} \rangle \\
+&= (f'f, gg')_*
+\end{align*}
+\end{proof}
+\todo{Is this functor monoidal?}
 
-For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $outside : \PreOptic_\M((S, S), (A, A)) \to \C(S, S)$. By composition in the other direction we have a map $\C(S, M A) \times \C(M A, S) \to \C(M A, M A)$. Including this object $\C(M A, M A)$ into the coend $\int^{M \in \M} \C(M A, M A)$, we induce a map $inside : \PreOptic_\M((S, S), (A,A)) \to \int^{M \in \M} \C(M A, M A)$.
+\todo{Is this functor faithful? What if $I$ is terminal? No! Take $S = \emptyset$}
 
+\todo{This doesn't give us the structure of a `framing', we can only lift vertical arrows to horizontal arrows facing one direction.}
+
+\begin{theorem}
+If $(\C, \otimes, I)$ is a symmetric monoidal category, then $\PreOptic_\otimes$ is also symmetric monoidal. \todo{braided?}
+\end{theorem}
+\begin{proof}
+On objects, we define $(S, S') \otimes (T, T') := (S \otimes T, S' \otimes T')$. The unit is given by the object $(I, I)$. The action of $\otimes$ on morphisms is induced by
+\begin{align*}
+&\C(S, M \otimes A) \times \C(M \otimes A', S') \times \C(T, N \otimes B) \times \C(N \otimes B', T')\\
+\to \quad&\C(S \otimes T, M \otimes A \otimes N \otimes B) \times \C(M \otimes A' \otimes N \otimes B', S' \otimes T') && \text{(action of $\otimes$ on morphisms in $\C$)}\\
+\to \quad&\C(S \otimes T, M \otimes N \otimes A \otimes B) \times \C(M \otimes N \otimes A' \otimes B', S' \otimes T') && \text{($\otimes$ in $\C$ is symmetric)}\\
+\to \quad&\int^{M \in \C} \C(S \otimes T, M \otimes A \otimes B) \times \C(M \otimes A' \otimes B', S' \otimes T') && \text{(inclusion into coend)}
+\end{align*}
+yielding a function $\PreOptic_\otimes((S, S'), (A, A')) \times \PreOptic_\otimes((T, T'), (B, B')) \to \PreOptic_\otimes((S \otimes T, S' \otimes T'), (A \otimes B, A' \otimes B'))$. 
+
+Equationally, suppose we have representatives $(l, r) : (S \to M \otimes A, M \otimes A' \to S')$ and $(l', r') : (T \to N \otimes B, N \otimes B' \to T')$. Then:
+\begin{align*}
+\langle l, r \rangle \otimes \langle l', r' \rangle &:= \langle (M \otimes s_{A,N} \otimes B)(l \otimes l'), (r \otimes r')(M \otimes s_{A',N} \otimes B') \rangle
+\end{align*}
+
+Now we check functoriality. Suppose we have:
+\begin{align*}
+\langle l_1, r_1 \rangle : (S_1, S_1') &\hto (S_2, S_2') \\
+\langle l_2, r_2 \rangle : (S_2, S_2') &\hto (S_3, S_3') \\
+\langle p_1, q_1 \rangle : (T_1, T_1') &\hto (T_2, T_2') \\
+\langle p_2, q_2 \rangle : (T_2, T_2') &\hto (T_3, T_3')
+\end{align*}
+with complements $M_1, M_2, N_1, N_2$ respectively. Then: \todo {(This is a mess. String diagram?)}
+\begin{align*}
+&(\langle l_2, r_2 \rangle \otimes \langle p_2, q_2 \rangle) \circ (\langle l_1, r_1 \rangle \otimes \langle p_1, q_1 \rangle) \\
+= \; &\langle (M_2 \otimes s_{S_3,N_2} \otimes T_3)(l_2 \otimes p_2), (r_2 \otimes q_2)(M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+&\circ \langle (M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), (r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2') \rangle \\
+= \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes N_1 \otimes l_2 \otimes p_2)(M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), \\
+&\;(r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2')(M_1 \otimes N_1 \otimes r_2 \otimes q_2)(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+= \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)(M_1 \otimes  l_2 \otimes N_1 \otimes p_2)(l_1 \otimes p_1), \\
+&\;(r_1 \otimes q_1)(M_1 \otimes r_2 \otimes N_1 \otimes q_2)(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+= \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1), \\
+&\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+= \; & \text{\todo{(Move all structure isomorphisms to one side of the coend, then appeal to coherence)}} \\
+= \; &\langle (M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S_3} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1) ,  \\
+&\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S'_3} \otimes T'_3) \rangle \\
+= \; &\langle (M_1 \otimes l_2)l_1, r_1(M_1 \otimes r_2) \rangle \otimes \langle (N_1 \otimes p_2)p_1, q_1(N_1 \otimes q_2) \rangle \\
+= \; &(\langle l_2, r_2 \rangle  \circ \langle l_1, r_1 \rangle) \otimes (\langle p_2, q_2 \rangle \circ \langle p_1, q_1 \rangle)
+\end{align*}
+
+The structure morphisms are all lifted from the structure morphisms in $\C$:
+\begin{align*}
+\alpha_{(R, R'), (S, S'), (T, T')} &:= (\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1})_* \\
+\lambda_{(S, S')} &:= (\lambda_{(S, S')}, \lambda_{(S, S')}^{-1})_* \\
+\rho_{(S, S')} &:= (\rho_{(S, S')}, \rho_{(S, S')}^{-1})_* \\
+s_{(S, S'), (T, T')} &:= (s_{S, T}, s_{T', S'})_*
+\end{align*}
+ 
+\todo{Once we know that $(-, -)_*$ is monoidal, the pentagon and triangle axioms should lift straight from $\C$ and we're done}
+
+\end{proof}
+
+In the Haskell \texttt{lens} library, the action of the monoidal product on optics is denoted ``\texttt{alongside}'' for the product and ``\texttt{without}'' for the coproduct.
+
+\subsection{Optics}
+For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $outside : \PreOptic_\M((S, S), (A, A)) \to \C(S, S)$. By composition in the other direction we have a map $\C(S, M A) \times \C(M A, S) \to \C(M A, M A)$. Including this object $\C(M A, M A)$ into the coend $\int^{M \in \M} \C(M A, M A)$, we induce a map $inside : \PreOptic_\M((S, S), (A,A)) \to \int^{M \in \M} \C(M A, M A)$. 
 \begin{definition}
 An \emph{optic} from $S$ to $A$ is a preoptic $p$ from $(S, S)$ to $(A, A)$ such that $outside(p) = \id_S$, and $inside(p) = \langle t A \rangle$ for some $t : M \to M \in \M$.
 \end{definition}
@@ -276,7 +384,7 @@ In view of this Proposition, whenever we posit a representative $\langle l, r \r
 There is an subcategory $\Optic_\M$ of $\PreOptic_\M$ given by objects of the form $(X, X)$ and optics between them.
 \end{proposition}
 \begin{proof}
-The identity preoptic $\langle \id_X : X \to IX, \id_X : IX \to X \rangle$ is clearly an optic. 
+The identity preoptic $(\id_X, \id_X)_*$ is clearly an optic. 
 
 Suppose we have two optics $\langle l, r \rangle : R \hto S$ and $\langle l', r' \rangle : S \hto A$, where $l : R \to MS$ and $l' : S \to NA$, and such that $lr = \phi S$ and $l'r' = \psi A$. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is also an optic:
 \begin{align*}
@@ -825,7 +933,7 @@ as required.
 \todo{I don't see why the converse should be true in general, but it seems to be true in specific situations:}
 
 \begin{proposition}
-Suppose $p : S \hto A$ is a pre-lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is a lens.
+Let $\C = \Set$ and suppose $p : S \hto A$ is a pre-lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is a lens.
 \end{proposition}
 \begin{proof}
 \todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
@@ -836,6 +944,8 @@ Suppose $p : S \hto A$ is a pre-lens such that the associated natural transforma
 The Haskell lens library has some other `optics' that aren't proper optics, but still integrate nicely with the rest of the ecosystem, e.g. Getters, Reviews and Folds. I am starting to doubt those fit into this framework though.}
 
 \section{Optic Families}
+
+
 \section{Indexed Optics}
 \todo{
 This possibly looks like

@@ -38,6 +38,7 @@
 %\newtheorem{question}[theorem]{Question}
 
 
+
 \newcommand{\C}{\mathscr{C}}
 \newcommand{\homC}{\underline{\C}}
 \newcommand{\D}{\mathscr{D}}
@@ -81,6 +82,7 @@
 \DeclareMathOperator{\copr}{copr}
 \newcommand{\inl}{\mathrm{inl}}
 \newcommand{\inr}{\mathrm{inr}}
+\DeclareMathOperator{\im}{im}
 
 \newcommand{\fget}{\textsc{Get}}
 \newcommand{\fput}{\textsc{Put}}
@@ -89,9 +91,9 @@
 \newcommand{\fmatching}{\textsc{Matching}}
 
 % Special arrows
-\newcommand{\isoto}{\xrightarrow{
-   \,\smash{\raisebox{-0.65ex}{\ensuremath{\scriptstyle\sim}}}\,}}
+\newcommand{\isoto}{\xrightarrow{\cong}}
 \newcommand{\hto}{\ensuremath{\,\mathaccent\shortmid\rightarrow\,}}
+
 \makeatletter
 \providecommand{\leftsquigarrow}{%
   \mathrel{\mathpalette\reflect@squig\relax}%
@@ -576,11 +578,14 @@ The laws for prisms are the obvious duals to the lens laws.
 (\fmatching \sqcup \id_A) \fmatching &= \mathrm{in}_{1,3} \, \fmatching
 \end{align*}
 
-\todo{
+In the \texttt{lens} library documentation the third law is missing, due to the following:
+
 \begin{proposition}
-When $\C = \Set$, and probably more generally, the third law is implied by the other two.
+When $\C = \Set$\todo{, and probably more generally,} the third law is implied by the other two.
 \end{proposition}
-}
+\begin{proof}
+The key is that in $\Set$, for any map $f : X \to Y$, the set $Y$ splits into the coproduct of $\im f$ and its complement. The first law implies that $\freview$ is injective, so $S \cong C \sqcup A$ for some complement $C$. Identifying $A$ with its image in $S$, the second law implies that if $a\in A \subset S$ then $\fmatching(a) = \inr(a)$ and if $c\in C \subset S$ then $\fmatching(c) = \inl(c)$. The third law then follows easily by checking both cases.
+\end{proof}
 
 \begin{proposition}
 \label{prop-OpticImpliesPrismLaws}

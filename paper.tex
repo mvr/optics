@@ -996,6 +996,7 @@ with another monoidal action $I$. The $I$ would need to distribute over $M$ in s
 \end{align*}
 which is why they pass information `in the other direction' but still transform covariantly.
 }
+
 \section{Merely Well-Behaved Optics}
 \todo{
 The lenses that the UPenn crew look at are less restricted. They obey the $\fput\fget$ and $\fget\fput$ laws but not the $\fput\fput$ law. 
@@ -1014,7 +1015,7 @@ This example is typical of (merely) well-behaved lenses: there is metadata carri
 \end{example}
 
 \begin{example}
-A minimal example is the following:
+A minimal example of a prelens that obeys $\fget\fput$ and $\fput\fget$ but not $\fput\fput$ is the following. Let $p : \{A,B,C\} \hto \{X, Y\}$ be the prelens with
 \begin{align*}
 \fget : \{A,B,C\} &\to \{X, Y\} \\
 A &\mapsto X \\
@@ -1030,23 +1031,13 @@ C &\mapsto Y
 (B,Y) &\mapsto C \\
 (C,Y) &\mapsto C
 \end{align*}
-\todo{So here the $\fput\fget$ composite is
-\begin{align*}
-(A,X) &\mapsto (A,X) \\
-(B,X) &\mapsto (B,X) \\
-(C,X) &\mapsto (B,X) \\
-(A,Y) &\mapsto (C,Y) \\
-(B,Y) &\mapsto (C,Y) \\
-(C,Y) &\mapsto (C,Y)
-\end{align*}
-}
 \end{example}
 
-\todo{The condition on $\langle l, r \rangle$ seems to be that $rl = \id_S$ and $\pi_2lr = \pi_2$. I can't see how to generalise this second condition to optics other than lenses.}
+Prelenses that satisfy the first two laws correspond to pairs $\langle l, r \rangle$ such that $rl = \id_S$ and $\pi_2lr = \pi_2$. \todo{prove?} This condition seems unavoidably tied to the product structure on $\C$; it is not clear whether this weakened notion of lens can be generalised to other optics.
 
 \section{The Challenge of Effectful Optics}
 
-Past attempts \cite{ReflectionsOnMonadicLenses} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
+Many attempts \cite{ReflectionsOnMonadicLenses} \todo{more} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
 
 \section{Lenses in Linear Types}
 

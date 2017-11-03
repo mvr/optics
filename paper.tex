@@ -262,7 +262,7 @@ To check functoriality, suppose we have $(f, g) : (S, S') \to (A, A')$ and $(f',
 If $(\C, \otimes, I)$ is a symmetric monoidal category, then $\PreOptic_\otimes$ is also symmetric monoidal. \todo{braided?}
 \end{theorem}
 \begin{proof}
-On objects, we define $(S, S') \otimes (T, T') := (S \otimes T, S' \otimes T')$. The unit is given by the object $(I, I)$. The action of $\otimes$ on morphisms is induced by
+On objects we define $(S, S') \otimes (T, T') := (S \otimes T, S' \otimes T')$. The unit is given by the object $(I, I)$. The action of $\otimes$ on morphisms is induced by
 \begin{align*}
 &\C(S, M \otimes A) \times \C(M \otimes A', S') \times \C(T, N \otimes B) \times \C(N \otimes B', T')\\
 \to \quad&\C(S \otimes T, M \otimes A \otimes N \otimes B) \times \C(M \otimes A' \otimes N \otimes B', S' \otimes T') && \text{(action of $\otimes$ on morphisms in $\C$)}\\
@@ -439,7 +439,11 @@ Suppose we have two optics $\langle l, r \rangle : R \hto S$ and $\langle l', r'
 \begin{align*}
 r (Mr')(Ml')l &= r M(r'l') l = rl = \id_S
 \intertext{and}
-(Ml')l r (Mr') &= (Ml')(\phi S)(Mr') = (\phi NA) M(l')M(r') = (\phi NA) M(l'r') = (\phi NA) M(\psi A) = \phi(\psi A)
+(Ml')l r (Mr') &= (Ml')(\phi S)(Mr') \\ 
+&= (\phi NA) M(l')M(r') \\ 
+&= (\phi NA) M(l'r') \\
+&= (\phi NA) M(\psi A) \\
+&= \phi(\psi A)
 \end{align*}
 by the naturality of the action of $\M$.
 \end{proof}
@@ -491,9 +495,9 @@ Let $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Verification of the la
 &= r(\pi_1 l \times A) \pi_{1,3} \\
 &= \fput \, \pi_{1, 3}
 \end{align*}
-
-\todo{Written out at \cite{IsomorphismLensesPost}, definitely not the first place though.}
 \end{proof}
+
+This has been written out many times before in the case when $lr$ is the identity \cite{IsomorphismLensesPost} \todo{more}.
 
 \begin{proposition}
 Suppose there exists a map $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ is a lens.
@@ -512,10 +516,10 @@ is a witness that $\langle lr \rangle = \langle \fput_x \times A \rangle$ in $\i
 \todo{Is there some property of $\times$ used here we can abstract? Having a map $1 \to A$ guarantees that $- \times A$ is faithful, is this the trick?}
 \end{proof}
 
-In favourable conditions, we can upgrade this result to show that a lens $S \hto A$ in fact implies that $S \cong M \times A$ for some $M$. This is similar to the result proved in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
+In favourable conditions, we can upgrade this result to show that the existence of a lens $S \hto A$ implies that $S \cong M \times A$ for some $M$. This is a more general version of the argument given in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
 
 \begin{proposition}
-Suppose $\C$ has finite limits and that there is a morphism $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
+Suppose $\C$ has finite limits and that there is a morphism $x : 1 \to A$. If $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
 \end{proposition}
 \begin{proof}
 Set $C$ to be the pullback of $\fget$ along $x$, so there is a map $i : C \to S$ with $\fget \, i = x !_C$. There is also a map $j : S \to C$ induced by the following diagram:
@@ -754,14 +758,10 @@ The conditions of the above Proposition hold in $\Set$, so long as $A$ is not em
 
 \subsection{Change of Action}
 
+\todo{TODO}
+
 \section{Profunctor Optics}
-
-\subsection{Profunctors}
-
-\todo{recall definitions} We use $I$ to refer to the identity profunctor $\C(-,{=})$, and $\odot$ for horizontal profunctor composition. Profunctor composition is written in diagramatic order.
-
-\subsection{Tambara Modules}
-The following section generalises definitions that first appeared in \cite{Doubles}.
+Let $I = \C(-,{=}) : \C \hto \C$ be the identity profunctor and $\odot$ be profunctor composition, written in diagrammatic order. The following section generalises definitions that first appeared in \cite{Doubles}.
 \begin{definition}
 Suppose $\C$ is acted on by $(\M, \otimes, I)$ and let $P \in \Prof(\C, \C)$ be a profunctor. A \emph{Tambara module structure for $\M$} on $P$ is a natural family of maps:
 \begin{align*}
@@ -1037,9 +1037,9 @@ Prelenses that satisfy the first two laws correspond to pairs $\langle l, r \ran
 
 \section{The Challenge of Effectful Optics}
 
-Many attempts \cite{ReflectionsOnMonadicLenses} \todo{more} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given in this paper suggests we instead set $\C$ to be the Kleisli category for some monad.
+Many attempts \cite{ReflectionsOnMonadicLenses} \todo{more} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given here suggests we instead set $\C$ to be the Kleisli category for some monad $T$.
 
-\section{Lenses in Linear Types}
+\section{Lenses in Linear Types?}
 
 \section{A Double-Categorical Perspective?}
 

@@ -455,7 +455,7 @@ by the naturality of the action of $\M$.
 Lenses form the ur-example of a category of optics.
 
 \begin{definition}
-Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} $\Lens$ in $\C$ is the category of optics with respect to this action: $\Lens = \Optic_\times$.
+Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} $\Lens$ is the category of optics with respect to this action: $\Lens = \Optic_\times$.
 \end{definition}
 
 As remarked in the introduction \todo{(todo: remark in the introduction)}, the preoptics for this action are exactly pairs of $\fget$ and $\fput$ functions.
@@ -469,7 +469,7 @@ Explicitly this isomorphism states that, given a prelens $\langle l, r \rangle :
 
 \begin{proposition}
 \label{prop-OpticImpliesLensLaws}
-Suppose $\langle l, r \rangle : S \hto A$ is a pre-lens such that $rl = \id_S$ and $\langle lr \rangle = \langle \phi \times A \rangle$ as an element of $\int^{M \in \M} \C(M \times A, M \times A)$, for some $\phi : M \to M$. Then $p$ obeys the three lens laws.
+Suppose $\langle l, r \rangle : S \hto A$ is a lens, i.e. that that $rl = \id_S$ and $\langle lr \rangle = \langle \phi \times A \rangle$ for some $\phi : M \to M$. Then $p$ obeys the three lens laws.
 \end{proposition}
 \begin{proof}
 By Proposition \ref{prop-onthenose}, we may assume that $lr = \phi \times A$ on the nose.
@@ -516,7 +516,7 @@ is a witness that $\langle lr \rangle = \langle \fput_x \times A \rangle$ in $\i
 \todo{Is there some property of $\times$ used here we can abstract? Having a map $1 \to A$ guarantees that $- \times A$ is faithful, is this the trick?}
 \end{proof}
 
-In favourable conditions, we can upgrade this result to show that the existence of a lens $S \hto A$ implies that $S \cong M \times A$ for some $M$. This is a more general version of the argument given in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
+In favourable conditions, we can upgrade this result to show that the existence of a lens $S \hto A$ implies that $S \cong M \times A$ for some $M$. This is a generalised from the argument given in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
 
 \begin{proposition}
 Suppose $\C$ has finite limits and that there is a morphism $x : 1 \to A$. If $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
@@ -564,10 +564,10 @@ is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput
 Prisms are dual to lenses:
 
 \begin{definition}
-Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} in $\C$ is the category of optics with respect to this action: $\Prism = \Optic_\sqcup$.
+Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} is the category of optics with respect to this action: $\Prism = \Optic_\sqcup$.
 \end{definition}
 
-Just as lenses are constructed by two concrete maps $\fget : S \to A$ and $\fput : S \times A \to S$, prisms are constructed by two maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \texttt{lens} library.
+Just as prelenses correspond to a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$, prisms correspond to pairs of maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \texttt{lens} library.
 \begin{align*}
 \PreOptic_\sqcup(S, A) &= \int^{M \in \M} \C(S, M \sqcup A) \times \C(M \sqcup A, S) \\
 &\cong \int^{M \in \M} \C(S, M \sqcup A) \times \C(M, S) \times \C(A, S) && \text{(universal property of coproduct)} \\
@@ -588,7 +588,7 @@ In the \texttt{lens} library documentation the third law is missing, due to the 
 When $\C = \Set$\todo{, and probably more generally,} the third law is implied by the other two.
 \end{proposition}
 \begin{proof}
-The key is that in $\Set$, for any map $f : X \to Y$, the set $Y$ is equal to the union of $\im f$ and its complement. The first law implies that $\freview$ is injective, so $S \cong C \sqcup A$ for some complement $C$. Identifying $A$ with its image in $S$, the second law implies that if $a\in A \subset S$ then $\fmatching(a) = \inr(a)$ and if $c\in C \subset S$ then $\fmatching(c) = \inl(c)$. The third law then follows easily by checking both cases.
+The key is that in $\Set$, for any map $f : X \to Y$, the set $Y$ is equal to the union of $\im f$ and its complement. The first law implies that $\freview$ is injective, so $S \cong C \sqcup A$ for some complement $C$ \todo{name this map and use it properly}. Identifying $A$ with its image in $S$, the second law implies that if $a\in A \subset S$ then $\fmatching(a) = \inr(a)$ and if $c\in C \subset S$ then $\fmatching(c) = \inl(c)$. The third law then follows easily by checking both cases.
 \end{proof}
 
 The following is then the dual of Proposition \ref{prop-OpticImpliesLensLaws}.

@@ -658,45 +658,45 @@ This is a generalisation of \cite[Proposition 2.2]{SecondOrderFunctionals}
 
 \subsubsection{Affine Traversals}
 
-\subsection{Equivalence of Optics}
-
-One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\langle l, r \rangle, \langle l', r' \rangle : S \hto A$ are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
-
-\todo{This may work in general with some huge number of conditions: something like $-A$ reflects monomorphisms and preserves binary coproducts, all subobjects in $\M$ have complements.}
-
-\begin{proposition}
-Suppose all epimorphisms split in $\C$, and that $- \times A : \C \to \C$ reflects epis. Then two lenses $\langle l, r \rangle$ and $\langle l', r' \rangle :  S \hto A$ with complements $M$ and $N$ respectively are equal iff there exists an morphism $\phi : M \to N$ such that $(\phi \times A)l = l'$ and $r = r' (\phi \times A)$.
-\end{proposition}
-\begin{proof}
-The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
-
-%note that $p$ and $q$ must have identical $\fget$ and $\fput$ functions:
+%\subsection{Equivalence of Optics}
+%
+%One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\langle l, r \rangle, \langle l', r' \rangle : S \hto A$ are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
+%
+%\todo{This may work in general with some huge number of conditions: something like $-A$ reflects monomorphisms and preserves binary coproducts, all subobjects in $\M$ have complements.}
+%
+%\begin{proposition}
+%Suppose all epimorphisms split in $\C$, and that $- \times A : \C \to \C$ reflects epis. Then two lenses $\langle l, r \rangle$ and $\langle l', r' \rangle :  S \hto A$ with complements $M$ and $N$ respectively are equal iff there exists an morphism $\phi : M \to N$ such that $(\phi \times A)l = l'$ and $r = r' (\phi \times A)$.
+%\end{proposition}
+%\begin{proof}
+%The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
+%
+%%note that $p$ and $q$ must have identical $\fget$ and $\fput$ functions:
+%%\begin{align*}
+%%\fget &= \pi_2 l = \pi_2 l' \\
+%%\fput &= r (\pi_1 l \times A) = r' (\pi_1 l' \times A)
+%%\end{align*}
+%For the forward direction, note that the map $(\pi_1 l \times A)$ is a retraction: it has the section $(r, \pi_2)$:
 %\begin{align*}
-%\fget &= \pi_2 l = \pi_2 l' \\
-%\fput &= r (\pi_1 l \times A) = r' (\pi_1 l' \times A)
+%(\pi_1 l \times A)(r, \pi_2) = (\pi_1 l r, \pi_2) = (\pi_1, \pi_2) = \id_{S \times A}
 %\end{align*}
-For the forward direction, note that the map $(\pi_1 l \times A)$ is a retraction: it has the section $(r, \pi_2)$:
-\begin{align*}
-(\pi_1 l \times A)(r, \pi_2) = (\pi_1 l r, \pi_2) = (\pi_1, \pi_2) = \id_{S \times A}
-\end{align*}
-Now by assumption, $\pi_1 l : S \to M$ is an epi, so has a retraction $f : M \to S$. The claim is that $\phi = \pi_1 l' f$ is the required morphism $M \to N$.
-
-The situation is summarised in the following diagram, which other than the dashed line, we know commutes.
-\[
-\begin{tikzcd}
-M \times A \ar[r, "{f \times A}", dashed, bend left = 50] \ar[d, "r", swap] & S \times A \ar[d, "\fput"] \ar[r, "{\pi_1 l' \times A}"] \ar[l, "{\pi_1 l \times A}", swap] & N \times A \ar[d, "r'"] \\
-S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "{[\id_S, \fget]}"] \ar[r, equal] & S \ar[d, "l'"] \\
-M \times A & S \times A \ar[r] \ar[l] & N \times A
-\end{tikzcd}
-\]
-We can now calculate:
-\begin{align*}
-r = r(\pi_1 l f \times A) = \fput (f \times A) = r' (\pi_1 l' f \times A) = r'(\phi \times A)
-\end{align*}
-as required. The equation relating $l$ and $l'$ follows immediately as they are the inverses of $r$ and $r'$.
-\end{proof}
-
-The conditions of the above Proposition hold in $\Set$, so long as $A$ is not empty.
+%Now by assumption, $\pi_1 l : S \to M$ is an epi, so has a retraction $f : M \to S$. The claim is that $\phi = \pi_1 l' f$ is the required morphism $M \to N$.
+%
+%The situation is summarised in the following diagram, which other than the dashed line, we know commutes.
+%\[
+%\begin{tikzcd}
+%M \times A \ar[r, "{f \times A}", dashed, bend left = 50] \ar[d, "r", swap] & S \times A \ar[d, "\fput"] \ar[r, "{\pi_1 l' \times A}"] \ar[l, "{\pi_1 l \times A}", swap] & N \times A \ar[d, "r'"] \\
+%S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "{[\id_S, \fget]}"] \ar[r, equal] & S \ar[d, "l'"] \\
+%M \times A & S \times A \ar[r] \ar[l] & N \times A
+%\end{tikzcd}
+%\]
+%We can now calculate:
+%\begin{align*}
+%r = r(\pi_1 l f \times A) = \fput (f \times A) = r' (\pi_1 l' f \times A) = r'(\phi \times A)
+%\end{align*}
+%as required. The equation relating $l$ and $l'$ follows immediately as they are the inverses of $r$ and $r'$.
+%\end{proof}
+%
+%The conditions of the above Proposition hold in $\Set$, so long as $A$ is not empty.
 
 % Old attempt:
 %\begin{definition}

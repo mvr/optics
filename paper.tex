@@ -259,7 +259,7 @@ To check functoriality, suppose we have $(f, g) : (S, S') \to (A, A')$ and $(f',
 \todo{This doesn't give us the structure of a `framing', we can only lift vertical arrows to horizontal arrows facing one direction.}
 
 \begin{theorem}
-If $(\C, \otimes, I)$ is a symmetric monoidal category, then $\PreOptic_\otimes$ is also symmetric monoidal. \todo{braided?}
+If $(\C, \otimes, I)$ is a symmetric monoidal category, then $\PreOptic_\otimes$ is also symmetric monoidal.
 \end{theorem}
 \begin{proof}
 On objects we define $(S, S') \otimes (T, T') := (S \otimes T, S' \otimes T')$. The unit is given by the object $(I, I)$. The action of $\otimes$ on morphisms is induced by
@@ -380,7 +380,7 @@ There is a well known formula for the coend as the coequaliser in the diagram
 \coprod_{M \to N} P(N, M) \ar[r,shift left=.75ex]  \ar[r,shift right=.75ex] & \coprod_{M \in \M} P(M, M) \ar[r] & \int^{M \in \M} P(M, M)
 \end{tikzcd}
 \]
-where $S$ is some functor $\M^\op \times \M \to \E$.
+where $P$ is a functor $\M^\op \times \M \to \E$.
 
 In our case $\E = \Set$, and unwinding the coequaliser this states that $\int^{M \in \M} \C(M A, M A)$ is a quotient of the set $\coprod_{M \in \M} \C(M A, M A)$. Two morphisms $f : M A \to M A$ and $g : N A \to N A$ are identified when there exists a $k : N A \to M A$ and natural transformation $\phi : M \to N$ such that the diagram
 \[

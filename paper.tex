@@ -539,21 +539,21 @@ We have a category $\Optic_\M$ and a functor $\iota : \C \times \C^\op \to \Opti
 \todo{intro}
 
 \begin{remark}
-In this section we will focus only on preoptics of the form $p : (S,S) \hto (A, A)$. We therefore abbreviate $\Optic_\M((S, S), (A, A))$ as $\Optic_\M(S, A)$ and $p : (S, S) \hto (A, A)$ as $p : S \hto A$.
+In this section we will focus only on optics of the form $p : (S,S) \hto (A, A)$. We therefore abbreviate $\Optic_\M((S, S), (A, A))$ as $\Optic_\M(S, A)$ and $p : (S, S) \hto (A, A)$ as $p : S \hto A$.
 \end{remark}
 
 For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $outside : \Optic_\M(S, A) \to \C(S, S)$. By composition in the other direction we have a map $\C(S, M A) \times \C(M A, S) \to \C(M A, M A)$. Including this object $\C(M A, M A)$ into the coend $\int^{M \in \M} \C(M A, M A)$, we induce a map $inside : \Optic_\M(S, A) \to \int^{M \in \M} \C(M A, M A)$. 
 \begin{definition}
-An preoptic $p : S \hto A$ is an \emph{optic} if $outside(p) = \id_S$, and $inside(p) = \langle t A \rangle$ for some $t : M \to M$ in $\M$.
+An optic $p : S \hto A$ is \emph{lawful} if $outside(p) = \id_S$, and $inside(p) = \langle t A \rangle$ for some $t : M \to M$ in $\M$.
 \end{definition}
 
 \begin{proposition}
 There is an subcategory $\Lawful_\C$ of $\Optic_\C$ given by objects of the form $(X, X)$ and lawful optics between them.
 \end{proposition}
 \begin{proof}
-The identity preoptic $\iota(\id_X, \id_X)$ is clearly an optic. 
+The identity optic $\iota(\id_X, \id_X)$ is clearly lawful.
 
-Suppose we have two optics $\langle l, r \rangle : R \hto S$ and $\langle l', r' \rangle : S \hto A$, where $l : R \to MS$ and $l' : S \to NA$, and such that $lr = \phi S$ and $l'r' = \psi A$. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is also an optic:
+Suppose we have two lawful optics $\langle l, r \rangle : R \hto S$ and $\langle l', r' \rangle : S \hto A$, where $l : R \to MS$ and $l' : S \to NA$, and such that $lr = \phi S$ and $l'r' = \psi A$. Then the composite $\langle (Ml')l, r (Mr')  \rangle$ is also a lawful optic:
 \begin{align*}
 r (Mr')(Ml')l &= r M(r'l') l = rl = \id_S
 \intertext{and}
@@ -628,7 +628,7 @@ We can now inductively apply the above argument to the chain $u_1^2 \leftrightsq
 
 The above argument has a similar form to some that appear in \cite{OnTheTrace}, which considered (among other things) coends of the form $\int^{c \in \C} \C(c, Fc)$ for an endofunctor $F : \C \to \C$.
 
-In view of this Proposition, whenever we posit a representative $\langle l, r \rangle$ of an optic, we may assume that $lr = \phi A$ on the nose, for some $\phi : M \to M$.
+In view of this Proposition, whenever we posit a representative $\langle l, r \rangle$ of an lawful optic, we may assume that $lr = \phi A$ on the nose, for some $\phi : M \to M$.
 
 
 
@@ -639,10 +639,10 @@ In view of this Proposition, whenever we posit a representative $\langle l, r \r
 Lenses form the ur-example of a category of optics.
 
 \begin{definition}
-Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} $\Lens$ is the category of optics with respect to this action: $\Lens = \Lawful_\times$.
+Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} $\Lens$ is the category of lawful optics with respect to this action: $\Lens = \Lawful_\times$.
 \end{definition}
 
-As remarked in the introduction \todo{(todo: remark in the introduction)}, the preoptics for this action are exactly pairs of $\fget$ and $\fput$ functions.
+As remarked in the introduction \todo{(todo: remark in the introduction)}, the optics for this action are exactly pairs of $\fget$ and $\fput$ functions.
 \begin{align*}
 \Optic_\times(S, A) &= \int^{M \in \M} \C(S, M \times A) \times \C(M \times A, S) \\
 &\cong \int^{M \in \M} \C(S, M) \times \C(S, A) \times \C(M \times A, S) && \text{(universal property of product)} \\
@@ -681,7 +681,7 @@ Let $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Verification of the la
 \end{align*}
 \end{proof}
 
-This has been written out many times before in the case when $lr$ is the identity \cite{IsomorphismLensesPost} \todo{more}.
+This has been written out many times before in the case when $lr$ is the identity \cite{IsomorphismLensesPost}, we note here that the weaker condition is sufficient.
 
 \begin{proposition}
 Suppose there exists a map $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ is a lens.
@@ -748,16 +748,16 @@ is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput
 Prisms are dual to lenses:
 
 \begin{definition}
-Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} is the category of optics with respect to this action: $\Prism = \Optic_\sqcup$.
+Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} is the category of lawful optics with respect to this action: $\Prism = \Lawful_\sqcup$.
 \end{definition}
 
-Just as prelenses correspond to a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$, prisms correspond to pairs of maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \texttt{lens} library.
+Just as (possibly unlawful) lenses correspond to a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$, (unlawful) prisms correspond to pairs of maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \texttt{lens} library.
 \begin{align*}
 \Optic_\sqcup(S, A) &= \int^{M \in \M} \C(S, M \sqcup A) \times \C(M \sqcup A, S) \\
 &\cong \int^{M \in \M} \C(S, M \sqcup A) \times \C(M, S) \times \C(A, S) && \text{(universal property of coproduct)} \\
 &\cong \C(S, S \sqcup A) \times \C(A, S) && \text{(co-Yoneda)}
 \end{align*}
-So, if we are given a pre-prism $\langle l, r \rangle : (S, S) \hto (A, A)$ then associated $\freview$ and $\fmatching$ morphisms are given by $\freview = r \inr$ and $\fmatching = (r\inl \sqcup A)l$
+So, if we are given a prism $\langle l, r \rangle : (S, S) \hto (A, A)$ then associated $\freview$ and $\fmatching$ morphisms are given by $\freview = r \inr$ and $\fmatching = (r\inl \sqcup A)l$
 
 The laws for prisms are the obvious duals to the lens laws. 
 \begin{align*}
@@ -1017,7 +1017,7 @@ $\Pastro_\M$ is oplax monoidal.
 This follows abstractly as a left adjoint of a strong monoidal functor \cite{Kelly1974}.
 \end{proof}
 
-\subsection{Preoptics}
+\subsection{Optics}
 
 \begin{definition}
 For an object $A \in \C$, the \emph{exchange profunctor} $E_A$ is defined to be $\C(-, A) \times \C(A, {=})$.
@@ -1048,7 +1048,7 @@ We have the chain of natural isomorphisms:
 \end{align*}
 \end{proof}
 
-We can now show that profunctor preoptics are precisely preoptics in the ordinary sense.
+We can now show that profunctor optics are precisely optics in the ordinary sense.
 
 \begin{proposition}
 \label{prop-profunctor-optics-are-optics}
@@ -1073,7 +1073,7 @@ We have the chain of isomorphisms:
 \end{proof}
 
 \begin{corollary}
-A profunctor preoptic is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
+A profunctor optic is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
 \end{corollary}
 \begin{proof}
 This is the content of the first two isomorphisms above.
@@ -1110,7 +1110,7 @@ For an object $X$ in a monoidal category $\C$, a comonoid structure $(X,\Delta,\
 Therefore the functor $\Tamb_\C(\M)(\Pastro_\M E_A, -)$ is canonically lax monoidal, and so the isomorphic functor $(U-)(A,A)$ is also.
 
 \begin{proposition}
-If $p : S \hto A$ is an optic then the associated natural transformation $(U-)(A,A) \to (U-)(S,S)$ is a lax monoidal. \todo{Rename the natural transformation $p$}
+If $p : S \hto A$ is a lawful optic then the associated natural transformation $(U-)(A,A) \to (U-)(S,S)$ is a lax monoidal. \todo{Rename the natural transformation $p$}
 \end{proposition}
 \begin{proof}
 Let $\langle l, r \rangle$ be a representative for $p$ in $\Optic_\M(S,A)$ via the isomorphism of Proposition \ref{prop-profunctor-optics-are-optics}, so that

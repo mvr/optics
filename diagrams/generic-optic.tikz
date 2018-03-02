@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node at (0,0) (S) {$S$};
+\node[rectangle,draw=black, right=of S] (l) {$l$} ;
+\node[below right=of l] (A) {$A$};
+\node[right= of A] (A') {$A'$};
+\node[rectangle,draw=black, above right=of A']  (r) {$r$} ;
+\node[right=of r] (S') {$S'$};
+
+\coordinate[above= 2cm of A] (M);
+\coordinate[above= 2cm of A'] (M');
+
+\draw (S) -- (l);
+\draw (l.30) to [out=0,in=180] (M) -- (M') to [out=0,in=180](r.150);
+\draw (l.-30) to [out=0,in=180] (A);
+\draw (r.210) to [out=180,in=0] (A');
+\draw (r) -- (S');
+
+\node[draw,dashed,fit=(A) (A')] (box) {};
+\draw[dashed] (box.90) -- +(0,2);
+
+\end{scope}
+\end{tikzpicture}

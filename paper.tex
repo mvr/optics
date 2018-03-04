@@ -275,13 +275,13 @@ Where in both cases we have used the naturality of $\lambda$ and coend relations
 \end{proof}
 
 \begin{remark}
-Note that the definition of the $\Optic$ category involves a coend possibly indexed by a large category. To be maximally careful, we should only ever discuss $\Optic$ categories where we know that the coend exists by some other means, e.g., by exhibiting an isomorphism with some other set. For many, but not all, of the examples given later, we provide such an isomorphism.
+Note that the definition of the $\Optic$ category involves a coend possibly indexed by a large category. To be maximally careful, we should only ever discuss $\Optic$ categories where we know that the coend exists by some other means, e.g., by exhibiting an isomorphism with some other set. For many---but not all---of the examples given later, we provide such an isomorphism.
 
 \todo{How does the doubles paper get away with it?}
 \end{remark}
 
 \begin{proposition}
-For any $\C$, there is a functor $\iota : \C \times \C^\op \to \Optic_\C$, which is given on objects by $\iota(S, S') = (S, S')$ and for a morphism $(f, g) : (S, S') \to (A, A')$ by $\iota(f, g) = \langle \lambda_A^{-1} f, g \lambda_{A'} \rangle$.
+There is a functor $\iota : \C \times \C^\op \to \Optic_\C$, which is given on objects by $\iota(S, S') = (S, S')$ and for a morphism $(f, g) : (S, S') \to (A, A')$ by $\iota(f, g) = \langle \lambda_A^{-1} f, g \lambda_{A'} \rangle$.
 \end{proposition}
 \begin{proof}
 This preserves identities, as the identity on an object $(S, S')$ in $\Optic_\M$ is defined to be exactly $\langle \lambda^{-1}_S, \lambda_{S'} \rangle$.
@@ -303,6 +303,10 @@ Graphically, there is not much to do:
 \todo{todo}
 \end{center}
 \end{proof}
+
+\begin{remark}
+This functor is not necessarily faithful, see Remark \ref{lens-iota-not-faithful}
+\end{remark}
 
 %\todo{This doesn't give us the structure of a `framing', we can only lift vertical arrows to horizontal arrows facing one direction.}
 
@@ -483,11 +487,11 @@ $\Optic_\C$ forms a teleological category, with the following data:
 \begin{itemize}
 \item The dualisable morphisms are all morphisms of the form $\iota(f, g)$;
 \item The involution is given on objects by $(S, S')^* = (S', S)$, and on a morphism $\iota(f, g)$ by $\iota(g, f)$;
-\item The counit $\varepsilon_{(S, S')}$  is given by the image of the symmetry $s_{S \otimes S'}$ under the isomorphism of Proposition \ref{prop-costates}.
+\item The counit $\varepsilon_{(S, S')}$  is given by the image of the symmetry $s_{S \otimes S'}$ under the isomorphism of Proposition \ref{prop-costates}. \todo{It is a little annoying that a twist is necessary, but it has to go somewhere. The other option is in the definition of $\otimes$ but that seems worse.}
 \end{itemize}
 \end{proposition}
 \begin{proof}
-That morphisms of the form $\iota(f, g)$ constitute a category and that $\iota$ is a symmetric monoidal involution is clear. 
+That morphisms of the form $\iota(f, g)$ constitute a category and that $\iota$ is a symmetric monoidal involution is clear. \todo{actually check monoidal part}
 
 To check extranaturality, suppose we have a dualisable optic $\iota(f, g) : (X, X') \to (Y, Y')$, so $f : X \to Y$ and $g : Y' \to X'$. Extranaturality is witnessed by the equality of the string diagrams:
 \begin{center}
@@ -651,9 +655,15 @@ As remarked in the introduction \todo{(todo: remark in the introduction)}, the o
 
 Explicitly this isomorphism states that, given a prelens $\langle l, r \rangle : S \hto A$, the corresponding $\fget$ and $\fput$ functions are given by $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $\fget$ and $\fput$, the corresponding element in the coend has representative $\langle l, r \rangle$, where $l = [\id_s, \fget]$ and $r = \fput$. Note that even if the $\fget$ and $\fput$ correspond to a law-abiding lens, this particular representative will not be an isomorphism.
 
+\begin{remark} \label{lens-iota-not-faithful}
+For the category of sets, the functor $\iota(-, -) : \Set \times \Set^\op \to \Optic_\times$ is not faithful. The problem is the empty set: the functor $0 \times (-)$ is not faithful. Any pair of maps $f : 0 \to A$, $g : A' \to S'$ yield equivalent optics $\iota(f, g)$, as the corresponding $\fget$ and $\fput$ functions must be the unique maps from $0$.
+
+\todo{Show that for the category of nonempty sets things .}
+\end{remark}
+
 \begin{proposition}
 \label{prop-OpticImpliesLensLaws}
-Suppose $\langle l, r \rangle : S \hto A$ is a lens, i.e. that $rl = \id_S$ and $\langle lr \rangle = \langle \phi \times A \rangle$ for some $\phi : M \to M$. Then $p$ obeys the three lens laws.
+Suppose $\langle l, r \rangle : S \hto A$ is a lawful lens in our sense, i.e. that $rl = \id_S$ and $\langle lr \rangle = \langle \phi \times A \rangle$ for some $\phi : M \to M$. Then $\fput$ and $\fget$ for this lens obey the three lens laws.
 \end{proposition}
 \begin{proof}
 By Proposition \ref{prop-onthenose}, we may assume that $lr = \phi \times A$ on the nose.
@@ -684,7 +694,7 @@ Let $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. Verification of the la
 This has been written out many times before in the case when $lr$ is the identity \cite{IsomorphismLensesPost}, we note here that the weaker condition is sufficient.
 
 \begin{proposition}
-Suppose there exists a map $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ is a lens.
+Suppose there exists a map $x : 1 \to A$. Then if $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then the corresponding $p : S \hto A$ is a lawful lens.
 \end{proposition}
 \begin{proof}
 Recall that the corresponding optic $p : S \hto A$ has as a representative $\langle [\id_s, \fget], \fput \rangle$.
@@ -703,7 +713,7 @@ is a witness that $\langle lr \rangle = \langle \fput_x \times A \rangle$ in $\i
 In favourable conditions, we can upgrade this result to show that the existence of a lens $S \hto A$ implies that $S \cong M \times A$ for some $M$. This is a generalised from the argument given in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
 
 \begin{proposition}
-Suppose $\C$ has finite limits and that there is a morphism $x : 1 \to A$. If $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
+Suppose $\C$ has pullbacks and that there is a morphism $x : 1 \to A$. If $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
 \end{proposition}
 \begin{proof}
 Set $C$ to be the pullback of $\fget$ along $x$, so there is a map $i : C \to S$ with $\fget \, i = x !_C$. There is also a map $j : S \to C$ induced by the following diagram:

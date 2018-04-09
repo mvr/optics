@@ -1,11 +1,12 @@
 \begin{tikzpicture}
-\node[vert] (l) at (0, 0) {$l$};
-\node[vert] (r) at (4, 0) {$r$};
+\begin{scope}[on grid]
+\node[vert] (l) at (0, 0) {$\lambda_S^{-1}$};
+\node[vert] (r) at (4, 0) {$\lambda_{S'}$};
 
 \node (S) [left of=l] {$S$};
-\node (A) [below right = 0.7 and 1 of l] {$A$};
+\node (A) [below right = 0.7 and 1 of l] {$S$};
 \node (S') [right of=r] {$S'$};
-\node (A') [below left = 0.7 and 1 of r] {$A'$};
+\node (A') [below left = 0.7 and 1 of r] {$S'$};
 
 \draw[->] (S) -- (l);
 \draw[->] (l) to[out=south east,in=west] (A);
@@ -13,11 +14,11 @@
 \draw[<-] (S') -- (r);
 \draw[<-] (r) to[out=south west,in=east] (A');
 
-\draw[->] (l) to[rrel, out=north east, in=west] (1,1)
+\draw[->, dashed] (l) to[rrel, out=north east, in=west] (1,1)
  to +(2,0)
  to[out=east, in=north west] (r)
 ;
 
 \node[draw,dashed,fit=(A) (A'), inner xsep = 8pt] (box) {};
-\draw[dashed] (box.90) -- +(0,2);
+\end{scope}
 \end{tikzpicture}

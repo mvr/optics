@@ -1,0 +1,36 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node[vert] (l') at (0, 0) {$l'$};
+\node[vert, below right = 0.7 and 1 of l'] (l) {$l$};
+\node[vert] (r') at (5, 0) {$r'$};
+\node[vert, below left = 0.7 and 1 of r'] (r) {$r$};
+
+\node (A) [below right = 0.7 and 1 of l] {$A$};
+\node (A') [below left = 0.7 and 1 of r] {$A'$};
+
+\node (R) [left of=l'] {$R$};
+\node (R') [right of=r'] {$R'$};
+
+\draw[->] (R) -- (l');
+\draw[<-] (R') -- (r');
+
+\draw[->] (l') to[rrel, out=north east, in=west] (1,1)
+ to +(3,0)
+ to[out=east, in=north west] (r')
+;
+
+\draw[->] (l) to[rrel, out=north east, in=west] (1,1)
+ to +(1,0)
+ to[out=east, in=north west] (r)
+;
+
+\draw[->] (l') to[out=south east,in=west] (l);
+\draw[->] (r) to[out=east, in=south west] (r');
+
+\draw[->] (l) to[out=south east,in=west] (A);
+\draw[<-] (r) to[out=south west,in=east] (A');
+
+\node[draw,dashed,fit=(A) (A'), inner xsep = 8pt] (box) {};
+\end{scope}
+\end{tikzpicture}

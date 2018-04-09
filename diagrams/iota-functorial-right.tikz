@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\node (Sin) {$S$};
+\node (f) [vertbig, right of=Sin] {$f'f$};
+\node (Sout) [right of=f] {$B$};
+\node (Spout) [right of=Sout] {$B'$};
+\node (g) [vertbig, right = 0.5 of Spout] {$gg'$};
+\node (Spin) [right of=g] {$S'$};
+
+\draw[->] (Sin) -- (f);
+\draw[->] (f) -- (Sout);
+\draw[->] (Spout) -- (g);
+\draw[->] (g) -- (Spin);
+
+\node[draw,dashed,fit=(Sout) (Spout)] (box) {};
+\end{tikzpicture}

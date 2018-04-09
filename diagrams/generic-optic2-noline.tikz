@@ -1,0 +1,22 @@
+\begin{tikzpicture}
+\node[vert] (l) at (0, 0) {$l'$};
+\node[vert] (r) at (4, 0) {$r'$};
+
+\node (R) [left of=l] {$R$};
+\node (S) [below right = 0.7 and 1 of l] {$S$};
+\node (R') [right of=r] {$R'$};
+\node (S') [below left = 0.7 and 1 of r] {$S'$};
+
+\draw[->] (R) -- (l);
+\draw[->] (l) to[out=south east,in=west] (S);
+
+\draw[<-] (R') -- (r);
+\draw[<-] (r) to[out=south west,in=east] (S');
+
+\draw[->] (l) to[rrel, out=north east, in=west] (1,1)
+ to +(2,0)
+ to[out=east, in=north west] (r)
+;
+
+\node[draw,dashed,fit=(S) (S'), inner xsep = 8pt] (box) {};
+\end{tikzpicture}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node (Sin) {$S$};
+\node (Sout) [right of=Sin] {$S$};
+\node (Spout) [right of=Sout] {$S'$};
+\node (Spin) [right of=Spout] {$S'$};
+
+\draw[->] (Sin) -- (Sout);
+\draw[->] (Spout) -- (Spin);
+
+\node[draw,dashed,fit=(Sout) (Spout), inner xsep = 4pt] (box) {};
+\end{tikzpicture}

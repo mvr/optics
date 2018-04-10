@@ -1,0 +1,72 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+%%% The S part
+
+\node[vert] (l1) at (0, 0) {$l_1$};
+\node[vert, below right = 0.7 and 1 of l1] (l2) {$l_2$};
+\node[vert] (r1) at (7, 0) {$r_1$};
+\node[vert, below left = 0.7 and 1 of r1] (r2) {$r_2$};
+
+\node (S3) [below right = 2.5 and 2 of l2] {$S_3$};
+\node (S3') [below left = 2.5 and 2 of r2] {$S_3'$};
+
+\node (S1) [left of=l1] {$S_1$};
+\node (S1') [right of=r1] {$S_1'$};
+
+\draw[->] (S1) -- (l1);
+\draw[<-] (S1') -- (r1);
+
+\draw[->] (l1) to[rrel, out=north east, in=west] (1,1)
+ to ($(r1) + (-1,1)$)
+ to[out=east, in=north west] (r1)
+;
+
+\draw[->] (l2) to[rrel, out=north east, in=west] (1,1)
+ to ($(r2) + (-1,1)$)
+ to[out=east, in=north west] (r2)
+;
+
+\draw[->] (l1) to[out=south east,in=west] (l2);
+\draw[->] (r2) to[out=east, in=south west] (r1);
+
+\draw[->] (l2) to[out=south east,in=west] (S3);
+\draw[<-] (r2) to[out=south west,in=east] (S3');
+
+%%% The T part
+
+\node[vert] (p1) at (0, -2.5) {$p_1$};
+\node[vert, below right = 0.7 and 1 of p1] (p2) {$p_2$};
+\node[vert] (q1) at (7, -2.5) {$q_1$};
+\node[vert, below left = 0.7 and 1 of q1] (q2) {$q_2$};
+
+\node (T3) [below right = 0.7 and 2 of p2] {$T_3$};
+\node (T3') [below left = 0.7 and 2 of q2] {$T_3'$};
+
+\node (T1) [left of=p1] {$T_1$};
+\node (T1') [right of=q1] {$T_1'$};
+
+\draw[->] (T1) -- (p1);
+\draw[<-] (T1') -- (q1);
+
+\draw[->] (p1) 
+ to[rrel, out=north east, in=west] (1,1)
+ to ($(q1) + (-1,1)$)
+ to[out=east, in=north west] (q1)
+;
+
+\draw[->] (p2) to[rrel, out=north east, in=west] (1,1)
+ to ($(q2) + (-1,1)$)
+ to[out=east, in=north west] (q2)
+;
+
+\draw[->] (p1) to[out=south east,in=west] (p2);
+\draw[->] (q2) to[out=east, in=south west] (q1);
+
+\draw[->] (p2) to[out=south east,in=west] (T3);
+\draw[<-] (q2) to[out=south west,in=east] (T3');
+
+\node[draw,dashed,fit=(S3) (S3') (T3) (T3'), inner xsep = 8pt] (box) {};
+
+\end{scope}
+\end{tikzpicture}

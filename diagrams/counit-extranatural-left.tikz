@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+\node (S) at (0, 0) {$S$};
+\node (S') at (4, 0) {$S'$};
+\node (T) [below = 1 of S] {$T$};
+\node (T') [below = 1 of S'] {$T'$};
+\node[vert] (f) [right = 1 of S] {$f$};
+\node[vert] (g) [right = 1 of T] {$g$};
+
+\draw[->] (S) -- (f);
+\draw[->] (f) -- (S');
+
+\draw[->] (T) -- (g);
+\draw[->] (g) -- (T');
+
+\node (I) [below right = 1 and 2 of T] {$I$};
+\node (I') [below left = 1 and 1 of T'] {$I$};
+
+\node[draw,dashed,fit=(I) (I'), inner xsep = 4pt] (box) {};
+\end{scope}
+\end{tikzpicture}

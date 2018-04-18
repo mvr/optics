@@ -8,7 +8,7 @@
 
 \node (S1) [left of=l1] {$S_1$};
 \node[vert] (l2) [below right = 2.5 and 2 of l1] {$l_2$};
-\node (S1') [right of=r1] {$S'$};
+\node (S1') [right of=r1] {$S_1'$};
 \node[vert] (r2) [below left = 2.5 and 2 of r1] {$r_2$};
 
 \draw[->] (S1) -- (l1);

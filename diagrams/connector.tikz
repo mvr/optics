@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+\node (S) at (0, 0) {$S$};
+\node (S') at (4, 0) {$S$};
+
+\draw[->] (S) -- (S');
+
+\node (I) [below right = 0.7 and 1.4 of S] {$I$};
+\node (I') [below left = 0.7 and 1.4 of S'] {$I$};
+
+\node[draw,dashed,fit=(I) (I'), inner xsep = 4pt] (box) {};
+\end{scope}
+\end{tikzpicture}

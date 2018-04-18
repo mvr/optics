@@ -19,5 +19,5 @@
 ;
 
 \node[draw,dashed,fit=(A) (A'), inner xsep = 8pt] (box) {};
-\draw[dashed] (box.90) -- +(0,2);
+\draw[dashed] (box.90) -- +(0,2.25);
 \end{tikzpicture}

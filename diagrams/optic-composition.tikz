@@ -31,6 +31,7 @@
 \draw[->] (l) to[out=south east,in=west] (A);
 \draw[<-] (r) to[out=south west,in=east] (A');
 
+\node[draw,dashed,fit=(l) (r), inner xsep = 6pt, inner ysep = 25pt] (box2) {};
 \node[draw,dashed,fit=(A) (A'), inner xsep = 8pt] (box) {};
 \end{scope}
 \end{tikzpicture}

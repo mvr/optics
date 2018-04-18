@@ -1,0 +1,45 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node[vert] (l) at (0, 0) {$l$};
+\node[vert] (r') at (6, 0) {$r'$};
+\node[vert] (l') at (0, -2) {$l'$};
+\node[vert] (r) at (6, -2) {$r$};
+
+\node (S) [left of=l] {$S$};
+\node (A) [below right = 2 and 2 of l] {$A$};
+\node (T') [right of=r'] {$T'$};
+\node (B') [below left = 2 and 2 of r'] {$B'$};
+
+\node (T) [left of=l'] {$T$};
+\node (B) [below right = 1 and 2 of l'] {$B$};
+\node (S') [right of=r] {$S'$};
+\node (A') [below left = 1 and 2 of r] {$A'$};
+
+\draw[->] (S) -- (l);
+\draw[<-] (T') -- (r');
+\draw[->] (T) -- (l');
+\draw[<-] (S') -- (r);
+
+\draw[->] (l) to[out=south east,in=west] (A);
+\draw[<-] (r') to[out=south west,in=east] (B');
+\draw[->] (l') to[out=south east,in=west] (B);
+\draw[<-] (r) to[out=south west,in=east] (A');
+
+\draw[->] (l') 
+ to[out=north east, in=west] ++(2,1)
+ to[out=east, in=west] ++(2,1.6)
+ to[out=east, in=north west] (r')
+;
+
+\draw[<-] (r) 
+ to[out=north west, in=east] ++(-2,1)
+ to[out=west, in=east] ++(-2,1.6)
+ to[out=west, in=north east] (l)
+;
+
+
+\node[draw,dashed,fit=(A) (A') (B) (B'), inner xsep = 8pt] (box) {};
+
+\end{scope}
+\end{tikzpicture}

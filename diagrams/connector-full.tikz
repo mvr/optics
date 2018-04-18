@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+\node[vert] (l) at (0, 0) {$\rho_S^{-1}$};
+\node[vert] (r) at (4, 0) {$\rho_{S'}$};
+
+\node (S) [left of=l] {$S$};
+\node (A) [below right = 0.7 and 1 of l] {$I$};
+\node (S') [right of=r] {$S'$};
+\node (A') [below left = 0.7 and 1 of r] {$I$};
+
+\draw[->] (S) -- (l);
+\draw[->, dotted] (l) to[out=south east,in=west] (A);
+
+\draw[<-] (S') -- (r);
+\draw[<-, dotted] (r) to[out=south west,in=east] (A');
+
+\draw[->] (l) to[rrel, out=north east, in=west] (1,1)
+ to +(2,0)
+ to[out=east, in=north west] (r)
+;
+
+\node[draw,dashed,fit=(A) (A'), inner xsep = 8pt] (box) {};
+\end{scope}
+\end{tikzpicture}

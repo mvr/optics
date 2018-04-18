@@ -14,7 +14,7 @@
 \draw[<-] (S') -- (r);
 \draw[<-] (r) to[out=south west,in=east] (A');
 
-\draw[->, dashed] (l) to[rrel, out=north east, in=west] (1,1)
+\draw[->, dotted] (l) to[rrel, out=north east, in=west] (1,1)
  to +(2,0)
  to[out=east, in=north west] (r)
 ;

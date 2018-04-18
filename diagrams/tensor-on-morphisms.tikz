@@ -15,7 +15,7 @@
 \draw[<-] (S') -- (r);
 \draw[<-] (r) to[out=south west,in=east] (A');
 
-\draw[->] (l) to[rrel, out=north east, in=west] (1,1)
+\draw[->] (l) to[out=north east, in=west] ++(1,1)
  to ++(4,0)
  to[out=east, in=north west] (r)
 ;
@@ -35,7 +35,7 @@
 \draw[<-] (r') to[out=south west,in=east] (B');
 
 \draw[->] (l') 
- to[rrel, out=north east, in=west] (2,2)
+ to[out=north east, in=west] ++(2,2)
  to ++(2,0)
  to[out=east, in=north west] (r')
 ;

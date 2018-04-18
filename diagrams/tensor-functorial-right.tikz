@@ -17,7 +17,7 @@
 \draw[<-] (S1') -- (r1);
 \draw[<-] (r1) to[out=south west,in=east] (r2);
 
-\draw[->] (l1) to[rrel, out=north east, in=west] (1,1)
+\draw[->] (l1) to[out=north east, in=west] ++(1,1)
  to ($(r1) + (-1,1)$)
  to[out=east, in=north west] (r1)
 ;
@@ -37,19 +37,19 @@
 \draw[<-] (q1) to[out=south west,in=east] (q2);
 
 \draw[->] (p1) 
- to[rrel, out=north east, in=west] (2,2)
+ to[out=north east, in=west] ++(2,2)
  to ($(q1) + (-2,2)$)
  to[out=east, in=north west] (q1)
 ;
 
 %%% Inner:
 
-\draw[->] (l2) to[rrel, out=north east, in=west] (1,1)
+\draw[->] (l2) to[out=north east, in=west] ++(1,1)
  to ($(r2) + (-1,1)$)
  to[out=east, in=north west] (r2)
 ;
 \draw[->] (p2) 
- to[rrel, out=north east, in=west] (2,1.5)
+ to[out=north east, in=west] ++(2,1.5)
  to ($(q2) + (-2,1.5)$)
  to[out=east, in=north west] (q2)
 ;

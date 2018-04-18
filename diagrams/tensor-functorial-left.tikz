@@ -17,12 +17,12 @@
 \draw[->] (S1) -- (l1);
 \draw[<-] (S1') -- (r1);
 
-\draw[->] (l1) to[rrel, out=north east, in=west] (1,1)
+\draw[->] (l1) to[out=north east, in=west] ++(1,1)
  to ($(r1) + (-1,1)$)
  to[out=east, in=north west] (r1)
 ;
 
-\draw[->] (l2) to[rrel, out=north east, in=west] (1,1)
+\draw[->] (l2) to[out=north east, in=west] ++(1,1)
  to ($(r2) + (-1,1)$)
  to[out=east, in=north west] (r2)
 ;
@@ -50,12 +50,12 @@
 \draw[<-] (T1') -- (q1);
 
 \draw[->] (p1) 
- to[rrel, out=north east, in=west] (1,1)
+ to[out=north east, in=west] ++(1,1)
  to ($(q1) + (-1,1)$)
  to[out=east, in=north west] (q1)
 ;
 
-\draw[->] (p2) to[rrel, out=north east, in=west] (1,1)
+\draw[->] (p2) to[out=north east, in=west] ++(1,1)
  to ($(q2) + (-1,1)$)
  to[out=east, in=north west] (q2)
 ;

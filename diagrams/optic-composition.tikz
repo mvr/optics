@@ -15,13 +15,13 @@
 \draw[->] (R) -- (l');
 \draw[<-] (R') -- (r');
 
-\draw[->] (l') to[rrel, out=north east, in=west] (1,1)
- to +(3,0)
+\draw[->] (l') to[out=north east, in=west] ++(1,1)
+ to ++(3,0)
  to[out=east, in=north west] (r')
 ;
 
-\draw[->] (l) to[rrel, out=north east, in=west] (1,1)
- to +(1,0)
+\draw[->] (l) to[out=north east, in=west] ++(1,1)
+ to ++(1,0)
  to[out=east, in=north west] (r)
 ;
 

@@ -13,8 +13,8 @@
 \draw[<-] (R') -- (r);
 \draw[<-] (r) to[out=south west,in=east] (S');
 
-\draw[->] (l) to[rrel, out=north east, in=west] (1,1)
- to +(2,0)
+\draw[->] (l) to[out=north east, in=west] ++(1,1)
+ to ++(2,0)
  to[out=east, in=north west] (r)
 ;
 

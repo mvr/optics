@@ -714,8 +714,8 @@ That morphisms of the form $\iota(f, g)$ constitute a category and that $(-)^*$ 
 \left( (S, S') \switched (T, T') \right)^* 
 &= \left( S \otimes T, T' \otimes S' \right)^* \\
 &= \left(T' \otimes S', S \otimes T  \right) \\
-&= (T', T) \otimes (S', S) \\
-&= (T, T')^* \otimes (S, S')^*
+&= (T', T) \switched (S', S) \\
+&= (T, T')^* \switched (S, S')^*
 \end{align*}
 
 To check extranaturality of $\varepsilon$, suppose we have a dualisable optic $\iota(f, g) : (S, S') \hto (T, T')$, so $f : S \to T$ and $g : T' \to S'$. Extranaturality is witnessed by the equality of the string diagrams:
@@ -726,12 +726,11 @@ To check extranaturality of $\varepsilon$, suppose we have a dualisable optic $\
 \end{center}
 Symmetry:
 \begin{center}
-\includegraphics[width=.4\textwidth]{diagrams/counit-symmetry}
+\input{diagrams/counit-symmetry-left.tikz}
+\qquad \raisebox{1.5cm}{$=$} \qquad 
+\input{diagrams/counit-symmetry-right.tikz}
 \end{center}
-Monoidality:
-\begin{center}
-\includegraphics[width=.4\textwidth]{diagrams/counit-monoidal}
-\end{center}
+Monoidality: \todo{there is basically nothing to do in the graphical calculus}
 
 Note that the diagrams required to commute all terminate with the unit $I$, so in view of Proposition \ref{prop-costates} we should not be surprised that they correspond to equality of maps in $\C$.
 \end{proof}

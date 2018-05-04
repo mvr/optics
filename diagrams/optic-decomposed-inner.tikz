@@ -1,0 +1,22 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node (A) at (0, 0) {$A$};
+\node (M) [below = 1 of A] {$M$};
+\node (A') at (5, 0) {$A'$};
+\node (M') [below = 1 of A'] {$M$};
+
+\node (Aout) [below right = 1 and 2 of A] {$A$};
+\node (A'out) [below left= 1 and 2 of A'] {$A'$};
+
+\draw[->] (A) to[out=east, in=west] (Aout);
+\draw[<-] (A') to[out=west, in=east] (A'out);
+
+\draw[->] (M) to[out=east, in=west] ($(Aout) + (0,1)$)
+to[out=east, in=west] ($(A'out) + (0,1)$)
+to[out=east, in=west] (M');
+
+\node[draw,dashed,fit=(Aout) (A'out) ] (box) {};
+
+\end{scope}
+\end{tikzpicture}

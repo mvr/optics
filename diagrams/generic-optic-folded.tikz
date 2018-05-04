@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+\node[vert] (l) at (0, 0) {$l$};
+\node[vert] (r) at (0, -2) {$r^*$};
+
+\node (S) [left of=l]{$S$};
+\node (S') [left of=r]{$S'$};
+
+\node (A) [right =2 of l]{$A$};
+\node (A') [right = 2 of r]{$A'$};
+
+\draw[->] (S) -- (l);
+\draw[->] (l) -- (A);
+\draw[<-] (S') -- (r);
+\draw[<-] (r) -- (A');
+
+\draw[->-=0.5] (l) to[out = -20, in = 20, edge label=$M$] (r);
+
+%\node (Sin) {$S$};
+%\node (f) [vert, right of=Sin] {$f$};
+%\node (Sout) [right of=f] {$S$};
+%\node (Spout) [right of=Sout] {$S'$};
+%\node (g) [vert, right = 0.5 of Spout] {$g$};
+%\node (Spin) [right of=g] {$S'$};
+%
+%\draw[->] (Sin) -- (f);
+%\draw[->] (f) -- (Sout);
+%\draw[->] (Spout) -- (g);
+%\draw[->] (g) -- (Spin);
+\end{tikzpicture}

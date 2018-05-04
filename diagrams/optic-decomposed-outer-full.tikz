@@ -1,0 +1,69 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node[vert] (l) at (0, 0) {$\lambda_S^{-1}$};
+\node[vert] (r') at (10, 0) {$\lambda_{S'}$};
+\node[vert] (l') [below = 3.5 of l] {$\lambda_I^{-1}$};
+\node[vert] (r) [below = 3.5 of r']  {$\lambda_I$};
+
+\node[vert] (L) [below right = 1 and 1 of l] {$l$};
+\node[vert] (R) [below left = 1 and 1 of r'] {$r$};
+
+\node (S) [left of=l] {$S$};
+\node (A) [below right = 0 and 3.5 of L] {$A$};
+\node (T') [right of=r'] {$S'$};
+\node (A') [below left = 0 and 3.5 of R] {$A'$};
+
+\node (T) [left of=l'] {$I$};
+\node (M) [below = 1 of A] {$M$};
+\node (I) [below = 1.5 of M] {$I$};
+\node (S') [right of=r] {$I$};
+\node (M') [below = 1 of A'] {$M$};
+\node (I') [below = 1.5 of M'] {$I$};
+
+\draw[->] (S) -- (l);
+\draw[<-] (T') -- (r');
+\draw[->, dotted] (T) -- (l');
+\draw[<-, dotted] (S') -- (r);
+
+\draw[->] (l) to[out=south east, in=west] (L);
+\draw[<-] (r') to[out=south west, in=east] (R);
+
+\draw[->, dotted] (l') to[out=south east, in=west] (I);
+\draw[<-, dotted] (r) to[out=south west, in=east] (I');
+
+\draw[->] (L) to[out=north east, in=west] (M);
+\draw[->] (L) to[out=south east, in=west] (A);
+
+\draw[<-] (R) to[out=north west, in=east] (M');
+\draw[<-] (R) to[out=south west, in=east] (A');
+
+\draw[->, dotted] (l') to[out=north east, in=south west] ($(I) + (-2, 1)$)
+  to[out = north east, in=west] ($(A') + (0.5, 2)$)
+  to[out = east, in=west] ($(r') + (-1, 1)$)
+  to[out = east, in=north west] (r')
+;
+
+\draw[->, dotted] (r) to[out=north west, in=south east] ($(I') + (2, 1)$)
+  to[out = north west, in=east] ($(A) + (-0.5, 2)$)
+  to[out = west, in=east] ($(l) + (1, 1)$)
+  to[out = west, in=north east] (l)
+;
+
+%\draw[->] (l') 
+% to[out=north east, in=west] ++(2,1)
+% to[out=east, in=west] ++(2,1.6)
+% to[out=east, in=north west] (r')
+%;
+%
+%\draw[<-] (r) 
+% to[out=north west, in=east] ++(-2,1)
+% to[out=west, in=east] ($(l) + (2,1.6)$)
+% to[out=west, in=north east] (l)
+%;
+
+
+\node[draw,dashed,fit=(A) (A') (M) (M') (I) (I'), inner xsep = 8pt] (box) {};
+
+\end{scope}
+\end{tikzpicture}

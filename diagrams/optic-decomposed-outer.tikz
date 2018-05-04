@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+
+\node (l) [vert] at (0, 0) {$l$};
+\node (S) [left of=l] {$S$};
+\node (A) [above right = 0.2 and 2 of l] {$A$};
+\node (M) [below right = 0.2 and 2 of l] {$M$};
+
+\node (r) [vert] at (6, 0) {$r$};
+\node (S') [right of=r] {$S'$};
+\node (A') [above left = 0.2 and 2 of r] {$A'$};
+\node (M') [below left = 0.2 and 2 of r] {$M$};
+
+\draw[->] (S) -- (l);
+\draw[->] (r) -- (S');
+
+\draw[->] (l) to[out=south east, in=west] (A);
+\draw[->] (l) to[out=north east, in=west] (M);
+
+\draw[<-] (r) to[out=south west, in=east] (A');
+\draw[<-] (r) to[out=north west, in=east] (M');
+
+\node[draw,dashed,fit=(A) (A') (M) (M')] (box) {};
+\end{tikzpicture}

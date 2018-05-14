@@ -141,27 +141,27 @@
 
 \section{Introduction}
 
-\todo{Past work:
-\begin{itemize}
-\item The Haskell lens people: edwardk, shachaf, xplat, roconnor... (TODO: find out who these people are)
-\item The Doubles paper
-\item Bartosz's blog post which was written about the same time I started this. (Only tensor-like optics, no discussion of laws, confusion about enrichment(?))
-\item The profunctor optics paper out of Oxford. (No generality, nothing categorical, no discussion of laws)
-\end{itemize}
-}
-
-\todo{Contributions:
-\begin{itemize}
-\item ...
-\end{itemize}
-}
-
-\todo{Introduction should include:
-\begin{itemize}
-\item Previous attempts to generalise optics
-\item Some remark about how it's hard to isolate exactly what $\Set$-like properties are being used
-\end{itemize}
-}
+%\todo{Past work:
+%\begin{itemize}
+%\item The Haskell lens people: edwardk, shachaf, xplat, roconnor... (TODO: find out who these people are)
+%\item The Doubles paper
+%\item Bartosz's blog post which was written about the same time I started this. (Only tensor-like optics, no discussion of laws, confusion about enrichment(?))
+%\item The profunctor optics paper out of Oxford. (No generality, nothing categorical, no discussion of laws)
+%\end{itemize}
+%}
+%
+%\todo{Contributions:
+%\begin{itemize}
+%\item ...
+%\end{itemize}
+%}
+%
+%\todo{Introduction should include:
+%\begin{itemize}
+%\item Previous attempts to generalise optics
+%\item Some remark about how it's hard to isolate exactly what $\Set$-like properties are being used
+%\end{itemize}
+%}
 A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$ that typically obeys three laws (whose names are in diagrammatic order):
 \begin{itemize}
 \item ``$\fput\fget$'': $\fget \; \fput = \pi_2$ as maps $S \times A \to A$, so that any update to $A$ should be \todo{represented faithfully in $S$},
@@ -259,7 +259,7 @@ The identity optic $(S, S') \hto (S, S')$ is given by $\langle \lambda^{-1}_S, \
 \begin{center}
 \input{diagrams/identity-optic-full.tikz}
 \end{center}
-This dashed line above the diagram represents the unit object. As is standard, we will elide the unit object and unitors in future diagrams unless they are necessary. The diagram for the identity becomes simply:
+This dashed line above the diagram represents the unit object. As is standard, we will elide the unit object and unitors in future diagrams unless they are necessary. The diagram for the identity becomes:
 \begin{center}
 \input{diagrams/identity-optic.tikz}
 \end{center}
@@ -295,7 +295,7 @@ For the unit laws, suppose we have $\langle l, r \rangle : (S, S') \hto (A, A')$
 &= \langle l, r (\lambda_{M} \otimes S')(\lambda^{-1}_M \otimes S') \rangle \\
 &= \langle l, r \rangle
 \end{align*}
-Where in both cases we have used the naturality of $\lambda$ and coend relations to move $\lambda^{-1}_M$ to the right-hand side of the coend. 
+Where in both cases we have used the naturality of $\lambda$ and coend relations to move $\lambda^{-1}_M$ to the right-hand side of the coend, where it may be cancelled.
 \end{proof}
 
 \begin{remark}
@@ -593,11 +593,8 @@ where $\phi_{M,A} : FM \otimes FA \to F(M \otimes A)$ is the structure map of th
 
 \begin{proposition}
 \label{prop-optic-functor}
-Collectively this operation defines a \todo{pseudo?}functor \[\Optic : \SymmMonCat \to \SymmMonCat.\]
+Collectively this operation defines a \todo{pseudo?}functor \[\Optic : \SymmMonCat \to \SymmMonCat.\] \qed
 \end{proposition}
-\begin{proof}
-\todo{todo}
-\end{proof}
 
 \subsection{Teleological Categories}
 \label{teleological-categories}
@@ -849,7 +846,7 @@ We must show that this is well defined. Suppose we have two lenses related by th
 \begin{align*}
 \langle (f \otimes A) l, r \rangle = \langle l, r (f \otimes A') \rangle
 \end{align*}
-Then: \todo{do as string diagram}
+Then: \todo{maybe do as string diagram}
 \begin{align*}
 K\langle (f \otimes A) l, r \rangle 
 &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F(s_{M,A}(f \otimes A)l) \otimes (F(rs_{A',M}))^* ) \\
@@ -863,19 +860,6 @@ K\langle (f \otimes A) l, r \rangle
 \end{align*}
 \todo{functoriality} \todo{monoidal} \todo{preserves dualisable morphisms} \todo{preserves counit}
 \end{proof}
-
-\begin{remark}
-It is unclear whether an argument like this can work in the case $\C$ is \emph{not} strict. There are a number of issues:
-
-\begin{itemize}
-\item Given $f : S \to A$ and $g : A' \to S'$, the optic $j(f) \otimes j(g)^* : (S \otimes I, I \otimes S') \hto (A \otimes I, I \otimes A')$ is not equal to $\iota(f, g)$. It is also not in a form that can be composed with the unitors of $\Optic_\C$, as the $I$s are not on the same side in either the domain or codomain.
-\item \todo{wasn't there more?}
-\end{itemize}
-
-One possible workaround: We could extend the category of optics so it contains the image of $\C$ and its duals directly, without needing ghost morphisms $I \to I$ to face the other direction. So there are also objects $(S)$, and a morphism $(S) \hto (A)$ is either an $f : S \to A$ or the formal dual of a $g : A \to S$, and a morphism $(S) \hto (A, A')$ is an optic $(S, I) \hto (A, A')$. 
-
-There are several cases involved when composing morphisms and tensoring objects, depending on which kinds of objects are involved. This is significantly fiddlier, but it should allow a version of Proposition \ref{prop-optic-decompose} to apply to any $\C$.
-\end{remark}
 
 \subsection{Optics for a Monoidal Action}
 
@@ -992,6 +976,8 @@ In view of this Proposition, whenever we posit a representative $\langle l, r \r
 
 \section{Examples}
 \label{lawful-examples}
+
+\todo{As we get higher up in the hierarchy, the `ad-hoc' laws get closer to being the same as the coend laws}
 
 \subsection{Lenses}
 
@@ -1200,7 +1186,7 @@ To define setters we must first recall the notion of a strong functor.
 
 %\todo{Taken from http://cs.ioc.ee/~tarmo/ssgep15/ssgep-1a.pdf}
 \begin{definition}[\cite{StrongFunctors}]
-Suppose $(\C, \otimes, I)$ is a monoidal category. A \emph{(left) strength} for an endofunctor $F : \C \to \C$ is a natural transformation
+Suppose $(\C, \otimes, I)$ is a monoidal category.  A \emph{(left) strong functor} is a functor $F : \C \to \C$ equipped with a natural transformation
 \begin{align*}
 \theta_{A,B} : A \otimes F B \to F(A \otimes B)
 \end{align*}
@@ -1218,7 +1204,7 @@ and
 A \otimes (B \otimes F C) \ar[r, "A \otimes \theta_{B,C}" below] & A \otimes F(B \otimes C) \ar[r, "\theta_{A, B\otimes C}" below] & F(A \otimes (B \otimes C))
 \end{tikzcd}
 \]
-commute. A \emph{strong functor} is a functor equipped with a strength. A \emph{strong natural transformation} $\tau : (F,\theta) \to (G,\theta')$ is a natural transformation that respects the strength:
+commute. A \emph{strong natural transformation} $\tau : (F,\theta) \to (G,\theta')$ is a natural transformation that respects the strength:
 \[
 \begin{tikzcd}
 A \otimes F B \ar[r, "\theta_{A,B}"] \ar[d, "A \otimes \tau_B" left]  & F(A \otimes B) \ar[d, "\tau_{A \otimes B}" right] \\
@@ -1229,13 +1215,13 @@ A \otimes G B \ar[r, "\theta'_{A, B}"]& G(A \otimes B)
 There is an evident category $\Strong(\C)$ of strong endofunctors and strong natural transformations, and a forgetful functor $U : \Strong(\C) \to [\C, \C]$.
 \end{definition}
 
-In what follows, we will exploit the convenient $\lambda$-calculus syntax for morphisms in a cartesian closed category. \todo{ref}
+In what follows, we will exploit the convenient $\lambda$-calculus syntax for morphisms in a cartesian closed category. \todo{ref} \todo{this sudden change in notation is a bit confusing}
 
 \begin{example}
-An example, which we will use immediately, is the functor $FX = C \times \homC(D, X)$ in any cartesian closed category $\C$, and with any pair of objects $C$ and $D$. The strength is given by:
+An example, which we will use immediately, is the functor $FX = A \times \homC(B, X)$ in any cartesian closed category $\C$, and with any pair of objects $A$ and $B$. The strength $s_{C,D}$ is given by:
 \begin{align*}
-A \times FB = A \times C \times \homC(D, B) &\to C \times \homC(D, A \times B) = F(A \times B)\\
-(a, c, f) &\mapsto (c, \lambda d. (a, fd))
+C \times FD = C \times A \times \homC(B, D) &\to A \times \homC(B, C \times D) = F(C \times D)\\
+(c, a, f) &\mapsto (a, \lambda d. (c, fd))
 \end{align*}
 \end{example}
 
@@ -1247,10 +1233,15 @@ A \times FB = A \times C \times \homC(D, B) &\to C \times \homC(D, A \times B) =
 Suppose $\C$ is cartesian closed and $F : \C \to \C$ is strong with respect to $\times$. Then for any objects $A, B \in \C$, \[\C(A, FB) \cong \Strong_\C(\times)(A \times \homC(B, -), F)\]
 \end{lemma}
 \begin{proof}
-Given a $f \in \C(A, FB)$, let $\Phi(f)$ be the natural transformation with components
+We construct the isomorphism $\Phi: C(A, FB) \cong \Strong_\C(\times)(A \times \homC(B, -), F)$ and its inverse $\Psi$.
+Given a $f \in \C(A, FB)$, let $\Phi(f)$ be the natural transformation such that the component at $C$ is the composite 
+\begin{align*}
+A \times \homC(B, C) \to FB \times \homC(B, C) \to F(B \times \homC(B, C)) \to FC
+\end{align*}
+I.e.,
 \begin{align*}
 A \times \homC(B, C) &\to FC \\
-(a, g) &\mapsto F(\lambda x. \lambda h. h x)\theta_{\homC(B, C), B}(fa, g)
+(a, g) &\mapsto F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, f a))
 \end{align*}
 %\begin{align*}
 %A \times \homC(B, C) \xrightarrow{f \times \id} FB \times \homC(B, C) \xrightarrow{\theta_{\homC(B, C), B}}  F(B \times \homC(B, C)) \xrightarrow{F\epsilon} FC
@@ -1258,36 +1249,47 @@ A \times \homC(B, C) &\to FC \\
 where $\theta$ is the strength for $F$.
 \todo{Check this is a strong natural transformation}
 
-Conversely, given an $\eta : A \times \homC(B, -) \Rightarrow F$, the component at $B$ is a function $\eta_B : A \times \homC(B, B) \to FB$; we define
-\begin{align*}
-A &\to FB \\
-a &\mapsto \eta_B(a, \lambda b. b)
-\end{align*}
+Conversely, given a strong natural transformation $\eta : A \times \homC(B, -) \Rightarrow F$, the component at $B$ is a function $\eta_B : A \times \homC(B, B) \to FB$; we define $\Psi(\eta) : A \to FB$ by $\Psi(\eta)(a) = \eta_B(a, \id_B)$
+
 %$\Psi(\eta) : A \to FB$ to be $A \xrightarrow{A \times \const_{\id_B}} A \times \homC(B, B) \xrightarrow{\eta_B} FB$.
 
-\todo{out of date:}
-Checking these are inverse:
+Now, verifying these are inverse:
 \begin{align*}
-\Phi(\Psi(\eta))_C &= \Phi(\eta_B(A\times\const_{\id_B}))_C \\
-&= (F\epsilon) \theta_{\homC(B, C), B} \left( \eta_B(A\times\const_{\id_B}) \times \id_{\homC(B, C)} \right)
+\Phi(\Psi(\eta))_C (a,g)
+&= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, \Psi(\eta)(a))) \\
+&= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, \eta_B(a, \id_B))) \\
+&= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(\id, \eta_B)(g, (a, \id_B))) \\
+&= F(\lambda x. \lambda h. h x)(\eta_{\homC(B, C) \times B} s_{\homC(B, C), B}(g, a, \id_B)) && \text{($\theta$ is a strong transformation)}\\
+&= F(\lambda x. \lambda h. h x)(\eta_{\homC(B, C) \times B} (a, \lambda d. (g, \id_B d)) ) && \text{(definition of $s$)}\\
+&= F(\lambda x. \lambda h. h x)(\eta_{\homC(B, C) \times B} (a, \lambda d. (g, d)) ) \\
+&= \eta_{C}(\lambda (a, f). (a, \lambda b. \mathsf{fst}(f b)\mathsf{snd}(f b)) (a, \lambda d. (g, d)) && \text{(naturality of $\eta$)}\\
+&= \eta_{C}(a, \lambda b. g b) \\
+&= \eta_{C}(a, g)
 \end{align*}
-\todo{todo, using the strength for $A \times \homC(B, -)$?}
+And in the other direction:
+\begin{align*}
+\Psi(\Phi(f))(a) 
+&= \Phi(f)_B(a, \id_B) \\
+&= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, B), B}(\id_B, f a))\\
+&= F(\lambda x. \lambda h. h x)(F(\lambda b. (\id_B, b)))\theta_{1, B}(f a) && \text{(naturality of $\theta$)}\\
+&= F(\lambda b. \id_B b)\theta_{1, B}(f a)\\
+&= \theta_{1, B}(f a) && \text{(strength of $\theta$)}\\
+&= f a
+\end{align*}
 \end{proof}
 
-This is a generalisation of \cite[Proposition 2.2]{SecondOrderFunctionals}, isolating the properties of $\Set$ that were used.
-
-Now, we can construct setters. 
+This is a generalisation of \cite[Proposition 2.2]{SecondOrderFunctionals}, isolating the properties of $\Set$ that are used. We can now construct setters: 
 
 \begin{definition}
-Supposed $\C$ is cartesian closed, and let $\Strong(\C)$ act on $\C$ by evaluation. The \emph{category of setters} $\Setter_\C$ is the category of lawful optics for this action.
+Supposed $\C$ is cartesian closed and let $\Strong(\C)$ act on $\C$ by evaluation. The \emph{category of setters} $\Setter_\C$ is the category of optics for this action.
 \end{definition}
 
-Due to the above lemma, we can eliminate the coend from this definition:
+Due to the above lemma, we can eliminate the coend from the definition:
 \begin{align*}
-\Setter_\C(S, A) &= \int^{F \in \Strong(\C)} \C(S, FA) \times \C(FA, S) \\
-&\cong \int^{F \in \Strong(\C)} \Strong_\C(\times)(S \times \homC(A, -), F)  \times \C(FA, S) \\
-&\cong \C(S \times \homC(A, A), S) \\
-&\cong \C(\homC(A, A), \homC(S,S))
+\Setter_\C((S, S'), (A, A')) &= \int^{F \in \Strong(\C)} \C(S, FA) \times \C(FA', S') \\
+&\cong \int^{F \in \Strong(\C)} \Strong_\C(\times)(S \times \homC(A, -), F)  \times \C(FA', S') \\
+&\cong \C(S \times \homC(A, A'), S') \\
+&\cong \C(\homC(A, A'), \homC(S,S'))
 \end{align*}
 
 \todo{laws}
@@ -1332,20 +1334,22 @@ Now the set of optics $(S, S') \hto (A, A')$ is:
 &\cong \C(S, S' \sqcup (\homC(A', S') \times A))
 \end{align*}
 
-This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the two are not equal---in other words---there are fewer affine traversals than expected.
+This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the two are not equal. In other words, there are fewer affine traversals than expected.
 
 \todo{Give an example of two elements of the set that correspond to the same affine traversal}
 
 \todo{For \emph{lawful} affine traversals, there may not be a difference}
 
 \begin{remark}
-For this argument to work, it is important that the morphisms in $\mathsf{Aff}$ are just those in $\C \times \C$, even though there are likely to be more natural transformations between the corresponding functors $P \sqcup (Q \times -)$ and $P' \sqcup (Q' \times -)$.
+For this argument to work, it is important that the morphisms in $\mathsf{Aff}$ are just those in $\C \times \C$, even though there are likely to be more natural transformations between the functors $P \sqcup (Q \times -)$ and $P' \sqcup (Q' \times -)$.
 \end{remark}
 
 \subsection{Traversals}
-\todo{Do it}
+\todo{todo}
 
 \subsection{``Achromatic'' Lenses}
+\todo{http://oleg.fi/gists/posts/2018-03-28-achromatic-lens.html}
+
 
 \subsection{Polymorphic Optics}
 Haskell's optics \todo{find an older reference from DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, the lens into the first entry of a tuple has type
@@ -1386,6 +1390,7 @@ Lawful optics in $\Optic_{[\D, \C]}$ are sent to lawful optics in $\Optic_\C$,  
 \todo{more to say?}
 
 \todo{What about the pointwise tensor of an entire functor?}
+
 
 \subsection{Indexed Optics}
 \todo{
@@ -1529,7 +1534,7 @@ If $P, Q \in \Prof(\C, \C)$ are equipped with module structures $\alpha$ and $\b
 \end{align*}
 
 \begin{definition}
-There is a category $\Tamb_\C(\M)$ of Tambara modules and natural transformations that respect the extra structure, in the sense that for any $l : P \to Q$, the diagram
+There is a category $\Tamb(\M)$ of Tambara modules and natural transformations that respect the extra structure, in the sense that for any $l : P \to Q$, the diagram
 \[
 \begin{tikzcd}
 P(A,B) \ar[r, "\alpha_{A,B,M}"] \ar[d, "l_{A,B}" left] & P(MA, MB) \ar[d, "l_{MA, MB}" right] \\
@@ -1539,10 +1544,10 @@ Q(A,B) \ar[r, "\beta_{A,B,M}"] & Q(MA, MB)
 commutes.
 \end{definition}
 
-This category is monoidal with respect to $\odot$ as given above, and the monoidal unit is given by $I$. There is an evident forgetful functor $U : \Tamb_\C(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; particularly important for us is the left adjoint:
+This category is monoidal with respect to $\odot$ as given above, and the monoidal unit is given by $I$. There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; particularly important for us is the left adjoint:
 
 \begin{definition}
-Let $\Pastro_\M : \Prof(\C, \C) \to \Tamb_\C(\M)$ be the functor \todo{change notation? drop $\C$ if we use the same one the whole time?}
+Let $\Pastro_\M : \Prof(\C, \C) \to \Tamb(\M)$ be the functor:
 \begin{align*}
 \Pastro_\M(P) := \int^{M \in \M}  \C(-, M{=}) \odot P \odot \C(M-, {=}) 
 \end{align*}
@@ -1562,7 +1567,7 @@ for all $N \in \M$.
 \end{definition}
 
 \begin{proposition}
-$\Pastro_\M : \Prof(\C, \C) \to \Tamb_\C(\M)$ is left adjoint to $U : \Tamb_\C(\M) \to \Prof(\C, \C)$.
+$\Pastro_\M : \Prof(\C, \C) \to \Tamb(\M)$ is left adjoint to $U : \Tamb(\M) \to \Prof(\C, \C)$.
 \end{proposition}
 \begin{proof}
 \todo{Could crunch through this manually, may be a neat way to do it using techniques from P/S}
@@ -1581,19 +1586,19 @@ This follows abstractly as the left adjoint of a strong monoidal functor \cite{K
 For an object $A \in \C$, the \emph{exchange profunctor} $E_A$ is defined to be $\C(-, A) \times \C(A, {=})$.
 \end{definition}
 
-\begin{proposition}
-The category $\Optic_\M$ is isomorphic to the full subcategory on objects of the form $E_A$ in the Kleisli category for the monad $U \Pastro_\M : \Prof(\C, \C) \to \Prof(\C, \C)$.
-\end{proposition}
-\begin{proof}
-\todo{Is there a point to proving this?}
-\end{proof}
+%\begin{proposition}
+%The category $\Optic_\M$ is isomorphic to the full subcategory on objects of the form $E_A$ in the Kleisli category for the monad $U \Pastro_\M : \Prof(\C, \C) \to \Prof(\C, \C)$.
+%\end{proposition}
+%\begin{proof}
+%\todo{Is there a point to proving this?}
+%\end{proof}
 
-Given a profunctor, or indeed a Tambara module, we can evaluate it at any two objects of $\C$. This process is functorial in the choice of Tambara module, giving a functor $(U-)(A,A) : \Tamb_\C(\M) \to \Set$.
+Given a profunctor, or indeed a Tambara module, we can evaluate it at any two objects of $\C$. This process is functorial in the choice of Tambara module, giving a functor $(U-)(A,A) : \Tamb(\M) \to \Set$.
 
 \begin{lemma}
 \label{lemma-rep}
-The functor $(U-)(A,A) : \Tamb_\C(\M) \to \Set$ is representable: there is a natural isomorphism
-$(U-)(A,A) \cong \Tamb_\C(\M)(\Pastro_\M E_A, -)$
+The functor $(U-)(A,A) : \Tamb(\M) \to \Set$ is representable: there is a natural isomorphism
+$(U-)(A,A) \cong \Tamb(\M)(\Pastro_\M E_A, -)$
 \end{lemma}
 \begin{proof}
 We have the chain of natural isomorphisms:
@@ -1602,7 +1607,7 @@ We have the chain of natural isomorphisms:
 \cong \;&\int_{X,Y \in \C} \Set(\C(X,A) \times \C(A,Y), (U-)(X,Y)) && \text{(by Yoneda (un)reduction twice)} \\
 =\;&\int_{X,Y \in \C} \Set(E_A(X,Y), (U-)(X,Y)) && \text{(by definition)}\\
 \cong \;&\Prof(E_A, U-) && \text{(natural transformations as ends)} \\
-\cong \;&\Tamb_\C(\M)(\Pastro_\M E_A, -) && \text{(by adjointness)} 
+\cong \;&\Tamb(\M)(\Pastro_\M E_A, -) && \text{(by adjointness)} 
 \end{align*}
 \end{proof}
 
@@ -1611,14 +1616,14 @@ We can now show that profunctor optics are precisely optics in the ordinary sens
 \begin{proposition}
 \label{prop-profunctor-optics-are-optics}
 \begin{align*}
-[\Tamb_\C(\M), \Set]((U-)(A,A),(U-)(S,S)) &\cong \Optic_\M(S, A)
+[\Tamb(\M), \Set]((U-)(A,A),(U-)(S,S)) &\cong \Optic_\M(S, A)
 \end{align*}
 \end{proposition}
 \begin{proof}
 We have the chain of isomorphisms:
 \begin{align*}
-&[\Tamb_\C(\M), \Set]((U-)(A,A),(U-)(S,S)) \\
-\cong \;&[\Tamb_\C(\M), \Set](\Tamb_\C(\M)(\Pastro_\M E_A, -), (U-)(S,S))  && \text{(by Lemma \ref{lemma-rep})}\\
+&[\Tamb(\M), \Set]((U-)(A,A),(U-)(S,S)) \\
+\cong \;&[\Tamb(\M), \Set](\Tamb(\M)(\Pastro_\M E_A, -), (U-)(S,S))  && \text{(by Lemma \ref{lemma-rep})}\\
 \cong \;&(U\Pastro_\M E_A)(S,S)  && \text{(by Yoneda)} \\
 = \;&\int^{M \in \M} \int^{C,D \in \C} \C(S, MC) \times E_A(C,D) \times \C(MD,S) \\
 = \;&\int^{M \in \M} \int^{C,D \in \C} \C(S, MC) \times \C(C,A) \times \C(A,D) \times \C(MD,S) \\
@@ -1665,7 +1670,7 @@ For an object $X$ in a monoidal category $\C$, a comonoid structure $(X,\Delta,\
 \todo{not hard}
 \end{proof}
 
-Therefore the functor $\Tamb_\C(\M)(\Pastro_\M E_A, -)$ is canonically lax monoidal, and so the isomorphic functor $(U-)(A,A)$ is also.
+Therefore the functor $\Tamb(\M)(\Pastro_\M E_A, -)$ is canonically lax monoidal, and so the isomorphic functor $(U-)(A,A)$ is also.
 
 \begin{proposition}
 If $p : S \hto A$ is a lawful optic then the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is a lax monoidal.
@@ -1710,7 +1715,7 @@ And for the second:
 as required.
 \end{proof}
 
-\todo{I don't see why the converse should be true in general, but it seems to be true in specific situations:}
+\todo{The converse is true in specific situations:}
 
 \begin{proposition}
 Let $\C = \Set$ and suppose $p : S \hto A$ is a lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is lawful.
@@ -1719,11 +1724,41 @@ Let $\C = \Set$ and suppose $p : S \hto A$ is a lens such that the associated na
 \todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
 \end{proof}
 
-\todo{
-\section{Degenerate Optics}
-The Haskell lens library has some other `optics' that aren't proper optics, but still integrate nicely with the rest of the ecosystem, e.g. Getters, Reviews and Folds. I am starting to doubt those fit into this framework though.}
+\todo{Here are some thoughts:}
+\begin{theorem}
+If $t : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal, then $\hat{t} : S \hto A$ is a lawful optic.
+\end{theorem}
+\begin{proof}
+The natural transformation $t$ is characterised by its component at $\Pastro_\M E_A$, so I expect the result to follow from the lax monoidalness of $t$ with $P = Q = \Pastro_\M E_A$. 
 
-\section{Merely Well-Behaved Optics}
+The triangle diagram gives immediately that $rl = \id_S$. The square diagram says that
+\begin{align*}
+\langle l, lr, r \rangle = \langle l, \id_{MA}, r \rangle
+\end{align*}
+as elements of 
+\begin{align*}
+\int^{M,N\in \M} \C(S, MA) \times \C(MA, NA) \times \C(NA, S)
+\end{align*}
+And the goal is to somehow prove that $\langle lr \rangle = \psi A$ for some $\psi : M \to M$. Presumably a proof would work by induction on the chain of coend relations, but I don't see how to make progress.
+\end{proof}
+
+\section{Misc}
+\subsection{Degenerate Optics}
+The Haskell lens library has some other `optics' that aren't really optics, but still integrate nicely with the rest of the ecosystem, e.g. Getters, Reviews and Folds. 
+
+Getters $(S, S') \hto (A, A')$ are supposed to correspond to morphisms $S \to A$. These cannot fit nicely into the coend formalism, as there is always the function $\mathsf{outside} : \Optic_\M((S, S), (A, A')) \to \C(S, S')$.
+
+There are some ways to jam it in though, in the specific case of $(S, S) \to (A, A')$, if we set $\M$ to be the category of copointed functors $\C \to \C$. Here copointed means the slice category $[\C, \C] / \id_\C$. 
+
+Then I claim that 
+\begin{align*}
+\int^{F \in \mathsf{Copointed}} \C(S, FA) \times \C(FA, S) \cong \C(S, A) \times \C(S, S)
+\end{align*}
+So that the set of `lawful' getters is exactly $\C(S, A)$.
+
+
+
+\subsection{Merely Well-Behaved Optics}
 \todo{
 The lenses that the UPenn crew look at are less restricted. They obey the $\fput\fget$ and $\fget\fput$ laws but not the $\fput\fput$ law. 
 }
@@ -1761,9 +1796,12 @@ C &\mapsto Y
 
 Prelenses that satisfy the first two laws correspond to pairs $\langle l, r \rangle$ such that $rl = \id_S$ and $\pi_2lr = \pi_2$. \todo{prove?} This condition seems unavoidably tied to the product structure on $\C$; it is not clear whether this weakened notion of lens can be generalised to other optics.
 
-\section{The Challenge of Effectful Optics}
+\subsection{Effectful Optics}
 
 Many attempts \cite{ReflectionsOnMonadicLenses} \todo{more} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given here suggests we instead set $\C$ to be the Kleisli category for some monad $T$.
+
+
+\subsection{Optics Into Stacks of Functors and Monad Transformers}
 
 \section{Conclusion}
 

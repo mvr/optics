@@ -40,7 +40,6 @@ _1 (Carrier f g) = Carrier (assoc . f) (g . unassoc)
   where assoc   ((x, y), z) = (x, (y, z))
         unassoc (x, (y, z)) = ((x, y), z)
 
-
 -- TODO: This might require a Kleisli strength on m so that we have a
 -- well behaved "preproduct" on the Kleisli category
 

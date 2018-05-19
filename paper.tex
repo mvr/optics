@@ -164,7 +164,7 @@
 %}
 A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$ that typically obeys three laws (whose names are in diagrammatic order):
 \begin{itemize}
-\item ``$\fput\fget$'': $\fget \; \fput = \pi_2$ as maps $S \times A \to A$, so that any update to $A$ should be \todo{represented faithfully in $S$},
+\item ``$\fput\fget$'': $\fget \; \fput = \pi_2$ as maps $S \times A \to A$, so that any update to $A$ should be represented faithfully in $S$;
 \item ``$\fget\fput$'': $\fput [\id_S, \fget] = \id_S$ as maps $S \to S$, so that if $A$ is not changed then $S$ should not change; and,
 \item ``$\fput\fput$'': $\fput (\fput \times \id_A) = \fput \, \pi_{1, 3}$ as maps $S \times A \times A \to S$, so any update to $A$ completely overwrites previous updates.
 \end{itemize}
@@ -972,10 +972,10 @@ The above argument has a similar form to some that appear in \cite{OnTheTrace}, 
 
 In view of this Proposition, whenever we posit a representative $\langle l, r \rangle$ of an lawful optic, we may assume that $lr = \phi A$ on the nose, for some $\phi : M \to M$.
 
-
-
 \section{Examples}
 \label{lawful-examples}
+
+The general pattern is, once we choose a particular monoidal action $\M \to [\C, \C]$, we can find an isomorphism between the set of optics $(S, S') \hto (A, A')$ and a set that is easier to describe. The goal is then to find necessary and sufficient conditions on this second set for the corresponding element of the coend to be a lawful optic.
 
 \todo{As we get higher up in the hierarchy, the `ad-hoc' laws get closer to being the same as the coend laws}
 
@@ -1063,7 +1063,7 @@ is a witness that $\langle lr \rangle = \langle \fput_x \times A \rangle$ in $\i
 \todo{Is there some property of $\times$ used here we can abstract? Having a map $1 \to A$ guarantees that $- \times A$ is faithful, is this the trick?}
 \end{proof}
 
-In favourable conditions, we can upgrade this result to show that the existence of a lens $S \hto A$ implies that $S \cong M \times A$ for some $M$. This is a generalised from the argument given in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
+In favourable conditions, we can upgrade this result to show that the existence of a lens $S \hto A$ implies that $S \cong C \times A$ for some $C$. This is a generalised from the argument given in \cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
 
 \begin{proposition}
 Suppose $\C$ has pullbacks and that there is a morphism $x : 1 \to A$. If $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
@@ -1107,6 +1107,8 @@ C \times A \ar[r, "i \times A", swap] & S \times A
 is a witness that $\langle \fput (i \times A), [j,\fget] \rangle = \langle \fput, [\id_S, \fget] \rangle$ as elements of $\Optic_\M(S, A)$.
 \end{proof}
 
+\todo{There may be something generalisable here with ``monoidal factorisation systems''}
+
 \subsection{Non-Cartesian Lenses}
 If $\C$ is closed monoidal, we can use a similar trick to eliminate the coend in the definition of an optic:
 
@@ -1115,10 +1117,27 @@ If $\C$ is closed monoidal, we can use a similar trick to eliminate the coend in
 &\cong \int^{M \in \C} \C(S, M \otimes A) \times \C(M, \homC(A',S')) \\
 &\cong \C(S, \homC(A',S') \otimes A)
 \end{align*}
-where $\homC(S, A)$ denotes the internal hom. If $\C$ is cartesian, this is of course isomorphic to the pair of maps discussed in the previous section. 
+where $\homC(A', S')$ denotes the internal hom. If $\C$ is cartesian, this is of course isomorphic to the pair of maps discussed in the previous section. 
 
 \todo{laws?}
 \todo{The use of lenses in a type system with linear types seems worth exploring!}
+
+\subsection{``Achromatic'' Lenses}
+\todo{http://oleg.fi/gists/posts/2018-03-28-achromatic-lens.html}
+
+Suppose $\C$ is cartesian closed and has finite coproducts. Then $\C$ acts on itself via $M \cdot A = (M \sqcup 1) \times A$.
+\begin{align*}
+\Optic((S, S'), (A, A')) 
+&= \int^{M \in \C} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
+&= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \sqcup 1) \times A', S') \\
+&= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \times A') \sqcup A', S') \\
+&= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M \times A', S') \times \C(A', S') \\
+&= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M, \homC(A', S')) \times \C(A', S') \\
+&= \C(S, (\homC(A', S') \sqcup 1) \times A) \times \C(A', S') \\
+&= \C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S') \\
+\end{align*}
+
+\todo{Equivalently(?), let $\M$ be the category of pointed sets}
 
 \subsection{Prisms}
 Prisms are dual to lenses:
@@ -1346,10 +1365,6 @@ For this argument to work, it is important that the morphisms in $\mathsf{Aff}$ 
 
 \subsection{Traversals}
 \todo{todo}
-
-\subsection{``Achromatic'' Lenses}
-\todo{http://oleg.fi/gists/posts/2018-03-28-achromatic-lens.html}
-
 
 \subsection{Polymorphic Optics}
 Haskell's optics \todo{find an older reference from DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, the lens into the first entry of a tuple has type
@@ -1635,12 +1650,14 @@ We have the chain of isomorphisms:
 \todo{Flip the order of the isomorphisms top to bottom?}
 \end{proof}
 
+For $p : S \hto A$, let $\tilde{p} : (U-)(A,A) \Rightarrow (U-)(S,S)$ denote the corresponding natural transformation under this isomorphism, and for $t : (U-)(A,A) \Rightarrow (U-)(S,S)$, let $\hat{t} : S \hto A$ be the corresponding optic.
+
 \begin{corollary}
 A profunctor optic is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
 \end{corollary}
 \begin{proof}
 This is the content of the first two isomorphisms above.
-
+\todo{fix notation in the following}
 Explicitly, let $p_{\Pastro_\M E_A}(\langle \id_A, \id_A, \id_A, \id_A \rangle) = \langle l, \id_A, \id_A, r \rangle$, where $l : S \to M A$ and $r : M A \to S$. Then the component of $p$ at any other Tambara module $P$ is given by
 \begin{align*}
 p_P = (UP)(l,r) \alpha_{A,A,M}
@@ -1673,7 +1690,7 @@ For an object $X$ in a monoidal category $\C$, a comonoid structure $(X,\Delta,\
 Therefore the functor $\Tamb(\M)(\Pastro_\M E_A, -)$ is canonically lax monoidal, and so the isomorphic functor $(U-)(A,A)$ is also.
 
 \begin{proposition}
-If $p : S \hto A$ is a lawful optic then the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is a lax monoidal.
+If $p : S \hto A$ is a lawful optic then the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal.
 \end{proposition}
 \begin{proof}
 Let $\langle l, r \rangle$ be a representative for $p$ in $\Optic_\M(S,A)$ via the isomorphism of Proposition \ref{prop-profunctor-optics-are-optics}, so that

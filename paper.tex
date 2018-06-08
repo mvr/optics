@@ -1524,9 +1524,9 @@ Now the set of optics $(S, S') \hto (A, A')$ is:
 
 This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the two are not equal. In other words, there are fewer affine traversals than expected.
 
-\todo{Give an example of two elements of the set that correspond to the same affine traversal}
+\todo{Do laws? For \emph{lawful} affine traversals, there may not be a difference}
 
-\todo{For \emph{lawful} affine traversals, there may not be a difference}
+\todo{Give an example of two elements of the set that correspond to the same affine traversal}
 
 \subsection{Traversals}
 \todo{todo}
@@ -1534,9 +1534,9 @@ This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the t
 \subsection{Polymorphic Optics}
 Haskell's optics \todo{find an older reference from DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, the lens into the first entry of a tuple has type
 \begin{center}
-\texttt{first :: Lens (a, b) (a', b) a a'}, 
+\texttt{first :: Lens (a, b) (a', b) a a'},
 \end{center}
-then:
+\todo{Why is the spacing strange above?} then:
 \begin{center}
 \texttt{set first (1, 5) "hello" == ("hello", 5)}
 \end{center}
@@ -1687,7 +1687,8 @@ which is why they pass information `in the other direction' but still transform 
 \section{Profunctor Optics}
 
 \subsection{Tambara Modules}
-Let $I = \C(-,{=}) : \C \hto \C$ be the identity profunctor and $\odot$ be profunctor composition, written in diagrammatic order. The following section generalises definitions that first appeared in \cite{Doubles}.
+Let $I = \C(-,{=}) : \C \hto \C$ be the identity profunctor and $\odot$ be profunctor composition, written in diagrammatic order. The following section generalises definitions that first appeared in \cite[Section 3]{Doubles} for monoidal categories to the more general case of a monoidal action.
+
 \begin{definition}
 Suppose $\C$ is acted on by $(\M, \otimes, I)$ and let $P \in \Prof(\C, \C)$ be a profunctor. A \emph{Tambara module structure for $\M$} on $P$ is a family of maps:
 \begin{align*}
@@ -1703,7 +1704,7 @@ P(A,B) \ar[r, "\alpha_{A,B,M}"] \ar[dr, "\alpha_{A, B, N \otimes M}" below left]
 for all $A, B \in \C$ and $N, M \in \M$.
 \end{definition}
 
-Note that the hom profunctor $I := \C(-, =) : \C^\op \times \C \to \Set$ has a canonical Tambara module structure for any $\M$, given by functoriality.
+Note that the identity profunctor $I$ has a canonical Tambara module structure for any $\M$ given by functoriality.
 
 If $P, Q \in \Prof(\C, \C)$ are equipped with module structures $\alpha$ and $\beta$ respectively, there is a canonical module structure on $P \odot Q$. Given $M \in \M$ and $A,B \in \C$, the structure map $(\alpha \odot \beta)_{A,B,M}$ is induced by
 \begin{align*}
@@ -1714,7 +1715,7 @@ If $P, Q \in \Prof(\C, \C)$ are equipped with module structures $\alpha$ and $\b
 \end{align*}
 
 \begin{definition}
-There is a category $\Tamb(\M)$ of Tambara modules and natural transformations that respect the extra structure, in the sense that for any $l : P \to Q$, the diagram
+There is a category $\Tamb(\M)$ of Tambara modules and natural transformations that respect the extra structure, in the sense that for any $l : P \hto Q$, the diagram
 \[
 \begin{tikzcd}
 P(A,B) \ar[r, "\alpha_{A,B,M}"] \ar[d, "l_{A,B}" left] & P(MA, MB) \ar[d, "l_{MA, MB}" right] \\
@@ -1724,40 +1725,64 @@ Q(A,B) \ar[r, "\beta_{A,B,M}"] & Q(MA, MB)
 commutes.
 \end{definition}
 
-This category is monoidal with respect to $\odot$ as given above, and the monoidal unit is given by $I$. There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; particularly important for us is the left adjoint:
+This category is monoidal with respect to $\odot$ as given above with monoidal unit $I$. There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; important for us is the left adjoint:
 
-\begin{definition}
+\begin{definition}[{\cite[Section 5]{Doubles}}]
 Let $\Pastro_\M : \Prof(\C, \C) \to \Tamb(\M)$ be the functor:
 \begin{align*}
 \Pastro_\M(P) := \int^{M \in \M}  \C(-, M{=}) \odot P \odot \C(M-, {=}) 
 \end{align*}
 Or, in other words, 
 \begin{align*}
-\mathrm{Pastro}_\C(\M)(P)(A,B) := \int^{M \in \M} \int^{C,D \in \C} \C(A, MC) \times P(C,D) \times  \C(MD, B)
+\Pastro_\M(P)(A,B) := \int^{M \in \M} \int^{C,D \in \C} \C(A, MC) \times P(C,D) \times  \C(MD, B)
 \end{align*}
-The module structure $\alpha_{A,B,M} : \Pastro_\M(P)(A,B) \to \Pastro_\M(P)(MA, MB)
-$ is given by map induced by 
+The module structure $\alpha_{A,B,M} : \Pastro_\M P(A,B) \to \Pastro_\M P (MA, MB)
+$ is induced by the maps
 \begin{align*}
-&\int^{C,D \in \C} \C(A, NC) \times P(C,D) \times  \C(ND, B) \\
-\xrightarrow{\text{functoriality}} \quad& \int^{C,D \in \C} \C(MA, MNC) \times P(C,D) \times  \C(MND, MB) \\
+&\C(A, NC) \times P(C,D) \times  \C(ND, B) \\
+\xrightarrow{\text{functoriality}} \quad& \C(MA, MNC) \times P(C,D) \times  \C(MND, MB) \\
 \xrightarrow{\copr_{MN}} \quad&\int^{N \in \M} \int^{C,D \in \C} \C(MA, NC) \times P(C,D) \times  \C(ND, MB) \\
-= \quad&\Pastro_\M(P)(MA, MB)
+= \quad&\Pastro_\M P (MA, MB)
 \end{align*}
-for all $N \in \M$.
+for all $C, D \in \C$ and $N \in \M$. Equationally, this is $\alpha_{A,B,M}(\langle l, p, r \rangle) = \langle Ml, p, Mr \rangle$.
 \end{definition}
 
 \begin{proposition}
 $\Pastro_\M : \Prof(\C, \C) \to \Tamb(\M)$ is left adjoint to $U : \Tamb(\M) \to \Prof(\C, \C)$.
 \end{proposition}
 \begin{proof}
-\todo{Could crunch through this manually, may be a neat way to do it using techniques from P/S}
+For any $P \in \Prof(\C, \C)$, there is a map $\eta : P \hto U \Phi_\M P$, given by $\eta(p) = \langle \id_A, p, \id_B \rangle$.
+
+Suppose we have an element $\langle l, p, r \rangle \in \Pastro_\M P(A,B)$. Then one can check that this element is equal to 
+\begin{align*}
+\langle l, p, r \rangle = \Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)
+\end{align*}
+where $\alpha_{A, B, M}$ is the module structure map for $\Pastro_\M P$.
+
+Now suppose $T \in \Tamb(\M)$ is a Tambara module with structure map $\beta$. We would like to show that for any map $f : P \hto UT$, there exists a unique $\hat f : \Phi_\M P \hto T$ so that $f$ factors as \[P \xrightarrow{\eta} U \Phi_\M P \xrightarrow{U\hat f} UT \].
+
+The data of such a map $\hat f : \Phi_\M P \hto T$ is a natural transformation between the underlying profunctors. For the factorisation property to hold, we must have that $\hat{f}\eta(p) = f(p)$ for any $p \in P(A,B)$, but then the action on the remainder of $\Phi_\M P(A, B)$ is fixed:
+\begin{align*}
+\hat{f}(\langle l, p, r) \rangle &= \hat{f}(\Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)) \\
+&=T(l, r) \; \beta_{A, B, N} \; f(p)
+\end{align*}
+This establishes uniqueness. It remains to show that $\hat{f}$ so defined is actually a Tambara module morphism, but this is easy:
+\begin{align*}
+\hat{f}\alpha_{A,B,N}(\langle l, p, r \rangle)
+&= \hat{f}(\langle Nl, p, Nr \rangle) \\
+&= T(Nl, Nr) \; \beta_{A, B, NM} \; f(p) \\
+&= T(Nl, Nr) \; \beta_{A, B, NM} \; f(p) \\
+&= T(Nl, Nr) \beta_{MA,MB,N} \; \beta_{A, B, M} \; f(p) \\
+&= \beta_{A,B,N} T(l, r) \; \beta_{A, B, M} \; f(p) \\
+&= \beta_{A,B,N} \hat{f} (\langle l, p, r \rangle)
+\end{align*}
 \end{proof}
 
 \begin{corollary}
 $\Pastro_\M$ is oplax monoidal.
 \end{corollary}
 \begin{proof}
-This follows abstractly as the left adjoint of a strong monoidal functor \cite{Kelly1974}.
+This follows from abstract nonsense as the left adjoint of a strong monoidal functor \cite{Kelly1974}.
 \end{proof}
 
 \subsection{Optics}

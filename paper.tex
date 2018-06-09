@@ -13,7 +13,7 @@
 \usepackage{url}
 %\usepackage{marvosym}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
-
+\usepackage{minted}
 
 \usepackage{tikz-cd}
 \usetikzlibrary{positioning}
@@ -304,7 +304,7 @@ Where in both cases we have used the naturality of $\lambda$ and coend relations
 \end{proof}
 
 \begin{remark}
-Note that the definition of the $\Optic$ category involves a coend possibly indexed by a large category. To be careful, we should only ever discuss $\Optic$ categories where we know that the coend exists by some other means, e.g., by exhibiting an isomorphism with some other set. For many---but not all---of the examples given later, we provide such an isomorphism.
+Note that the homsets of $\Optic_\C$ are given by a coend indexed by a possibly large category, so their existence is not guaranteed by the cocompleteness of $\Set$. We should be careful to only discuss $\Optic$ categories where we know that the coends exist by some other means, e.g., by exhibiting an isomorphism with some other set. For many---but not all---of the examples given later, we provide such an isomorphism.
 
 \todo{How does the doubles paper get away with it?}
 \end{remark}
@@ -320,9 +320,7 @@ Graphically, this is:
 \input{diagrams/iota.tikz}
 \end{center}
 
-This preserves identities, as the identity on an object $(S, S')$ in $\Optic_\M$ is defined to be exactly $\langle \lambda^{-1}_S, \lambda_{S'} \rangle$.
-
-To check functoriality, suppose we have $(f, g) : (S, S') \to (A, A')$ and $(f', g') : (A, A') \to (B, B')$ in $\C \times \C^\op$. Then:
+This preserves identities, as the identity on an object $(S, S')$ in $\Optic_\M$ is defined to be exactly $\langle \lambda^{-1}_S, \lambda_{S'} \rangle$. To check functoriality, suppose we have $(f, g) : (S, S') \to (A, A')$ and $(f', g') : (A, A') \to (B, B')$ in $\C \times \C^\op$. Then:
 \begin{align*}
 \iota(f', g') \circ \iota(f, g) 
 &= \langle \lambda^{-1}_B f', g' \lambda_{B'} \rangle \circ \langle \lambda^{-1}_A f, g \lambda_{A'} \rangle \\
@@ -524,10 +522,10 @@ The structure maps of $\Optic_\C$ are given by $\iota$ applied to the structure 
 \end{proof}
 
 \begin{proposition}
-$\iota : \C \times \C^\op \to \Optic_\C$ is a strong monoidal functor. 
+$\iota : \C \times \C^\op \to \Optic_\C$ is a monoidal functor. 
 \end{proposition}
 \begin{proof}
-\todo{todo}
+This is clear, as the structure morphisms in $\Optic_\C$ are exactly the structure morphisms in $\C \times \C^\op$ under $\iota$.
 \end{proof}
 
 %\begin{proposition}
@@ -575,13 +573,13 @@ First, note that
 Because the interior of this coend is mute in the contravariant position, the coend is equal to the colimit of the functor $\C(I, - \otimes A) : \C \to \Set$. But $\C$ has a terminal object, so $\int^{M \in \C} \C(I, M \otimes A) \cong \C(I, I \otimes A) \cong \C(I, A)$.
 \end{proof}
 
-\begin{proposition}
-\todo{Entrywise Coproduct}
-\end{proposition}
-
-\begin{remark}
-The motivating example here is that of coproducts distributing over the tensor product.
-\end{remark}
+%\begin{proposition}
+%\todo{Entrywise Coproduct}
+%\end{proposition}
+%
+%\begin{remark}
+%The motivating example here is that of coproducts distributing over the tensor product.
+%\end{remark}
 
 \begin{proposition}
 \label{prop-change-of-action-monoidal}
@@ -599,8 +597,10 @@ where $\phi_{M,A} : FM \otimes FA \to F(M \otimes A)$ is the structure map of th
 
 \begin{proposition}
 \label{prop-optic-functor}
-Collectively this operation defines a \todo{pseudo?}functor \[\Optic : \SymmMonCat \to \SymmMonCat.\] \qed
+Collectively this operation defines a 2-functor \[\Optic : \SymmMonCat \to \SymmMonCat.\] \qed
 \end{proposition}
+\todo{Haven't actually checked natural transformations}
+\todo{Also we run into the large coend issue again, it's probably not well defined on every symm mon cat.}
 
 \subsection{Teleological Categories}
 \label{teleological-categories}
@@ -610,7 +610,7 @@ In this section we establish a universal property of the $\Optic$ construction. 
 \input{diagrams/generic-optic-folded.tikz}
 \end{center}
 
-We assume temporarily that $\C$ is a \emph{strict} symmetric monoidal category. It will be convenient to equip $\Optic_\C$ with a slightly different symmetric monoidal structure: \todo{And the universal property given in this section is an argument for this being the ``morally correct'' tensor}
+We assume temporarily that $\C$ is a \emph{strict} symmetric monoidal category. It will be convenient to equip $\Optic_\C$ with a slightly different symmetric monoidal structure. The universal property for $\Optic_\C$ given in this section is an argument for this being the ``morally correct'' tensor, although it does seem a little strange.
 
 \begin{definition}
 The \emph{switched} monoidal product on $\Optic_\C$ is given on objects by 
@@ -926,6 +926,10 @@ An optic $p : S \hto A$ is \emph{lawful} if
 
 We will see that in all the standard examples of optics, this specialises to the expected laws for that type of optic.
 
+\begin{remark}
+Jeremy Gibbons notes (originally in the case of ordinary lenses) that the first law is equivalent to requiring that $p$ composed with the connector $c_A$ is equal to the connector $c_S$. This is an appealing description from a string diagram standpoint, but I do not know if there is a similar description for the second law. \todo{Something to do with embedding $\Optic_\C$ into a compact closed category then using the unit to compose the lenses vertically? Should I draw a picture of this?}
+\end{remark}
+
 \begin{proposition}
 There is an subcategory $\Lawful_\M$ of $\Optic_\M$ given by objects of the form $(S, S)$ and lawful optics between them.
 \end{proposition}
@@ -1009,7 +1013,7 @@ The $\outside(\langle l, r \rangle) = l;r = \id_S$ is exactly the first conditio
 Even if $r;l = \phi A$ for some $\phi$, the same is not necessarily true of any other representative of the same optic.
 \end{remark}
 
-Let $\inside : \Optic_\M(S, A) \to \int^{M \in \M} \C(M A, M A)$ be the map induced by $\inside(\langle l, r \rangle) = \langle r ; l \rangle$. We might ask that instead of requiring $r;l = \phi A$ exactly, we have $\langle r ; l \rangle = \langle \phi A \rangle$ in $\int^{M \in \M} \C(M A, M A)$2  . In fact, this is equivalent:
+Let $\inside : \Optic_\M(S, A) \to \int^{M \in \M} \C(M A, M A)$ be the map induced by $\inside(\langle l, r \rangle) = \langle r ; l \rangle$. We might ask that instead of requiring $r;l = \phi A$ exactly, we have $\langle r ; l \rangle = \langle \phi A \rangle$ in $\int^{M \in \M} \C(M A, M A)$. In fact, this is equivalent:
 
 \begin{proposition}
 \label{prop-onthenose}
@@ -1172,7 +1176,7 @@ We now have to slog through evaluating $\Phi(\once(p))$ and $\Phi(\twice(p))$.
 &&& \fget \; \fput, \\
 &&& \fput (\fput \times A) \quad)
 \end{alignat*}
-So $\Phi(\once(p))$ being equal to $\Phi(\twice(p))$ is exactly equivalent to the $\fput\fget$ and $\fput\fput$ laws holding.
+So checking componentwise, $\Phi(\once(p))$ being equal to $\Phi(\twice(p))$ is exactly equivalent to the $\fput\fget$ and $\fput\fput$ laws holding.
 \end{proof}
 
 \todo{This last proposition should probably be deleted now}
@@ -1327,7 +1331,7 @@ The laws for prisms are the obvious duals to the lens laws:
 In the \texttt{lens} library documentation the third law is missing, on account of following:
 
 \begin{proposition}
-When $\C = \Set$\todo{, and probably more generally,} the third law is implied by the other two.
+When $\C = \Set$, the third law is implied by the other two.
 \end{proposition}
 \begin{proof}
 The key is that in $\Set$, for any map $f : X \to Y$, the set $Y$ is equal to the union of $\im f$ and its complement. The first law implies that $\freview$ is injective, so $S \cong C \sqcup A$ for some complement $C$. Identifying $A$ with its image in $S$, the second law implies that if $a\in A \subset S$ then $\fmatching(a) = \inr(a)$ and if $c\in C \subset S$ then $\fmatching(c) = \inl(c)$. The third law can then be verified pointwise by checking both cases $a\in A \subset S$ and $c\in C \subset S$ separately.
@@ -1362,7 +1366,7 @@ An iso $\langle l, r \rangle$ is lawful iff (as expected) $l$ and $r$ are mutual
 \[ \int^{M_1, M_2 \in \M} \C(S, M_1 \otimes A) \times \C(M_1 \otimes A, M_2 \otimes A) \times \C(M_2 \otimes A, S) \]
 specialises in this case to just
 \[ \C(S, A) \times \C(A, A) \times \C(A, S) \]
-The condition $\outside(\langle l, r \rangle) = \id_S$ is the claim that $rl = \id_S$, and $\once(\langle l, r \rangle) = (l, \id_A, r)$ is equal to $\twice(\langle l, r \rangle) = (l, lr, r)$ iff $lr = \id_A$.s
+The condition $\outside(\langle l, r \rangle) = \id_S$ is the claim that $rl = \id_S$, and $\once(\langle l, r \rangle) = (l, \id_A, r)$ is equal to $\twice(\langle l, r \rangle) = (l, lr, r)$ iff $lr = \id_A$.
 \end{proof}
 
 \subsection{Setters}
@@ -1533,13 +1537,13 @@ This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the t
 
 \subsection{Polymorphic Optics}
 Haskell's optics \todo{find an older reference from DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, the lens into the first entry of a tuple has type
-\begin{center}
-\texttt{first :: Lens (a, b) (a', b) a a'},
-\end{center}
-\todo{Why is the spacing strange above?} then:
-\begin{center}
-\texttt{set first (1, 5) "hello" == ("hello", 5)}
-\end{center}
+\begin{minted}{haskell}
+first :: Lens (a, b) (a', b) a a'
+\end{minted}
+then:
+\begin{minted}{haskell}
+set first (1, 5) "hello" == ("hello", 5)
+\end{minted}
 Note that the type has been changed from $\texttt{(Int, Int)}$ to $\texttt{(String, Int)}$.
 
 Polymorphic optics can be captured by the coend formalism as follows. Any action of a monoidal category $\M \times \C \to \C$ can be extended to act pointwise on a functor category:
@@ -1786,8 +1790,6 @@ This follows from abstract nonsense as the left adjoint of a strong monoidal fun
 \end{proof}
 
 \subsection{Optics}
-\todo{Figure out the most sensible order to prove these things in}
-
 \begin{definition}
 For an object $A \in \C$, the \emph{exchange profunctor} $E_A$ is defined to be $\C(-, A) \times \C(A, {=})$.
 \end{definition}
@@ -1829,30 +1831,30 @@ We have the chain of isomorphisms:
 \cong \;&\int^{M \in \M} \C(S, MA) \times \C(MA, S)  && \text{(by co-Yoneda twice)} \\
 = \;&\Optic_\M(S, A)
 \end{align*}
-\todo{This works for $\Optic_\M((S, S'), (A, A'))$ just fine, just define $E_{A,A'}$ in the obvious way.}
-
-\todo{Flip the order of the isomorphisms top to bottom?}
 \end{proof}
 
-For $p : S \hto A$, let $\tilde{p} : (U-)(A,A) \Rightarrow (U-)(S,S)$ denote the corresponding natural transformation under this isomorphism, and for $t : (U-)(A,A) \Rightarrow (U-)(S,S)$, let $\hat{t} : S \hto A$ be the corresponding optic.
+The same proof works in the more general case of $\Optic_\M((S, S'), (A,A'))$, defining $E_{A, A'}$ to be $\C(-, A) \times \C(A', {=})$.
+
+For $p : S \hto A$, let $\tilde{p} : (U-)(A,A) \rightarrow (U-)(S,S)$ denote the corresponding natural transformation under this isomorphism, and for $t : (U-)(A,A) \rightarrow (U-)(S,S)$, let $\hat{t} : S \hto A$ be the corresponding optic.
 
 \begin{corollary}
-A profunctor optic is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
+A profunctor optic $p$ is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\langle \id_A, \id_A, \id_A, \id_A \rangle \in (U \Pastro_\M E_A)(A, A)$.
 \end{corollary}
 \begin{proof}
-This is the content of the first two isomorphisms above.
-\todo{fix notation in the following}
-Explicitly, let $p_{\Pastro_\M E_A}(\langle \id_A, \id_A, \id_A, \id_A \rangle) = \langle l, \id_A, \id_A, r \rangle$, where $l : S \to M A$ and $r : M A \to S$. Then the component of $p$ at any other Tambara module $P$ is given by
+This is the content of the first two isomorphisms above. Explicitly, suppose $\hat{p} = \langle l, r \rangle$ with $l : S \to MA$ and $r : MA \to S$. Then for any Tambara module $P$, the component of $p$ at $P$ is 
 \begin{align*}
 p_P = (UP)(l,r) \alpha_{A,A,M}
 \end{align*}
-where $\alpha$ is the module structure for $P$.
+where $\alpha$ is the module structure for $P$. In particular, 
+\[
+p_{\Pastro_\M E_A}(\langle \id_A, \id_A, \id_A, \id_A \rangle) = \langle l, \id_A, \id_A, r \rangle
+\]
 \end{proof}
 
-There is yet another isomorphic description of optics: \todo{Reference proof in PS}
+There is yet another isomorphic description of optics, which may be an unexplored avenue for generalisation.
 
 \begin{proposition}
-$\Optic_\M(S, A)$ is isomorphic to $\Prof(E_S, U \Phi_\M E_A)$. \todo{Equivalently to $\Tamb(\M)(\Phi_\M E_S, \Phi_\M E_A)$ by adjointness}
+$\Optic_\M(S, A)$ is isomorphic to $\Prof(E_S, U \Phi_\M E_A)$.
 \end{proposition}
 \begin{proof}
 \begin{align*}
@@ -1865,131 +1867,150 @@ $\Optic_\M(S, A)$ is isomorphic to $\Prof(E_S, U \Phi_\M E_A)$. \todo{Equivalent
 \end{align*}
 \end{proof}
 
-\todo{This gives one direction for generalising optics: are there other easy to describe comonoid objects in $\Prof$?}
-
 \subsection{Lawful Profunctor Optics}
 
-The next question is: can we characterise the profunctor optics that correspond to lawful optics? The plan is to chase through the above isomorphisms to see where the lawful optics end up.
+The next goal is to characterise the profunctor optics that correspond to lawful optics.
 
-The exchange profunctor has a canonical comonoid structure. The comultiplication $\Delta : E_A \to E_A \odot E_A$ is given by the composite
+The exchange profunctor has a canonical comonoid structure, where the comultiplication $\Delta : E_A \to E_A \odot E_A$ and counit $\varepsilon : E_A(X, Y) \to \C(X, Y)$ are given by
 \begin{align*}
-&E_A(X,Y) \\
-= \quad& \C(X, A) \times \C(A, Y) \\
-\xrightarrow{[\pi_1, \const_{\id_A}, \const_{\id_A}, \pi_2]} \quad& \C(X, A) \times \C(A, A) \times \C(A, A) \times \C(A, Y) \\
-\xrightarrow{\copr_A} \quad& \int^{C \in \C} \C(X, A) \times \C(A, C) \times \C(C, A) \times \C(A, Y) \\
-= \quad& \int^{C \in \C} E_A(X,C) \times E_A(C,Y) \\
-= \quad&  (E_A \odot E_A)(X,Y)
+\Delta((f, g)) &= \langle f, \id_A, \id_A, g \rangle \\
+\varepsilon((f, g)) &= gf
 \end{align*}
-and the counit $\varepsilon : E_A \to I$ simply composes the two morphisms. Because $\Pastro_\M$ is oplax monoidal, the Tambara module $\Pastro_\M E_A$ has an induced comonoid structure.
+Because $\Pastro_\M$ is oplax monoidal, the profunctor $U\Pastro_\M E_A$ has an induced comonoid structure, given by
+\begin{align*}
+\Delta(\langle l, r \rangle) &= \langle l, lr, r \rangle \\
+\varepsilon(\langle l, r \rangle) &= rl
+\end{align*}
 
-\begin{theorem}
-An optic $p : S \hto A$ is lawful iff the corresponding natural transformation $E_S \Rightarrow U \Phi_\M E_A$ is a comonoid morphism.
-\end{theorem}
-\begin{proof}
-
-\end{proof}
-
-\begin{lemma}
-For an object $X$ in a monoidal category $\C$, a comonoid structure $(X,\Delta,\varepsilon)$ is equivalent to a lax monoidal structure on $\C(X, -)$.
-\end{lemma}
-\begin{proof}
-\todo{not hard}
-\end{proof}
-
-Therefore the functor $\Tamb(\M)(\Pastro_\M E_A, -)$ is canonically lax monoidal, and so the isomorphic functor $(U-)(A,A)$ is also.
-
-\todo{Once this is proven, is the remainder of the section for free?}
+Comparing these definitions with the definition of a lawful optic, we have immediately:
 
 \begin{proposition}
-If $p : S \hto A$ is a lawful optic then the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal.
+An optic $p : S \hto A$ is lawful iff the corresponding natural transformation $E_S \rightarrow U \Phi_\M E_A$ is a comonoid morphism. \qed
 \end{proposition}
-\begin{proof}
-Let $\langle l, r \rangle$ be a representative for $p$ in $\Optic_\M(S,A)$ via the isomorphism of Proposition \ref{prop-profunctor-optics-are-optics}, so that
-\begin{align*}
-\tilde{p}_P = (UP)(l,r) \alpha_{A,A,M}
-\end{align*}
-on each Tambara module $P$.
 
-To show $\tilde{p}$ is monoidal, we must show that both
-\[
-\begin{tikzcd}
-UP(A,A) \times UQ(A,A) \ar[r, "\tilde{p}_P \times \tilde{p}_Q"] \ar[d, swap] & UP(S, S) \times UQ(S, S)  \ar[d] \\
-U(P \odot Q)(A,A)  \ar[r, "\tilde{p}_{P \odot Q}", swap] & U(P \odot Q)(S,S)
-\end{tikzcd}
-\]
-and
-\[
-\begin{tikzcd}
-1 \ar[d] \ar[dr] & \\
-UI(A,A)  \ar[r, "\tilde{p}_I", swap] & UI(S,S)
-\end{tikzcd}
-\]
-commute. For the first we have
+All that is needed to complete the connection with profunctor optics is the following standard result in category theory.
+
+\begin{lemma}
+For an object $X$ in a monoidal category $(\C, \otimes, I)$, a comonoid structure $(X,\Delta,\varepsilon)$ is equivalent to a lax monoidal structure on $\C(X, -)$. Further, comonoid morphisms $(X_1,\Delta_1,\varepsilon_1) \to (X_2,\Delta_2,\varepsilon_2)$ are equivalent to monoidal natural transformations $\C(X, -) \to \C(Y, -)$.
+\end{lemma}
+\begin{proof}
+For a comonoid $(X,\Delta,\varepsilon)$, define a lax monoidal structure 
 \begin{align*}
-\langle (\tilde{p}_P \times \tilde{p}_Q)(x, y) \rangle &= \langle (UP)(l,r) \alpha_{A,A,M} x,  (UQ)(l,r) \beta_{A,A,M} y\rangle \\
-&= \langle (UP)(l,lr) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations)} \\
-&= \langle (UP)(l,\phi A) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$)} \\
-&= \langle (UP)((\phi A)l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations again)} \\
-&= \langle (UP)(lrl,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$ again)} \\
-&= \langle (UP)(l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $rl = \id_S$)} \\
-&= (U(P \odot Q))(l,r) \langle \alpha_{A,A,M} x, \beta_{A,A,M} y \rangle && \text{(by definition of $P \odot Q$)} \\
-&= (U(P \odot Q))(l,r) (\alpha_{A,A,M} \odot \beta_{A,A,M}) \langle x, y \rangle && \text{(by definition of $\alpha \odot \beta$)} \\
-&= \tilde{p}_{P \odot Q} \langle x, y \rangle
+\phi &: 1 \to \C(X, I) \\
+\phi_{A, B} &: \C(X, A) \times \C(X, B) \to \C(X, A \otimes B) 
 \end{align*}
-And for the second:
-\begin{align*}
-\tilde{p}_I(\id_A) = (UI)(l,r) (M \id_A) = r \id_{MA} l = rl = \id_S
-\end{align*}
-as required.
+by $\phi = \varepsilon$ and $\phi_{A, B}(f, g) = (f \otimes g) \Delta$. 
+
+From such a lax monoidal structure, we recover the comonoid maps by $\varepsilon = \phi$ and $\Delta = \phi_{X, X}(\id_X, \id_X)$.
+
+\todo{check equations, and the rest}
 \end{proof}
 
-%\begin{proposition}
-%Let $\C = \Set$ and suppose $p : S \hto A$ is a lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is lawful.
-%\end{proposition}
-%\begin{proof}
-%\todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
-%\end{proof}
-
-\todo{Here are some thoughts:}
-The converse is more difficult, and unfortunately requires another fiddly proof by induction on the coend relation. The idea is that any profunctor optic is characterised by its component at $\Pastro_\M E_A$, so the result should follow from the commutativity of the square for lax monoidality when $P = Q = \Pastro_\M E_A$.
-
-For the remainder of the section, fix a lax monoidal natural transformation $t : (U-)(A,A) \to (U-)(S,S)$ and suppose $\hat{t} = \langle l, r \rangle$ for $l : S \to MA$ and $r : MA \to S$. Commutativity of the triangle implies immediately that $rl = \id_S$.
-
-Unwinding definitions, commutativity of the square states that
-\begin{align*}
-\langle l, lr, r \rangle = \langle l, \id_{MA}, r \rangle
-\end{align*}
-as elements of 
-\begin{align*}
-\int^{M,N\in \M} \C(S, MA) \times \C(MA, NA) \times \C(NA, S)
-\end{align*}
-Our goal is to show that this implies $\langle lr \rangle = \langle \phi A \rangle$ for some $\phi : M \to M$ in $\M$.
-
-\todo{describe the coend relation on this set}
-
-\newcommand{\rightrightsquigarrow}{\mathrel{\substack{\textstyle\rightsquigarrow\\[-0.6ex]
-                      \textstyle\rightsquigarrow}}}
-\newcommand{\leftleftsquigarrow}{\mathrel{\substack{\textstyle\leftsquigarrow\\[-0.6ex]
-                      \textstyle\leftsquigarrow}}}
-
-\begin{align*}
-&\int^{N,M} \C(S, M \times A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
-&= \int^{N,M} \C(S, M) \times \C(S, A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
-&= \int^{N} \C(S, A) \times \C(S \times A, N \times A) \times \C(N \times A, S) \\
-&= \int^{N} \C(S, A) \times \C(S \times A, N) \times \C(S \times A, A) \times \C(N \times A, S) \\
-&= \C(S, A) \times \C(S \times A, A) \times \C(S \times A \times A, S) \\
-\end{align*}
-Here $\langle l, c, r \rangle$ is sent to $(l \pi_2, (l \pi_1, \id_A) c \pi_2, ((l \pi_1, \id_A) c, \id_A) r)$
-
-\todo{Do this for the linear lens too}
 \begin{theorem}
-If $t : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal, then $\hat{t} : S \hto A$ is a lawful optic.
+$p : S \hto A$ is a lawful optic iff the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is monoidal with respect to the canonical lax monoidal structures on $(U-)(A,A)$ and $(U-)(S,S)$.
 \end{theorem}
 \begin{proof}
-
+$p : S \hto A$ is lawful iff $E_S \rightarrow U \Phi_\M E_A$ is a comonoid morphism, iff $\Phi_\M E_S \rightarrow \Phi_\M E_A$ is a comonoid morphism by adjointness. Now apply the previous lemma.
 \end{proof}
 
+\begin{remark}
+For Haskell's profunctor lenses, these laws take the form:
+\begin{minted}{haskell}
+l :: Tambara m p => p a a -> p s s
 
+l id == id
+l (Procompose p q) == Procompose (l p) (l q)
+\end{minted}
+\end{remark}
+
+%\begin{proposition}
+%If $p : S \hto A$ is a lawful optic then the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal.
+%\end{proposition}
+%\begin{proof}
+%Let $\langle l, r \rangle$ be a representative for $p$ in $\Optic_\M(S,A)$ via the isomorphism of Proposition \ref{prop-profunctor-optics-are-optics}, so that
+%\begin{align*}
+%\tilde{p}_P = (UP)(l,r) \alpha_{A,A,M}
+%\end{align*}
+%on each Tambara module $P$.
+%
+%To show $\tilde{p}$ is monoidal, we must show that both
+%\[
+%\begin{tikzcd}
+%UP(A,A) \times UQ(A,A) \ar[r, "\tilde{p}_P \times \tilde{p}_Q"] \ar[d, swap] & UP(S, S) \times UQ(S, S)  \ar[d] \\
+%U(P \odot Q)(A,A)  \ar[r, "\tilde{p}_{P \odot Q}", swap] & U(P \odot Q)(S,S)
+%\end{tikzcd}
+%\]
+%and
+%\[
+%\begin{tikzcd}
+%1 \ar[d] \ar[dr] & \\
+%UI(A,A)  \ar[r, "\tilde{p}_I", swap] & UI(S,S)
+%\end{tikzcd}
+%\]
+%commute. For the first we have
+%\begin{align*}
+%\langle (\tilde{p}_P \times \tilde{p}_Q)(x, y) \rangle &= \langle (UP)(l,r) \alpha_{A,A,M} x,  (UQ)(l,r) \beta_{A,A,M} y\rangle \\
+%&= \langle (UP)(l,lr) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations)} \\
+%&= \langle (UP)(l,\phi A) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$)} \\
+%&= \langle (UP)((\phi A)l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations again)} \\
+%&= \langle (UP)(lrl,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$ again)} \\
+%&= \langle (UP)(l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $rl = \id_S$)} \\
+%&= (U(P \odot Q))(l,r) \langle \alpha_{A,A,M} x, \beta_{A,A,M} y \rangle && \text{(by definition of $P \odot Q$)} \\
+%&= (U(P \odot Q))(l,r) (\alpha_{A,A,M} \odot \beta_{A,A,M}) \langle x, y \rangle && \text{(by definition of $\alpha \odot \beta$)} \\
+%&= \tilde{p}_{P \odot Q} \langle x, y \rangle
+%\end{align*}
+%And for the second:
+%\begin{align*}
+%\tilde{p}_I(\id_A) = (UI)(l,r) (M \id_A) = r \id_{MA} l = rl = \id_S
+%\end{align*}
+%as required.
+%\end{proof}
+%
+%%\begin{proposition}
+%%Let $\C = \Set$ and suppose $p : S \hto A$ is a lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is lawful.
+%%\end{proposition}
+%%\begin{proof}
+%%\todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
+%%\end{proof}
+%
+%\todo{Here are some thoughts:}
+%The converse is more difficult, and unfortunately requires another fiddly proof by induction on the coend relation. The idea is that any profunctor optic is characterised by its component at $\Pastro_\M E_A$, so the result should follow from the commutativity of the square for lax monoidality when $P = Q = \Pastro_\M E_A$.
+%
+%For the remainder of the section, fix a lax monoidal natural transformation $t : (U-)(A,A) \to (U-)(S,S)$ and suppose $\hat{t} = \langle l, r \rangle$ for $l : S \to MA$ and $r : MA \to S$. Commutativity of the triangle implies immediately that $rl = \id_S$.
+%
+%Unwinding definitions, commutativity of the square states that
+%\begin{align*}
+%\langle l, lr, r \rangle = \langle l, \id_{MA}, r \rangle
+%\end{align*}
+%as elements of 
+%\begin{align*}
+%\int^{M,N\in \M} \C(S, MA) \times \C(MA, NA) \times \C(NA, S)
+%\end{align*}
+%Our goal is to show that this implies $\langle lr \rangle = \langle \phi A \rangle$ for some $\phi : M \to M$ in $\M$.
+%
+%\todo{describe the coend relation on this set}
+%
+%\newcommand{\rightrightsquigarrow}{\mathrel{\substack{\textstyle\rightsquigarrow\\[-0.6ex]
+%                      \textstyle\rightsquigarrow}}}
+%\newcommand{\leftleftsquigarrow}{\mathrel{\substack{\textstyle\leftsquigarrow\\[-0.6ex]
+%                      \textstyle\leftsquigarrow}}}
+%
+%\begin{align*}
+%&\int^{N,M} \C(S, M \times A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
+%&= \int^{N,M} \C(S, M) \times \C(S, A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
+%&= \int^{N} \C(S, A) \times \C(S \times A, N \times A) \times \C(N \times A, S) \\
+%&= \int^{N} \C(S, A) \times \C(S \times A, N) \times \C(S \times A, A) \times \C(N \times A, S) \\
+%&= \C(S, A) \times \C(S \times A, A) \times \C(S \times A \times A, S) \\
+%\end{align*}
+%Here $\langle l, c, r \rangle$ is sent to $(l \pi_2, (l \pi_1, \id_A) c \pi_2, ((l \pi_1, \id_A) c, \id_A) r)$
+%
+%\todo{Do this for the linear lens too}
+%\begin{theorem}
+%If $t : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal, then $\hat{t} : S \hto A$ is a lawful optic.
+%\end{theorem}
+%\begin{proof}
+%
+%\end{proof}
 
 \section{Misc}
 \subsection{Degenerate Optics}

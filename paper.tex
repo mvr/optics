@@ -353,75 +353,75 @@ The remainder of this section comprises some useful observations that were not m
 % \begin{theorem}
 %   $\Optic_\C$ is symmetric monoidal, where $(S, S') \otimes (T, T') = (S \otimes T, S' \otimes T')$, the unit is $(I, I)$, and the action on morphisms induced by
 %   \begin{align*}
-      %       &\C(S, M \otimes A) \times \C(M \otimes A', S') \times \C(T, N \otimes B) \times \C(N \otimes B', T')\\
-      %       \to \quad&\C(S \otimes T, M \otimes A \otimes N \otimes B) \times \C(M \otimes A' \otimes N \otimes B', S' \otimes T') && \text{(action of $\otimes$ on morphisms in $\C$)}\\
-      %       \to \quad&\C(S \otimes T, M \otimes N \otimes A \otimes B) \times \C(M \otimes N \otimes A' \otimes B', S' \otimes T') && \text{($\otimes$ in $\C$ is symmetric)}\\
-      %       \to \quad&\int^{M \in \C} \C(S \otimes T, M \otimes A \otimes B) \times \C(M \otimes A' \otimes B', S' \otimes T') && \text{(inclusion into coend)}
-                                                                                                                                    %     \end{align*}
-                                                                                                                                    %                                                                                                                                     \end{theorem}
-                                                                                                                                    %                                                                                                                                     \begin{proof}
-                                                                                                                                    %                                                                                                                                     Equationally, suppose we have representatives $(l, r) : (S \to M \otimes A, M \otimes A' \to S')$ and $(l', r') : (T \to N \otimes B, N \otimes B' \to T')$. Then:
-                                                                                                                                    %                                                                                                                                     \begin{align*}
-                                                                                                                                    %                                                                                                                                     \langle l, r \rangle \otimes \langle l', r' \rangle &:= \langle (M \otimes s_{A,N} \otimes B)(l \otimes l'), (r \otimes r')(M \otimes s_{A',N} \otimes B') \rangle
-                                                                                                                                                                                                                                                                                                                                %     \end{align*}
-                                                                                                                                                                                                                                                                                                                                %                                                                                                                                                                                                                                                                                                                                 This is functorial, as suggested by the equivalence of the following string diagrams:
-                                                                                                                                                                                                                                                                                                                                %                                                                                                                                                                                                                                                                                                                                 \todo{todo}
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 For future convenience, note that
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 \begin{align*}
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   \langle l, r \rangle \otimes (T, T') &= \langle (M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T') \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &= \langle (\lambda^{-1}_M \otimes A \otimes T)(M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T')(\lambda_M \otimes A' \otimes T') \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &= \langle l \otimes T, r \otimes T' \rangle
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 \end{align*}
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 Now we check functoriality. Suppose we have:
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 \begin{align*}
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   \langle l_1, r_1 \rangle : (S_1, S_1') &\hto (S_2, S_2') \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   \langle l_2, r_2 \rangle : (S_2, S_2') &\hto (S_3, S_3') \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   \langle p_1, q_1 \rangle : (T_1, T_1') &\hto (T_2, T_2') \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   \langle p_2, q_2 \rangle : (T_2, T_2') &\hto (T_3, T_3')
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 \end{align*}
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 with complements $M_1, M_2, N_1, N_2$ respectively. Then: \todo {(This is a mess. String diagram?)}
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 \begin{align*}
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &(\langle l_2, r_2 \rangle \otimes \langle p_2, q_2 \rangle) \circ (\langle l_1, r_1 \rangle \otimes \langle p_1, q_1 \rangle) \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; &\langle (M_2 \otimes s_{S_3,N_2} \otimes T_3)(l_2 \otimes p_2), (r_2 \otimes q_2)(M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &\circ \langle (M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), (r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2') \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes N_1 \otimes l_2 \otimes p_2)(M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &\;(r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2')(M_1 \otimes N_1 \otimes r_2 \otimes q_2)(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)(M_1 \otimes  l_2 \otimes N_1 \otimes p_2)(l_1 \otimes p_1), \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &\;(r_1 \otimes q_1)(M_1 \otimes r_2 \otimes N_1 \otimes q_2)(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1), \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; & \text{\todo{(Add a $s_{M_2, N_1}$ to either side of the coend, then appeal to coherence)}} \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; &\langle (M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S_3} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1) ,  \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S'_3} \otimes T'_3) \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; &\langle (M_1 \otimes l_2)l_1, r_1(M_1 \otimes r_2) \rangle \otimes \langle (N_1 \otimes p_2)p_1, q_1(N_1 \otimes q_2) \rangle \\
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                   = \; &(\langle l_2, r_2 \rangle  \circ \langle l_1, r_1 \rangle) \otimes (\langle p_2, q_2 \rangle \circ \langle p_1, q_1 \rangle)
-                                                                                                                                                                                                                                                                                                                                %%                                                                                                                                                                                                                                                                                                                                 \end{align*}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            %
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            %                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             The structure morphisms are all lifted from the structure morphisms in $\C$:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            %                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             \begin{align*}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            %                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             \alpha_{(R, R'), (S, S'), (T, T')} &:= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1}) \\
-      %       \lambda_{(S, S')} &:= \iota(\lambda_{(S, S')}, \lambda_{(S, S')}^{-1}) \\
-      %       \rho_{(S, S')} &:= (\rho_{(S, S')}, \rho_{(S, S')}^{-1}) \\
-      %       s_{(S, S'), (T, T')} &:= \iota(s_{S, T}, s_{T', S'})
-                                     %     \end{align*}
-                                     %
-                                     %                                      Note that because $\iota(S, S') = (S, S')$, required equations for $\iota$ to be a monoidal functor hold by definition (although we don't yet know that $\Optic_\otimes$ is monoidal). The pentagon and triangle axioms then hold in $\Optic_\otimes$, as they are the image of the same axioms in $\C \times \C^\op$ under $\iota$. The only remaining thing to verify is that these structure maps are natural in $\Optic_\otimes$.
-                                     %
-                                     %                                      Let us check that $\alpha_{(R, R'), (S, S'), (T, T')}$ is natural in $(R, R')$. Suppose $f : (Q, Q') \hto (R, R')$ has representative $(l, r) : (Q \to M \otimes R, M \otimes R' \to Q')$, then:
-                                     %                                      \begin{align*}
-                                     %                        &\alpha_{(R, R'), (S, S'), (T, T')} \circ (f \otimes (S, S')) \otimes (T, T') \\
-      %               &= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1})  \circ (\langle l, r \rangle \otimes (S, S')) \otimes (T, T') \\
-      %               &= \langle\lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'} \rangle  \circ \left\langle (l \otimes S) \otimes T, (r \otimes S') \otimes T' \right\rangle \\
-      %               &=\left\langle (M \otimes \lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T})((l \otimes S) \otimes T), ((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'} ) \right\rangle \\
-      %               &=\left\langle (M \otimes \alpha_{R,S,T})((l \otimes S) \otimes T), ((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} )\right\rangle \\
-      %               &=\left\langle (l \otimes (S \otimes T))\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}(r \otimes (S' \otimes T')) \right\rangle \\
-      %               &= \langle (I \otimes l \otimes (S \otimes T)) \lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}, (I \times r \otimes (S' \otimes T')) \alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')}\rangle \\
-      %               &= \langle l \otimes (S \otimes T), r \otimes (S' \otimes T')\rangle \circ \left\langle \lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')} \right\rangle \\
-      %               &= \langle l, r \rangle \otimes ((S, S') \otimes (T, T')) \circ \iota(\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}) \\
-      %               &= f \otimes ((S, S') \otimes (T, T')) \circ \alpha_{(Q, Q'), (S, S'), (T, T')}
-                        %     \end{align*}
-                        %                         \todo{There is some cheating going on here, composition actually adds an extra $\alpha$, but that wouldn't get in the way.}
-                        %                         \end{proof}
+%     &\C(S, M \otimes A) \times \C(M \otimes A', S') \times \C(T, N \otimes B) \times \C(N \otimes B', T')\\
+%     \to \quad&\C(S \otimes T, M \otimes A \otimes N \otimes B) \times \C(M \otimes A' \otimes N \otimes B', S' \otimes T') && \text{(action of $\otimes$ on morphisms in $\C$)}\\
+%     \to \quad&\C(S \otimes T, M \otimes N \otimes A \otimes B) \times \C(M \otimes N \otimes A' \otimes B', S' \otimes T') && \text{($\otimes$ in $\C$ is symmetric)}\\
+%     \to \quad&\int^{M \in \C} \C(S \otimes T, M \otimes A \otimes B) \times \C(M \otimes A' \otimes B', S' \otimes T') && \text{(inclusion into coend)}
+%   \end{align*}
+% \end{theorem}
+% \begin{proof}
+%   Equationally, suppose we have representatives $(l, r) : (S \to M \otimes A, M \otimes A' \to S')$ and $(l', r') : (T \to N \otimes B, N \otimes B' \to T')$. Then:
+%   \begin{align*}
+%     \langle l, r \rangle \otimes \langle l', r' \rangle &:= \langle (M \otimes s_{A,N} \otimes B)(l \otimes l'), (r \otimes r')(M \otimes s_{A',N} \otimes B') \rangle
+%   \end{align*}
+%   This is functorial, as suggested by the equivalence of the following string diagrams:
+%   \todo{todo}
+%%   For future convenience, note that
+%%   \begin{align*}
+%%     \langle l, r \rangle \otimes (T, T') &= \langle (M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T') \rangle \\
+%%     &= \langle (\lambda^{-1}_M \otimes A \otimes T)(M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T')(\lambda_M \otimes A' \otimes T') \rangle \\
+%%     &= \langle l \otimes T, r \otimes T' \rangle
+%%   \end{align*}
+%%   Now we check functoriality. Suppose we have:
+%%   \begin{align*}
+%%     \langle l_1, r_1 \rangle : (S_1, S_1') &\hto (S_2, S_2') \\
+%%     \langle l_2, r_2 \rangle : (S_2, S_2') &\hto (S_3, S_3') \\
+%%     \langle p_1, q_1 \rangle : (T_1, T_1') &\hto (T_2, T_2') \\
+%%     \langle p_2, q_2 \rangle : (T_2, T_2') &\hto (T_3, T_3')
+%%   \end{align*}
+%%   with complements $M_1, M_2, N_1, N_2$ respectively. Then: \todo {(This is a mess. String diagram?)}
+%%   \begin{align*}
+%%     &(\langle l_2, r_2 \rangle \otimes \langle p_2, q_2 \rangle) \circ (\langle l_1, r_1 \rangle \otimes \langle p_1, q_1 \rangle) \\
+%%     = \; &\langle (M_2 \otimes s_{S_3,N_2} \otimes T_3)(l_2 \otimes p_2), (r_2 \otimes q_2)(M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+%%     &\circ \langle (M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), (r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2') \rangle \\
+%%     = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes N_1 \otimes l_2 \otimes p_2)(M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), \\
+%%     &\;(r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2')(M_1 \otimes N_1 \otimes r_2 \otimes q_2)(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+%%     = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)(M_1 \otimes  l_2 \otimes N_1 \otimes p_2)(l_1 \otimes p_1), \\
+%%     &\;(r_1 \otimes q_1)(M_1 \otimes r_2 \otimes N_1 \otimes q_2)(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+%%     = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1), \\
+%%     &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+%%     = \; & \text{\todo{(Add a $s_{M_2, N_1}$ to either side of the coend, then appeal to coherence)}} \\
+%%     = \; &\langle (M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S_3} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1) ,  \\
+%%     &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S'_3} \otimes T'_3) \rangle \\
+%%     = \; &\langle (M_1 \otimes l_2)l_1, r_1(M_1 \otimes r_2) \rangle \otimes \langle (N_1 \otimes p_2)p_1, q_1(N_1 \otimes q_2) \rangle \\
+%%     = \; &(\langle l_2, r_2 \rangle  \circ \langle l_1, r_1 \rangle) \otimes (\langle p_2, q_2 \rangle \circ \langle p_1, q_1 \rangle)
+%%   \end{align*}
+%
+%   The structure morphisms are all lifted from the structure morphisms in $\C$:
+%   \begin{align*}
+%     \alpha_{(R, R'), (S, S'), (T, T')} &:= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1}) \\
+%     \lambda_{(S, S')} &:= \iota(\lambda_{(S, S')}, \lambda_{(S, S')}^{-1}) \\
+%     \rho_{(S, S')} &:= (\rho_{(S, S')}, \rho_{(S, S')}^{-1}) \\
+%     s_{(S, S'), (T, T')} &:= \iota(s_{S, T}, s_{T', S'})
+%   \end{align*}
+%
+%   Note that because $\iota(S, S') = (S, S')$, required equations for $\iota$ to be a monoidal functor hold by definition (although we don't yet know that $\Optic_\otimes$ is monoidal). The pentagon and triangle axioms then hold in $\Optic_\otimes$, as they are the image of the same axioms in $\C \times \C^\op$ under $\iota$. The only remaining thing to verify is that these structure maps are natural in $\Optic_\otimes$.
+%
+%   Let us check that $\alpha_{(R, R'), (S, S'), (T, T')}$ is natural in $(R, R')$. Suppose $f : (Q, Q') \hto (R, R')$ has representative $(l, r) : (Q \to M \otimes R, M \otimes R' \to Q')$, then:
+%   \begin{align*}
+%     &\alpha_{(R, R'), (S, S'), (T, T')} \circ (f \otimes (S, S')) \otimes (T, T') \\
+%     &= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1})  \circ (\langle l, r \rangle \otimes (S, S')) \otimes (T, T') \\
+%     &= \langle\lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'} \rangle  \circ \left\langle (l \otimes S) \otimes T, (r \otimes S') \otimes T' \right\rangle \\
+%     &=\left\langle (M \otimes \lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T})((l \otimes S) \otimes T), ((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'} ) \right\rangle \\
+%     &=\left\langle (M \otimes \alpha_{R,S,T})((l \otimes S) \otimes T), ((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} )\right\rangle \\
+%     &=\left\langle (l \otimes (S \otimes T))\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}(r \otimes (S' \otimes T')) \right\rangle \\
+%     &= \langle (I \otimes l \otimes (S \otimes T)) \lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}, (I \times r \otimes (S' \otimes T')) \alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')}\rangle \\
+%     &= \langle l \otimes (S \otimes T), r \otimes (S' \otimes T')\rangle \circ \left\langle \lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')} \right\rangle \\
+%     &= \langle l, r \rangle \otimes ((S, S') \otimes (T, T')) \circ \iota(\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}) \\
+%     &= f \otimes ((S, S') \otimes (T, T')) \circ \alpha_{(Q, Q'), (S, S'), (T, T')}
+%   \end{align*}
+%   \todo{There is some cheating going on here, composition actually adds an extra $\alpha$, but that wouldn't get in the way.}
+% \end{proof}
 
 \begin{theorem}
   $\Optic_\C$ is symmetric monoidal, where $(S, S') \otimes (T, T') = (S \otimes T, S' \otimes T')$, the unit object is $(I, I)$, and the action on a pair of morphisms $\langle l, r \rangle : S \hto A$ and $\langle l', r' \rangle : T \hto B$ is given by:
@@ -454,36 +454,36 @@ The remainder of this section comprises some useful observations that were not m
   These two diagrams are equivalent. We can use the naturality of the symmetry morphism to push $l_2$ and $r_2$ through to be next to $l_1$ and $r_1$ respectively. This creates two extra twists that can be cancelled in the center of the diagram.
 
   %%%% Note: The following is the above argument written equationally:
-                                             %                                              For future convenience, note that
-                                             %                                              \begin{align*}
-                                             %                                              \langle l, r \rangle \otimes (T, T') &= \langle (M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T') \rangle \\
-      %               &= \langle (\lambda^{-1}_M \otimes A \otimes T)(M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T')(\lambda_M \otimes A' \otimes T') \rangle \\
-      %               &= \langle l \otimes T, r \otimes T' \rangle
-                        %     \end{align*}
-                        %                         Now we check functoriality. Suppose we have:
-                        %                         \begin{align*}
-                        %                         \langle l_1, r_1 \rangle : (S_1, S_1') &\hto (S_2, S_2') \\
-      %       \langle l_2, r_2 \rangle : (S_2, S_2') &\hto (S_3, S_3') \\
-      %       \langle p_1, q_1 \rangle : (T_1, T_1') &\hto (T_2, T_2') \\
-      %       \langle p_2, q_2 \rangle : (T_2, T_2') &\hto (T_3, T_3')
-                                                       %     \end{align*}
-                                                       %                                                        with complements $M_1, M_2, N_1, N_2$ respectively. Then: \todo {(This is a mess. String diagram?)}
-                                                       %                                                        \begin{align*}
-                                                       %                        &(\langle l_2, r_2 \rangle \otimes \langle p_2, q_2 \rangle) \circ (\langle l_1, r_1 \rangle \otimes \langle p_1, q_1 \rangle) \\
-      %       = \; &\langle (M_2 \otimes s_{S_3,N_2} \otimes T_3)(l_2 \otimes p_2), (r_2 \otimes q_2)(M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-      %               &\circ \langle (M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), (r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2') \rangle \\
-      %       = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes N_1 \otimes l_2 \otimes p_2)(M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), \\
-      %               &\;(r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2')(M_1 \otimes N_1 \otimes r_2 \otimes q_2)(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-      %       = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)(M_1 \otimes  l_2 \otimes N_1 \otimes p_2)(l_1 \otimes p_1), \\
-      %               &\;(r_1 \otimes q_1)(M_1 \otimes r_2 \otimes N_1 \otimes q_2)(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-      %       = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1), \\
-      %               &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-      %       = \; & \text{\todo{(Add a $s_{M_2, N_1}$ to either side of the coend, then appeal to coherence)}} \\
-      %       = \; &\langle (M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S_3} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1) ,  \\
-      %               &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S'_3} \otimes T'_3) \rangle \\
-      %       = \; &\langle (M_1 \otimes l_2)l_1, r_1(M_1 \otimes r_2) \rangle \otimes \langle (N_1 \otimes p_2)p_1, q_1(N_1 \otimes q_2) \rangle \\
-      %       = \; &(\langle l_2, r_2 \rangle  \circ \langle l_1, r_1 \rangle) \otimes (\langle p_2, q_2 \rangle \circ \langle p_1, q_1 \rangle)
-                     %     \end{align*}
+  % For future convenience, note that
+  % \begin{align*}
+  %   \langle l, r \rangle \otimes (T, T') &= \langle (M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T') \rangle \\
+  %   &= \langle (\lambda^{-1}_M \otimes A \otimes T)(M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T')(\lambda_M \otimes A' \otimes T') \rangle \\
+  %   &= \langle l \otimes T, r \otimes T' \rangle
+  % \end{align*}
+  % Now we check functoriality. Suppose we have:
+  % \begin{align*}
+  %   \langle l_1, r_1 \rangle : (S_1, S_1') &\hto (S_2, S_2') \\
+  %   \langle l_2, r_2 \rangle : (S_2, S_2') &\hto (S_3, S_3') \\
+  %   \langle p_1, q_1 \rangle : (T_1, T_1') &\hto (T_2, T_2') \\
+  %   \langle p_2, q_2 \rangle : (T_2, T_2') &\hto (T_3, T_3')
+  % \end{align*}
+  % with complements $M_1, M_2, N_1, N_2$ respectively. Then: \todo {(This is a mess. String diagram?)}
+  % \begin{align*}
+  %   &(\langle l_2, r_2 \rangle \otimes \langle p_2, q_2 \rangle) \circ (\langle l_1, r_1 \rangle \otimes \langle p_1, q_1 \rangle) \\
+  %   = \; &\langle (M_2 \otimes s_{S_3,N_2} \otimes T_3)(l_2 \otimes p_2), (r_2 \otimes q_2)(M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+  %   &\circ \langle (M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), (r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2') \rangle \\
+  %   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes N_1 \otimes l_2 \otimes p_2)(M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), \\
+  %   &\;(r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2')(M_1 \otimes N_1 \otimes r_2 \otimes q_2)(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+  %   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)(M_1 \otimes  l_2 \otimes N_1 \otimes p_2)(l_1 \otimes p_1), \\
+  %   &\;(r_1 \otimes q_1)(M_1 \otimes r_2 \otimes N_1 \otimes q_2)(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+  %   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1), \\
+  %   &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
+  %   = \; & \text{\todo{(Add a $s_{M_2, N_1}$ to either side of the coend, then appeal to coherence)}} \\
+  %   = \; &\langle (M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S_3} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1) ,  \\
+  %   &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S'_3} \otimes T'_3) \rangle \\
+  %   = \; &\langle (M_1 \otimes l_2)l_1, r_1(M_1 \otimes r_2) \rangle \otimes \langle (N_1 \otimes p_2)p_1, q_1(N_1 \otimes q_2) \rangle \\
+  %   = \; &(\langle l_2, r_2 \rangle  \circ \langle l_1, r_1 \rangle) \otimes (\langle p_2, q_2 \rangle \circ \langle p_1, q_1 \rangle)
+  % \end{align*}
 
   The structure morphisms are all lifted from the structure morphisms in $\C \times \C^\op$:
   \begin{align*}
@@ -531,16 +531,15 @@ The remainder of this section comprises some useful observations that were not m
   This is clear, as the structure morphisms in $\Optic_\C$ are exactly the structure morphisms in $\C \times \C^\op$ under $\iota$.
 \end{proof}
 
-      %       \begin{proposition}
-      %       Any isomorphism $p : (S, S') \hto (A, A')$ in $\Optic_\C$ is of the form $\iota(f, g)$ for two isomorphisms $S \to A$ and $A' \to S'$ in $\C$.
-      %       \end{proposition}
-      %       \begin{proof}
-      %       \todo{This might not actually be true..}
-      %       \end{proof}
+% \begin{proposition}
+%   Any isomorphism $p : (S, S') \hto (A, A')$ in $\Optic_\C$ is of the form $\iota(f, g)$ for two isomorphisms $S \to A$ and $A' \to S'$ in $\C$.
+% \end{proposition}
+% \begin{proof}
+%   \todo{This might not actually be true..}
+% \end{proof}
 
 There is some further useful structure in $\Optic_\C$.
-\begin{proposition}
-\label{prop-costates}
+\begin{proposition}\label{prop-costates}
   The set of costates $(S, S') \hto (I, I)$ is isomorphic to $\C(S, S')$.
 \end{proposition}
 \begin{proof}
@@ -674,34 +673,34 @@ Unpacking the definition, $\varepsilon$ being a symmetric monoidal extranatural 
 where $f : X \to Y$ is in $\C_d$.
 
 %%%% The following is a version with duality given by reflection.
-      %       \begin{definition}[{\cite[Definition 5.1]{CoherenceForLenses}}]
-      %       A \emph{teleological category is} a symmetric monoidal category $(\C, \otimes, I)$, equipped with:
-      %       \begin{itemize}
-      %       \item A wide symmetric monoidal subcategory $\C_d$ of \emph{dualisable morphisms}, with an involutive strong symmetric monoidal functor $(-)^* : \C_d \to \C_d^\op$; and,
-      %       \item A family of morphisms $\varepsilon_X : X \otimes X^* \to I$, called \emph{counits}, natural with respect to the morphisms in $\C_d$, such that
-      %       \[
-      %       \begin{tikzcd}
-      %       X \otimes Y^* \ar[r, "f \otimes Y^*"]  \ar[d, "X \otimes f^*", swap] & Y \otimes Y^* \ar[d, "\varepsilon_Y"] \\
-      %       X \otimes X^* \ar[r, "\varepsilon_X", swap] & I
-                                                            %                                                             \end{tikzcd} \hspace{1cm}
-                                                            %                                                             \begin{tikzcd}
-                                                            %                                                             X^* \otimes X \ar[r, "s_{X^*, X}"]  \ar[dr, "\varepsilon_{X^*}", swap] & X \otimes X^* \ar[d, "\varepsilon_X"] \\
-      %               & I
-                        %                         \end{tikzcd}
-                        %                         \]
-                        %                         \[
-                        %                         \begin{tikzcd}
-                        %                         X \otimes Y \otimes X^* \otimes Y^* \ar[r, "X \otimes s_{Y,X^*} \otimes X^*"]  \ar[dr, "\varepsilon_{X \otimes Y}", swap] & X \otimes X^* \otimes Y \otimes Y^* \ar[d, "\varepsilon_X \otimes \varepsilon_Y"] \\
-      %               & I
-                        %                         \end{tikzcd}
-                        %                         \]
-                        %                         commute for all $f : X \to Y$ is in $\C_d$.
-                        %                         \end{itemize}
-                        %                         \end{definition}
+% \begin{definition}[{\cite[Definition 5.1]{CoherenceForLenses}}]
+%   A \emph{teleological category is} a symmetric monoidal category $(\C, \otimes, I)$, equipped with:
+%   \begin{itemize}
+%   \item A wide symmetric monoidal subcategory $\C_d$ of \emph{dualisable morphisms}, with an involutive strong symmetric monoidal functor $(-)^* : \C_d \to \C_d^\op$; and,
+%   \item A family of morphisms $\varepsilon_X : X \otimes X^* \to I$, called \emph{counits}, natural with respect to the morphisms in $\C_d$, such that
+%     \[
+%       \begin{tikzcd}
+%         X \otimes Y^* \ar[r, "f \otimes Y^*"]  \ar[d, "X \otimes f^*", swap] & Y \otimes Y^* \ar[d, "\varepsilon_Y"] \\
+%         X \otimes X^* \ar[r, "\varepsilon_X", swap] & I
+%       \end{tikzcd} \hspace{1cm}
+%       \begin{tikzcd}
+%         X^* \otimes X \ar[r, "s_{X^*, X}"]  \ar[dr, "\varepsilon_{X^*}", swap] & X \otimes X^* \ar[d, "\varepsilon_X"] \\
+%         & I
+%       \end{tikzcd}
+%     \]
+%     \[
+%       \begin{tikzcd}
+%         X \otimes Y \otimes X^* \otimes Y^* \ar[r, "X \otimes s_{Y,X^*} \otimes X^*"]  \ar[dr, "\varepsilon_{X \otimes Y}", swap] & X \otimes X^* \otimes Y \otimes Y^* \ar[d, "\varepsilon_X \otimes \varepsilon_Y"] \\
+%         & I
+%       \end{tikzcd}
+%     \]
+%     commute for all $f : X \to Y$ is in $\C_d$.
+%   \end{itemize}
+% \end{definition}
 
-                        %                         \begin{remark}
-                        %                         Compact closed categories very nearly form examples of teleological categories. In a compact closed category, there are canonical isomorphisms $(X \otimes Y)^* \cong Y^* \otimes X^*$. In a teleological category, however, duality does not reverse the order of the tensor. \todo{If $\C$ is strict, as it is here, does this matter?}
-                        %                         \end{remark}
+% \begin{remark}
+%   Compact closed categories very nearly form examples of teleological categories. In a compact closed category, there are canonical isomorphisms $(X \otimes Y)^* \cong Y^* \otimes X^*$. In a teleological category, however, duality does not reverse the order of the tensor. \todo{If $\C$ is strict, as it is here, does this matter?}
+% \end{remark}
 
 Note that because $\C_d$ is symmetric monoidal and has the same collection of objects as $\C$, the symmetric monoidal structure morphisms of $\C$ must all be in $\C_d$.
 
@@ -836,7 +835,7 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
 \begin{theorem}
   \label{optic-is-free-teleological-cat}
   Suppose $\C$ is a strict symmetric monoidal category and $\T$ is a teleological category. For all symmetric monoidal functors $F : \C \to \T_d$, there exists a teleological functor $K : \Optic_\C \to \T$, unique up to isomorphism, such that $Kj \cong F$.
-      %       $\Optic$ is left adjoint to $(-)_d$, so $\Optic_\C$ is the free teleological category on a category of dualisable morphisms $\C$.
+  % $\Optic$ is left adjoint to $(-)_d$, so $\Optic_\C$ is the free teleological category on a category of dualisable morphisms $\C$.
 \end{theorem}
 \begin{proof}
   On objects, define $K(S, S') = FS \otimes (FS')^*$. Suppose $\langle l, r \rangle : (S, S') \hto (A, A')$ is an optic. By the previous Proposition,
@@ -857,7 +856,7 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
     K\langle (f \otimes A) l, r \rangle
     &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F(s_{M,A}(f \otimes A)l) \otimes (F(rs_{A',M}))^* ) \\
     &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F((A \otimes f)s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
-      %               &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(FA \otimes Ff \otimes FM \otimes FA')(F(s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
+    % &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(FA \otimes Ff \otimes FM \otimes FA')(F(s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
     &= (FA \otimes (\varepsilon_{FM} (Ff \otimes FM)) \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
     &= (FA \otimes (\varepsilon_{FN} (FN \otimes (Ff)^*)) \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
     &= (FA \otimes \varepsilon_{FN} \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(rs_{A',M}(A' \otimes f)))^* ) \\
@@ -1153,7 +1152,7 @@ We now discuss lawful lenses.
     &= (&&\pi_2 [\id_S, \fget], \\
     &&&\pi_2 \id_{S \times A} (\pi_1 [\id_S, \fget] \times A), \\
     &&& \fput (\pi_1 \id_{S \times A} (\pi_1 [\id_S, \fget] \times A) \times A) \quad) \\
-      %
+    %
     &= (&&\fget, \\
     &&& \pi_2, \\
     &&& \fput \pi_{1,3} \quad) \\
@@ -1164,11 +1163,11 @@ We now discuss lawful lenses.
     &= (&&\pi_2 [\id_S, \fget], \\
     &&&\pi_2 [\id_S, \fget]\fput (\pi_1 [\id_S, \fget] \times A), \\
     &&& \fput (\pi_1 [\id_S, \fget]\fput (\pi_1 [\id_S, \fget] \times A) \times A)) \quad) \\
-      %
+    %
     &= (&&\fget, \\
     &&& \fget \; \fput (\id_S \times A), \\
     &&& \fput (\fput (\id_S \times A) \times A) \quad) \\
-      %
+    %
     &= (&&\fget, \\
     &&& \fget \; \fput, \\
     &&& \fput (\fput \times A) \quad)
@@ -1427,15 +1426,15 @@ In what follows, we will exploit the convenient $\lambda$-calculus syntax for mo
     A \times \homC(B, C) &\to FC \\
     (a, g) &\mapsto F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, f a))
   \end{align*}
-             %              \begin{align*}
-             %              A \times \homC(B, C) \xrightarrow{f \times \id} FB \times \homC(B, C) \xrightarrow{\theta_{\homC(B, C), B}}  F(B \times \homC(B, C)) \xrightarrow{F\epsilon} FC
-             %     \end{align*}
+  % \begin{align*}
+      %       A \times \homC(B, C) \xrightarrow{f \times \id} FB \times \homC(B, C) \xrightarrow{\theta_{\homC(B, C), B}}  F(B \times \homC(B, C)) \xrightarrow{F\epsilon} FC
+      %     \end{align*}
   where $\theta$ is the strength for $F$.
   \todo{Check this is a strong natural transformation}
 
   Conversely, given a strong natural transformation $\eta : A \times \homC(B, -) \Rightarrow F$, the component at $B$ is a function $\eta_B : A \times \homC(B, B) \to FB$; we define $\Psi(\eta) : A \to FB$ by $\Psi(\eta)(a) = \eta_B(a, \id_B)$
 
-             %              $\Psi(\eta) : A \to FB$ to be $A \xrightarrow{A \times \const_{\id_B}} A \times \homC(B, B) \xrightarrow{\eta_B} FB$.
+      %       $\Psi(\eta) : A \to FB$ to be $A \xrightarrow{A \times \const_{\id_B}} A \times \homC(B, B) \xrightarrow{\eta_B} FB$.
 
   Now, verifying these are inverse:
   \begin{align*}
@@ -1591,103 +1590,104 @@ There is also an analogous notion of optics of composites of functors.
 }
 
 
-           %            \subsection{Equivalence of Optics}
-           %
-           %            One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\langle l, r \rangle, \langle l', r' \rangle : S \hto A$ are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
-           %
-           %            \todo{This may work in general with some huge number of conditions: something like $-A$ reflects monomorphisms and preserves binary coproducts, all subobjects in $\M$ have complements.}
-           %
-           %            \begin{proposition}
-           %            Suppose all epimorphisms split in $\C$, and that $- \times A : \C \to \C$ reflects epis. Then two lenses $\langle l, r \rangle$ and $\langle l', r' \rangle :  S \hto A$ with complements $M$ and $N$ respectively are equal iff there exists an morphism $\phi : M \to N$ such that $(\phi \times A)l = l'$ and $r = r' (\phi \times A)$.
-           %            \end{proposition}
-           %            \begin{proof}
-           %            The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
-           %
-           %%            note that $p$ and $q$ must have identical $\fget$ and $\fput$ functions:
-           %%            \begin{align*}
-           %%              \fget &= \pi_2 l = \pi_2 l' \\
-           %%              \fput &= r (\pi_1 l \times A) = r' (\pi_1 l' \times A)
-           %%            \end{align*}
-                                   %                                    For the forward direction, note that the map $(\pi_1 l \times A)$ is a retraction: it has the section $(r, \pi_2)$:
-                                   %                                    \begin{align*}
-                                   %                                    (\pi_1 l \times A)(r, \pi_2) = (\pi_1 l r, \pi_2) = (\pi_1, \pi_2) = \id_{S \times A}
-                                   %     \end{align*}
-                                   %                                    Now by assumption, $\pi_1 l : S \to M$ is an epi, so has a retraction $f : M \to S$. The claim is that $\phi = \pi_1 l' f$ is the required morphism $M \to N$.
-                                   %
-                                   %                                    The situation is summarised in the following diagram, which other than the dashed line, we know commutes.
-                                   %                                    \[
-                                   %                                    \begin{tikzcd}
-                                   %                                    M \times A \ar[r, "{f \times A}", dashed, bend left = 50] \ar[d, "r", swap] & S \times A \ar[d, "\fput"] \ar[r, "{\pi_1 l' \times A}"] \ar[l, "{\pi_1 l \times A}", swap] & N \times A \ar[d, "r'"] \\
-      %       S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "{[\id_S, \fget]}"] \ar[r, equal] & S \ar[d, "l'"] \\
-      %       M \times A & S \times A \ar[r] \ar[l] & N \times A
-                                                      %                                                       \end{tikzcd}
-                                                      %                                                       \]
-                                                      %                                                       We can now calculate:
-                                                      %                                                       \begin{align*}
-                                                      %                                                       r = r(\pi_1 l f \times A) = \fput (f \times A) = r' (\pi_1 l' f \times A) = r'(\phi \times A)
-                                                      %     \end{align*}
-                                                      %                                                       as required. The equation relating $l$ and $l'$ follows immediately as they are the inverses of $r$ and $r'$.
-                                                      %                                                       \end{proof}
-                                                      %
-                                                      %                                                       The conditions of the above Proposition hold in $\Set$, so long as $A$ is not empty.
+% \subsection{Equivalence of Optics}
+%
+% One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\langle l, r \rangle, \langle l', r' \rangle : S \hto A$
+are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
+%
+% \todo{This may work in general with some huge number of conditions: something like $-A$ reflects monomorphisms and preserves binary coproducts, all subobjects in $\M$ have complements.}
+%
+% \begin{proposition}
+%   Suppose all epimorphisms split in $\C$, and that $- \times A : \C \to \C$ reflects epis. Then two lenses $\langle l, r \rangle$ and $\langle l', r' \rangle :  S \hto A$ with complements $M$ and $N$ respectively are equal iff there exists an morphism $\phi : M \to N$ such that $(\phi \times A)l = l'$ and $r = r' (\phi \times A)$.
+% \end{proposition}
+% \begin{proof}
+%   The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
+%
+%%   note that $p$ and $q$ must have identical $\fget$ and $\fput$ functions:
+%%   \begin{align*}
+%%     \fget &= \pi_2 l = \pi_2 l' \\
+%%     \fput &= r (\pi_1 l \times A) = r' (\pi_1 l' \times A)
+%%   \end{align*}
+%   For the forward direction, note that the map $(\pi_1 l \times A)$ is a retraction: it has the section $(r, \pi_2)$:
+%   \begin{align*}
+%     (\pi_1 l \times A)(r, \pi_2) = (\pi_1 l r, \pi_2) = (\pi_1, \pi_2) = \id_{S \times A}
+%   \end{align*}
+%   Now by assumption, $\pi_1 l : S \to M$ is an epi, so has a retraction $f : M \to S$. The claim is that $\phi = \pi_1 l' f$ is the required morphism $M \to N$.
+%
+%   The situation is summarised in the following diagram, which other than the dashed line, we know commutes.
+%   \[
+%     \begin{tikzcd}
+%       M \times A \ar[r, "{f \times A}", dashed, bend left = 50] \ar[d, "r", swap] & S \times A \ar[d, "\fput"] \ar[r, "{\pi_1 l' \times A}"] \ar[l, "{\pi_1 l \times A}", swap] & N \times A \ar[d, "r'"] \\
+%       S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "{[\id_S, \fget]}"] \ar[r, equal] & S \ar[d, "l'"] \\
+%       M \times A & S \times A \ar[r] \ar[l] & N \times A
+%     \end{tikzcd}
+%   \]
+%   We can now calculate:
+%   \begin{align*}
+%     r = r(\pi_1 l f \times A) = \fput (f \times A) = r' (\pi_1 l' f \times A) = r'(\phi \times A)
+%   \end{align*}
+%   as required. The equation relating $l$ and $l'$ follows immediately as they are the inverses of $r$ and $r'$.
+% \end{proof}
+%
+% The conditions of the above Proposition hold in $\Set$, so long as $A$ is not empty.
 
-                                                      %                                                       Old attempt:
-                                                      %                                                       \begin{definition}
-                                                      %                                                       A functor $F : \C \to \D$ satisfies the \emph{splitting morphism condition} (SM) if, for every $f : A \to B$ in $\C$ such that $Ff$ is a split monomorphism, there exists a $g : B \to A$ such that $F(gf) = \id_{FA}$.
-                                                      %
-                                                      %                                                       Similarly, $F$ satisfies the \emph{splitting epimorphism condition} (SE) if for every $f : A \to B$ in $\C$ such that $Ff$ is a split epimorphism, there exists a $g : B \to A$ such that $F(fg) = \id_{FB}$.
-                                                      %                                                       \end{definition}
-                                                      %
-                                                      %                                                       These definitions are identical to ones given in a (as far as I can tell totally unrelated) paper on triangulated categories \cite{ObjectiveTriangleFunctors}. The conditions are not too difficult to satisfy:
-                                                      %
-                                                      %                                                       \begin{proposition}[\todo{cite}]
-                                                      %                                                       If $F$ is full then it satisfies (SM) and (SE).
-                                                      %                                                       \end{proposition}
-                                                      %                                                       \begin{proof}
-                                                      %
-                                                      %                                                       \end{proof}
-                                                      %
-                                                      %                                                       \begin{proposition}[\todo{cite}]
-                                                      %                                                       If $F$ is faithful then it satisfies (SM) and (SE).
-                                                      %                                                       \end{proposition}
-                                                      %                                                       \begin{proof}
-                                                      %
-                                                      %                                                       \end{proof}
-                                                      %
-                                                      %                                                       \begin{theorem}
-                                                      %                                                       Suppose we have two optics $\langle l, r \rangle$ and $\langle l', r' \rangle \in \Optic_\M(S, A)$ with complements $M$ and $N$ respectively, and suppose $\M$ has the property that the ``evaluation-at-$A$'' functor $(-A) : \M \to \C$ satisfies (SM) and (SE). Then the two optics are equal iff there exists an morphism $\phi : M \to N$ such that $\phi_A l = l'$ and $r = r' \phi_A$.
-                                                      %                                                       \end{theorem}
-                                                      %                                                       \begin{proof}
-                                                      %                                                       The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
-                                                      %
-                                                      %                                                       For the forward direction, as in Proposition \ref{prop-onthenose} we induct on a zigzag \[(l, r) = (l_1, r_1) \leftrightsquigarrow \dots \leftrightsquigarrow (l_n, r_n) = (l', r'),\] where each pair $(l_i, r_i)$ has complement $M_i$. As a base case, we can take the identity $\id_M : M \to M = M_1$. Now suppose we already have a morphism $\phi : M \to M_{i-1}$ that satisfies $\phi_A l = l_{i-1}$ and $r = r_{i-1} \phi_A$. There are two cases to consider:
-                                                      %
-                                                      %                                                       If $(l_{i-1}, r_{i-1}) \rightsquigarrow (l_i, r_i)$, then by definition we have a $\psi : M_{i-1}\to M_i$ that satisfies the equations $\psi_A l_{i-1} = l_i$ and $r_{i-1} = r_i \psi_A$. Therefore the composite $\psi\phi$ satisfies $(\psi\phi)_A l = \psi_A l_{i-1} = l_i$ and $r = r_{i-1} \phi_A = r_i (\psi \phi)_A$, so $\psi\phi : M \to M_i$ is the required morphism.
-                                                      %
-                                                      %                                                       If instead $(l_{i-1}, r_{i-1}) \leftsquigarrow (l_i, r_i)$, we have a morphism in the opposite direction $\psi : M_i \to M_{i-1}$, with $\psi_A l_i = l_{i-1}$ and $r_i = r_{i-1} \psi_A$, as shown in the following commutative diagram
-                                                      %                                                       \[
-                                                      %                                                       \begin{tikzcd}
-                                                      %                                                       M A \ar[r, "\phi_A"] \ar[d, "r", swap] & M_{i-1} A \ar[d, "r_{i-1}"] & M_i A \ar[l, "\psi_A", swap] \ar[d, "r_i"]\\
-      %       S \ar[r, equal] \ar[d, "l", swap] & S \ar[r, equal] \ar[d, "l_{i-1}"] & S \ar[d, "l_i"] \\
-      %       M A \ar[r, "\phi_A", swap] & M_{i-1} A & M_i A \ar[l, "\psi_A"]
-                                                       %                                                        \end{tikzcd}
-                                                       %                                                        \]
-                                                       %                                                        To construct a morphism $M \to M_i$ we have to perform a slightly awkward switchback maneuver. First note that $\phi_A$ is a split monomorphism, as $(l r_{i-1}) \phi_A = lr = \id_{MA}$.
-                                                       %
-                                                       %                                                        By condition (SM), therefore, there is a morphism $\gamma : M_{i-1} \to M$ such that $\gamma_A \phi_A = \id_{MA}$. But now, the composite $\gamma_A \psi_A : M_i \to M$ is a split epimorphism:
-                                                       %                                                        \begin{align*}
-                                                       %                                                        (\gamma_A \psi_A)(l_i r) = \gamma_A l_{i-1} r = \gamma_A \phi_A l r = \gamma_A \phi_A = \id_{MA}
-                                                       %     \end{align*}
-                                                       %                                                        and by condition (SE), there is a morphism $\theta : M \to M_i$ with $\gamma_A \psi_A \theta_A = \id_{MA}$. It remains to show that $\theta_A l = l_i$ and $r = r_i \theta_A$. First some intermediate steps:
-                                                       %                                                        \begin{align*}
-                                                       %                                                        r \gamma_A = r_{i-1} l_{i-1} r \gamma_A = r_{i-1} \phi_A l r \gamma_A = r_{i-1} \phi_A \gamma_A =
-                                                       %     \end{align*}
-                                                       %                                                        So finally:
-                                                       %                                                        \begin{align*}
-                                                       %                                                        r &= r \gamma_A \psi_A \theta_A
-                                                                                                                    %     \end{align*}
-                                                                                                                    %                                                                                                                     \todo{picture}
-                                                                                                                    %                                                                                                                     \end{proof}
+% Old attempt:
+% \begin{definition}
+%   A functor $F : \C \to \D$ satisfies the \emph{splitting morphism condition} (SM) if, for every $f : A \to B$ in $\C$ such that $Ff$ is a split monomorphism, there exists a $g : B \to A$ such that $F(gf) = \id_{FA}$.
+%
+%   Similarly, $F$ satisfies the \emph{splitting epimorphism condition} (SE) if for every $f : A \to B$ in $\C$ such that $Ff$ is a split epimorphism, there exists a $g : B \to A$ such that $F(fg) = \id_{FB}$.
+% \end{definition}
+%
+% These definitions are identical to ones given in a (as far as I can tell totally unrelated) paper on triangulated categories \cite{ObjectiveTriangleFunctors}. The conditions are not too difficult to satisfy:
+%
+% \begin{proposition}[\todo{cite}]
+%   If $F$ is full then it satisfies (SM) and (SE).
+% \end{proposition}
+% \begin{proof}
+%
+% \end{proof}
+%
+% \begin{proposition}[\todo{cite}]
+%   If $F$ is faithful then it satisfies (SM) and (SE).
+% \end{proposition}
+% \begin{proof}
+%
+% \end{proof}
+%
+% \begin{theorem}
+%   Suppose we have two optics $\langle l, r \rangle$ and $\langle l', r' \rangle \in \Optic_\M(S, A)$ with complements $M$ and $N$ respectively, and suppose $\M$ has the property that the ``evaluation-at-$A$'' functor $(-A) : \M \to \C$ satisfies (SM) and (SE). Then the two optics are equal iff there exists an morphism $\phi : M \to N$ such that $\phi_A l = l'$ and $r = r' \phi_A$.
+% \end{theorem}
+% \begin{proof}
+%   The backward direction is clear: the morphism $\phi$ is a witness that $\langle l, r \rangle \rightsquigarrow \langle l', r' \rangle$, so the two optics are equal.
+%
+%   For the forward direction, as in Proposition \ref{prop-onthenose} we induct on a zigzag \[(l, r) = (l_1, r_1) \leftrightsquigarrow \dots \leftrightsquigarrow (l_n, r_n) = (l', r'),\] where each pair $(l_i, r_i)$ has complement $M_i$. As a base case, we can take the identity $\id_M : M \to M = M_1$. Now suppose we already have a morphism $\phi : M \to M_{i-1}$ that satisfies $\phi_A l = l_{i-1}$ and $r = r_{i-1} \phi_A$. There are two cases to consider:
+%
+%   If $(l_{i-1}, r_{i-1}) \rightsquigarrow (l_i, r_i)$, then by definition we have a $\psi : M_{i-1}\to M_i$ that satisfies the equations $\psi_A l_{i-1} = l_i$ and $r_{i-1} = r_i \psi_A$. Therefore the composite $\psi\phi$ satisfies $(\psi\phi)_A l = \psi_A l_{i-1} = l_i$ and $r = r_{i-1} \phi_A = r_i (\psi \phi)_A$, so $\psi\phi : M \to M_i$ is the required morphism.
+%
+%   If instead $(l_{i-1}, r_{i-1}) \leftsquigarrow (l_i, r_i)$, we have a morphism in the opposite direction $\psi : M_i \to M_{i-1}$, with $\psi_A l_i = l_{i-1}$ and $r_i = r_{i-1} \psi_A$, as shown in the following commutative diagram
+%   \[
+%     \begin{tikzcd}
+%       M A \ar[r, "\phi_A"] \ar[d, "r", swap] & M_{i-1} A \ar[d, "r_{i-1}"] & M_i A \ar[l, "\psi_A", swap] \ar[d, "r_i"]\\
+%       S \ar[r, equal] \ar[d, "l", swap] & S \ar[r, equal] \ar[d, "l_{i-1}"] & S \ar[d, "l_i"] \\
+%       M A \ar[r, "\phi_A", swap] & M_{i-1} A & M_i A \ar[l, "\psi_A"]
+%     \end{tikzcd}
+%   \]
+%   To construct a morphism $M \to M_i$ we have to perform a slightly awkward switchback maneuver. First note that $\phi_A$ is a split monomorphism, as $(l r_{i-1}) \phi_A = lr = \id_{MA}$.
+%
+%   By condition (SM), therefore, there is a morphism $\gamma : M_{i-1} \to M$ such that $\gamma_A \phi_A = \id_{MA}$. But now, the composite $\gamma_A \psi_A : M_i \to M$ is a split epimorphism:
+%   \begin{align*}
+%     (\gamma_A \psi_A)(l_i r) = \gamma_A l_{i-1} r = \gamma_A \phi_A l r = \gamma_A \phi_A = \id_{MA}
+%   \end{align*}
+%   and by condition (SE), there is a morphism $\theta : M \to M_i$ with $\gamma_A \psi_A \theta_A = \id_{MA}$. It remains to show that $\theta_A l = l_i$ and $r = r_i \theta_A$. First some intermediate steps:
+%   \begin{align*}
+%     r \gamma_A = r_{i-1} l_{i-1} r \gamma_A = r_{i-1} \phi_A l r \gamma_A = r_{i-1} \phi_A \gamma_A =
+%   \end{align*}
+%   So finally:
+%   \begin{align*}
+%     r &= r \gamma_A \psi_A \theta_A
+%   \end{align*}
+%   \todo{picture}
+% \end{proof}
 
 \section{Profunctor Optics}
 The Haskell \texttt{lens} library implements optics using what is known as the \emph{profunctor encoding}. Lenses are defined as follows:
@@ -1944,94 +1944,94 @@ l (Procompose p q) == Procompose (l p) (l q)
 \end{minted}
 \end{remark}
 
-                  %                   \begin{proposition}
-                  %                   If $p : S \hto A$ is a lawful optic then the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal.
-                  %                   \end{proposition}
-                  %                   \begin{proof}
-                  %                   Let $\langle l, r \rangle$ be a representative for $p$ in $\Optic_\M(S,A)$ via the isomorphism of Proposition \ref{prop-profunctor-optics-are-optics}, so that
-                  %                   \begin{align*}
-                  %                   \tilde{p}_P = (UP)(l,r) \alpha_{A,A,M}
-                  %     \end{align*}
-                  %                   on each Tambara module $P$.
-                  %
-                  %                   To show $\tilde{p}$ is monoidal, we must show that both
-                  %                   \[
-                  %                   \begin{tikzcd}
-                  %                   UP(A,A) \times UQ(A,A) \ar[r, "\tilde{p}_P \times \tilde{p}_Q"] \ar[d, swap] & UP(S, S) \times UQ(S, S)  \ar[d] \\
-      %       U(P \odot Q)(A,A)  \ar[r, "\tilde{p}_{P \odot Q}", swap] & U(P \odot Q)(S,S)
-                                                                         %                                                                          \end{tikzcd}
-                                                                         %                                                                          \]
-                                                                         %                                                                          and
-                                                                         %                                                                          \[
-                                                                         %                                                                          \begin{tikzcd}
-                                                                         %                                                                          1 \ar[d] \ar[dr] & \\
-      %       UI(A,A)  \ar[r, "\tilde{p}_I", swap] & UI(S,S)
-                                                     %                                                      \end{tikzcd}
-                                                     %                                                      \]
-                                                     %                                                      commute. For the first we have
-                                                     %                                                      \begin{align*}
-                                                     %                                                      \langle (\tilde{p}_P \times \tilde{p}_Q)(x, y) \rangle &= \langle (UP)(l,r) \alpha_{A,A,M} x,  (UQ)(l,r) \beta_{A,A,M} y\rangle \\
-      %               &= \langle (UP)(l,lr) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations)} \\
-      %               &= \langle (UP)(l,\phi A) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$)} \\
-      %               &= \langle (UP)((\phi A)l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations again)} \\
-      %               &= \langle (UP)(lrl,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$ again)} \\
-      %               &= \langle (UP)(l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $rl = \id_S$)} \\
-      %               &= (U(P \odot Q))(l,r) \langle \alpha_{A,A,M} x, \beta_{A,A,M} y \rangle && \text{(by definition of $P \odot Q$)} \\
-      %               &= (U(P \odot Q))(l,r) (\alpha_{A,A,M} \odot \beta_{A,A,M}) \langle x, y \rangle && \text{(by definition of $\alpha \odot \beta$)} \\
-      %               &= \tilde{p}_{P \odot Q} \langle x, y \rangle
-                        %     \end{align*}
-                        %                         And for the second:
-                        %                         \begin{align*}
-                        %                         \tilde{p}_I(\id_A) = (UI)(l,r) (M \id_A) = r \id_{MA} l = rl = \id_S
-                        %     \end{align*}
-                        %                         as required.
-                        %                         \end{proof}
-                        %
-                        %%                         \begin{proposition}
-                        %%                           Let $\C = \Set$ and suppose $p : S \hto A$ is a lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is lawful.
-                        %%                         \end{proposition}
-                        %%                         \begin{proof}
-                        %%                           \todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
-                        %%                         \end{proof}
-                        %
-                        %                         \todo{Here are some thoughts:}
-                        %                         The converse is more difficult, and unfortunately requires another fiddly proof by induction on the coend relation. The idea is that any profunctor optic is characterised by its component at $\Pastro_\M E_A$, so the result should follow from the commutativity of the square for lax monoidality when $P = Q = \Pastro_\M E_A$.
-                        %
-                        %                         For the remainder of the section, fix a lax monoidal natural transformation $t : (U-)(A,A) \to (U-)(S,S)$ and suppose $\hat{t} = \langle l, r \rangle$ for $l : S \to MA$ and $r : MA \to S$. Commutativity of the triangle implies immediately that $rl = \id_S$.
-                        %
-                        %                         Unwinding definitions, commutativity of the square states that
-                        %                         \begin{align*}
-                        %                         \langle l, lr, r \rangle = \langle l, \id_{MA}, r \rangle
-                        %     \end{align*}
-                        %                         as elements of
-                        %                         \begin{align*}
-                        %                         \int^{M,N\in \M} \C(S, MA) \times \C(MA, NA) \times \C(NA, S)
-                        %     \end{align*}
-                        %                         Our goal is to show that this implies $\langle lr \rangle = \langle \phi A \rangle$ for some $\phi : M \to M$ in $\M$.
-                        %
-                        %                         \todo{describe the coend relation on this set}
-                        %
-                        %                         \newcommand{\rightrightsquigarrow}{\mathrel{\substack{\textstyle\rightsquigarrow\\[-0.6ex]
-      %       \textstyle\rightsquigarrow}}}
-      %       \newcommand{\leftleftsquigarrow}{\mathrel{\substack{\textstyle\leftsquigarrow\\[-0.6ex]
-      %       \textstyle\leftsquigarrow}}}
-      %
-      %       \begin{align*}
-      %               &\int^{N,M} \C(S, M \times A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
-      %               &= \int^{N,M} \C(S, M) \times \C(S, A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
-      %               &= \int^{N} \C(S, A) \times \C(S \times A, N \times A) \times \C(N \times A, S) \\
-      %               &= \int^{N} \C(S, A) \times \C(S \times A, N) \times \C(S \times A, A) \times \C(N \times A, S) \\
-      %               &= \C(S, A) \times \C(S \times A, A) \times \C(S \times A \times A, S) \\
-      %     \end{align*}
-      %       Here $\langle l, c, r \rangle$ is sent to $(l \pi_2, (l \pi_1, \id_A) c \pi_2, ((l \pi_1, \id_A) c, \id_A) r)$
-      %
-      %       \todo{Do this for the linear lens too}
-      %       \begin{theorem}
-      %       If $t : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal, then $\hat{t} : S \hto A$ is a lawful optic.
-      %       \end{theorem}
-      %       \begin{proof}
-      %
-      %       \end{proof}
+% \begin{proposition}
+%   If $p : S \hto A$ is a lawful optic then the associated natural transformation $\tilde{p} : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal.
+% \end{proposition}
+% \begin{proof}
+%   Let $\langle l, r \rangle$ be a representative for $p$ in $\Optic_\M(S,A)$ via the isomorphism of Proposition \ref{prop-profunctor-optics-are-optics}, so that
+%   \begin{align*}
+%     \tilde{p}_P = (UP)(l,r) \alpha_{A,A,M}
+%   \end{align*}
+%   on each Tambara module $P$.
+%
+%   To show $\tilde{p}$ is monoidal, we must show that both
+%   \[
+%     \begin{tikzcd}
+%       UP(A,A) \times UQ(A,A) \ar[r, "\tilde{p}_P \times \tilde{p}_Q"] \ar[d, swap] & UP(S, S) \times UQ(S, S)  \ar[d] \\
+%       U(P \odot Q)(A,A)  \ar[r, "\tilde{p}_{P \odot Q}", swap] & U(P \odot Q)(S,S)
+%     \end{tikzcd}
+%   \]
+%   and
+%   \[
+%     \begin{tikzcd}
+%       1 \ar[d] \ar[dr] & \\
+%       UI(A,A)  \ar[r, "\tilde{p}_I", swap] & UI(S,S)
+%     \end{tikzcd}
+%   \]
+%   commute. For the first we have
+%   \begin{align*}
+%     \langle (\tilde{p}_P \times \tilde{p}_Q)(x, y) \rangle &= \langle (UP)(l,r) \alpha_{A,A,M} x,  (UQ)(l,r) \beta_{A,A,M} y\rangle \\
+%     &= \langle (UP)(l,lr) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations)} \\
+%     &= \langle (UP)(l,\phi A) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$)} \\
+%     &= \langle (UP)((\phi A)l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(by the coend relations again)} \\
+%     &= \langle (UP)(lrl,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $lr = \phi A$ again)} \\
+%     &= \langle (UP)(l,\id_{MA}) \alpha_{A,A,M} x, (UQ)(\id_{MA},r) \beta_{A,A,M} y\rangle && \text{(as $rl = \id_S$)} \\
+%     &= (U(P \odot Q))(l,r) \langle \alpha_{A,A,M} x, \beta_{A,A,M} y \rangle && \text{(by definition of $P \odot Q$)} \\
+%     &= (U(P \odot Q))(l,r) (\alpha_{A,A,M} \odot \beta_{A,A,M}) \langle x, y \rangle && \text{(by definition of $\alpha \odot \beta$)} \\
+%     &= \tilde{p}_{P \odot Q} \langle x, y \rangle
+%   \end{align*}
+%   And for the second:
+%   \begin{align*}
+%     \tilde{p}_I(\id_A) = (UI)(l,r) (M \id_A) = r \id_{MA} l = rl = \id_S
+%   \end{align*}
+%   as required.
+% \end{proof}
+%
+%% \begin{proposition}
+%%   Let $\C = \Set$ and suppose $p : S \hto A$ is a lens such that the associated natural transformation $p : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal. Then $p$ is lawful.
+%% \end{proposition}
+%% \begin{proof}
+%%   \todo{Show that it satisfies the getput, putget and putput laws. This strategy works only with $\times$ and in $\Set$.}
+%% \end{proof}
+%
+% \todo{Here are some thoughts:}
+% The converse is more difficult, and unfortunately requires another fiddly proof by induction on the coend relation. The idea is that any profunctor optic is characterised by its component at $\Pastro_\M E_A$, so the result should follow from the commutativity of the square for lax monoidality when $P = Q = \Pastro_\M E_A$.
+%
+% For the remainder of the section, fix a lax monoidal natural transformation $t : (U-)(A,A) \to (U-)(S,S)$ and suppose $\hat{t} = \langle l, r \rangle$ for $l : S \to MA$ and $r : MA \to S$. Commutativity of the triangle implies immediately that $rl = \id_S$.
+%
+% Unwinding definitions, commutativity of the square states that
+% \begin{align*}
+%   \langle l, lr, r \rangle = \langle l, \id_{MA}, r \rangle
+% \end{align*}
+% as elements of
+% \begin{align*}
+%   \int^{M,N\in \M} \C(S, MA) \times \C(MA, NA) \times \C(NA, S)
+% \end{align*}
+% Our goal is to show that this implies $\langle lr \rangle = \langle \phi A \rangle$ for some $\phi : M \to M$ in $\M$.
+%
+% \todo{describe the coend relation on this set}
+%
+% \newcommand{\rightrightsquigarrow}{\mathrel{\substack{\textstyle\rightsquigarrow\\[-0.6ex]
+% \textstyle\rightsquigarrow}}}
+% \newcommand{\leftleftsquigarrow}{\mathrel{\substack{\textstyle\leftsquigarrow\\[-0.6ex]
+% \textstyle\leftsquigarrow}}}
+%
+% \begin{align*}
+%   &\int^{N,M} \C(S, M \times A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
+%   &= \int^{N,M} \C(S, M) \times \C(S, A) \times \C(M \times A, N \times A) \times \C(N \times A, S) \\
+%   &= \int^{N} \C(S, A) \times \C(S \times A, N \times A) \times \C(N \times A, S) \\
+%   &= \int^{N} \C(S, A) \times \C(S \times A, N) \times \C(S \times A, A) \times \C(N \times A, S) \\
+%   &= \C(S, A) \times \C(S \times A, A) \times \C(S \times A \times A, S) \\
+% \end{align*}
+% Here $\langle l, c, r \rangle$ is sent to $(l \pi_2, (l \pi_1, \id_A) c \pi_2, ((l \pi_1, \id_A) c, \id_A) r)$
+%
+% \todo{Do this for the linear lens too}
+% \begin{theorem}
+%   If $t : (U-)(A,A) \to (U-)(S,S)$ is lax monoidal, then $\hat{t} : S \hto A$ is a lawful optic.
+% \end{theorem}
+% \begin{proof}
+%
+% \end{proof}
 
 \section{Misc}
 \subsection{Degenerate Optics}

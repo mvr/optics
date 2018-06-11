@@ -188,6 +188,7 @@ If $\E$ is cocomplete, there is a formula for the coend as the coequaliser in th
 where $P$ is a functor $\M^\op \times \M \to \E$.
 
 \section{Optics}
+\label{sec-optics}
 
 We begin by constructing the category of optics in a symmetric monoidal category $\C$. This category was first defined in \cite[Section 6]{Doubles} to investigate the relationship between Tambara modules and the center of a monoidal category. There it is called the \emph{double} $\Double_l \C$ of a monoidal category, and our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses, and restricting our attention to the unenriched case.
 
@@ -991,6 +992,13 @@ We conclude that composition preserves lawfulness, so $\Lawful_\M$ is indeed a s
 \todo{There is probably a more conceptual way to do this}
 \end{proof}
 
+\begin{proposition}
+If $F : \C \to \D$ is a functor that commutes with the monoidal actions on $\C$ and $\D$, then $\Optic(F) : \Optic_\M \to \Optic_\N$ restricts to a functor $\Lawful_\M \to \Lawful_\N$.
+\end{proposition}
+\begin{proof}
+If $p = \langle l, r \rangle$ is lawful, 
+\end{proof}
+
 The requirement that $\once(p) = \twice(p)$ is mysterious, but there are sufficient conditions that are easier to verify.
 
 \begin{proposition}
@@ -1077,13 +1085,6 @@ We can now inductively apply the above argument to the shorter chain \[l'r' = u_
 The above argument has a similar form to some that appear in \cite{OnTheTrace}, which considered (among other things) coends of the form $\int^{c \in \C} \C(c, Fc)$ for an endofunctor $F : \C \to \C$.
 
 Finally, lawfulness is preserved by the change-of-action functors of Proposition \ref{prop-change-of-action}.
-
-\begin{proposition}
-If $F : \C \to \D$ is a functor that commutes with the monoidal actions on $\C$ and $\D$, then $\Optic(F) : \Optic_\M \to \Optic_\N$ restricts to a functor $\Lawful_\M \to \Lawful_\N$.
-\end{proposition}
-\begin{proof}
-\todo{this should be in here}
-\end{proof}
 
 \section{Examples}
 \label{lawful-examples}
@@ -1575,6 +1576,11 @@ Lawful optics in $\Optic_{[\D, \C]}$ are sent to lawful optics in $\Optic_\C$,  
 
 \todo{What about the pointwise tensor of an entire functor?}
 
+\subsection{Monad Transformer Optics}
+
+\todo{todo}
+
+There is also an analogous notion of optics of composites of functors.
 
 \subsection{Indexed Optics}
 \todo{
@@ -1689,12 +1695,22 @@ which is why they pass information `in the other direction' but still transform 
 %\end{proof}
 
 \section{Profunctor Optics}
+The Haskell \texttt{lens} library implements optics using what is known as the \emph{profunctor encoding}. Lenses are defined as follows:
+
+\begin{minted}{haskell}
+class Profunctor p => Strong p where
+  second' :: p a b -> p (c, a) (c, b)
+  
+type Lens s a = forall p. Strong p => p a a -> p s s
+\end{minted}
+
+The precise connection between this encoding and the previous one was investigated independently in \cite{ProfunctorOpticsPost}. In this section, we extend these ideas to the case of a monoidal action and include an analysis of lawful optics in this setting.
 
 \subsection{Tambara Modules}
 Let $I = \C(-,{=}) : \C \hto \C$ be the identity profunctor and $\odot$ be profunctor composition, written in diagrammatic order. The following section generalises definitions that first appeared in \cite[Section 3]{Doubles} for monoidal categories to the more general case of a monoidal action.
 
 \begin{definition}
-Suppose $\C$ is acted on by $(\M, \otimes, I)$ and let $P \in \Prof(\C, \C)$ be a profunctor. A \emph{Tambara module structure for $\M$} on $P$ is a family of maps:
+Suppose a category $\C$ is acted on by $(\M, \otimes, I)$ and let $P \in \Prof(\C, \C)$ be a profunctor. A \emph{Tambara module structure for $\M$} on $P$ is a family of maps:
 \begin{align*}
 \alpha_{A,B,M} : P(A,B) \to P(MA, MB)
 \end{align*}
@@ -1729,7 +1745,13 @@ Q(A,B) \ar[r, "\beta_{A,B,M}"] & Q(MA, MB)
 commutes.
 \end{definition}
 
-This category is monoidal with respect to $\odot$ as given above with monoidal unit $I$. There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; important for us is the left adjoint:
+This category is monoidal with respect to $\odot$ as given above with monoidal unit $I$. 
+
+\begin{remark}
+In the code, the \mintinline{haskell}{Strong} typeclass corresponds to supplying the structure map $\alpha$ for a profunctor \texttt{p}. Parametricity guarantees a form of (di)naturality for $M$, $A$ and $B$, but as with any definition in Haskell, the equations required of a Tambara module must be checked externally.
+\end{remark}
+
+There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; important for us is the left adjoint:
 
 \begin{definition}[{\cite[Section 5]{Doubles}}]
 Let $\Pastro_\M : \Prof(\C, \C) \to \Tamb(\M)$ be the functor:
@@ -1775,7 +1797,6 @@ This establishes uniqueness. It remains to show that $\hat{f}$ so defined is act
 \hat{f}\alpha_{A,B,N}(\langle l, p, r \rangle)
 &= \hat{f}(\langle Nl, p, Nr \rangle) \\
 &= T(Nl, Nr) \; \beta_{A, B, NM} \; f(p) \\
-&= T(Nl, Nr) \; \beta_{A, B, NM} \; f(p) \\
 &= T(Nl, Nr) \beta_{MA,MB,N} \; \beta_{A, B, M} \; f(p) \\
 &= \beta_{A,B,N} T(l, r) \; \beta_{A, B, M} \; f(p) \\
 &= \beta_{A,B,N} \hat{f} (\langle l, p, r \rangle)
@@ -1786,7 +1807,7 @@ This establishes uniqueness. It remains to show that $\hat{f}$ so defined is act
 $\Pastro_\M$ is oplax monoidal.
 \end{corollary}
 \begin{proof}
-This follows from abstract nonsense as the left adjoint of a strong monoidal functor \cite{Kelly1974}.
+This follows from abstract nonsense as the left adjoint of a strong monoidal functor, see \cite{Kelly1974}.
 \end{proof}
 
 \subsection{Optics}
@@ -1831,9 +1852,16 @@ We have the chain of isomorphisms:
 \cong \;&\int^{M \in \M} \C(S, MA) \times \C(MA, S)  && \text{(by co-Yoneda twice)} \\
 = \;&\Optic_\M(S, A)
 \end{align*}
+The same proof works in the more general case of $\Optic_\M((S, S'), (A,A'))$, defining $E_{A, A'}$ to be $\C(-, A) \times \C(A', {=})$.
 \end{proof}
 
-The same proof works in the more general case of $\Optic_\M((S, S'), (A,A'))$, defining $E_{A, A'}$ to be $\C(-, A) \times \C(A', {=})$.
+\begin{remark}
+This proposition justifies the profunctor encoding
+\begin{minted}{haskell}
+type Lens s a = forall p. Strong p => p a a -> p s s
+\end{minted}
+using parametricity as a proxy for naturality.
+\end{remark}
 
 For $p : S \hto A$, let $\tilde{p} : (U-)(A,A) \rightarrow (U-)(S,S)$ denote the corresponding natural transformation under this isomorphism, and for $t : (U-)(A,A) \rightarrow (U-)(S,S)$, let $\hat{t} : S \hto A$ be the corresponding optic.
 
@@ -2026,7 +2054,18 @@ Then I claim that
 \end{align*}
 So that the set of `lawful' getters is exactly $\C(S, A)$.
 
+Free copointed on $F$ is exactly $F \times \id_\C$
+The functor $\mathsf{Copointed} \to [\C, \C]$ has a right adjoint given by $F \mapsto F \times \id_\C$. Copointed map $F \to G \times \id_\C$ is the same as an uncopointed map $F \to G$
 
+For $l, r : \C(S, FA) \times \C(FA, S)$, the map $r$ is equal to
+\[
+FA \xrightarrow{[\id_{FA}, \mathsf{copoint}]} FA \times A \xrightarrow{\pi_1} FA \to S
+\]
+But that first map is the component at $A$ of a copointed natural transformation (the unit of the adjunction). So $l, r$ is equal to
+\begin{align*}
+S \to FA \xrightarrow{[\id_{FA}, \mathsf{copoint}]} FA \times A\\
+FA \times A \xrightarrow{\pi_1} FA \to S
+\end{align*}
 
 \subsection{Merely Well-Behaved Optics}
 \todo{
@@ -2069,9 +2108,6 @@ Prelenses that satisfy the first two laws correspond to pairs $\langle l, r \ran
 \subsection{Effectful Optics}
 
 Many attempts \cite{ReflectionsOnMonadicLenses} \todo{more} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given here suggests we instead set $\C$ to be the Kleisli category for some monad $T$.
-
-
-\subsection{Optics Into Stacks of Functors and Monad Transformers}
 
 \section{Conclusion}
 

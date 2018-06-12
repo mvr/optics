@@ -61,6 +61,7 @@
 \newcommand{\bN}{\mathbb{N}}
 \newcommand{\bZ}{\mathbb{Z}}
 
+\newcommand{\lenslib}{\texttt{lens}}
 
 \newcommand{\Pastro}{\Phi}
 % \newcommand{\Pastro}{\mathrm{Pastro}}
@@ -102,7 +103,7 @@
 \newcommand{\inr}{\mathrm{inr}}
 \DeclareMathOperator{\im}{im}
 
-\newcommand{\rep}[2]{{\ensuremath \langle #1 \mid #2 \rangle}}
+\newcommand{\rep}[2]{{\ensuremath \left\langle #1 \mid #2 \right\rangle}}
 \newcommand{\repthree}[3]{{\ensuremath \langle #1 \mid #2 \mid #3 \rangle}}
 \newcommand{\repfour}[4]{{\ensuremath \langle #1 \mid #2 \mid #3 \mid #4 \rangle}}
 
@@ -258,7 +259,7 @@ for each $M, N \in \C$. For this we use the composites
 \end{align*}
 In other words, let $\rep{l'}{r'} : (R, R') \hto (S, S')$ and $\rep{l}{r} : (S, S') \hto (A, A')$ with $M$ the complement for $\rep{l'}{r'}$. The composite is then: $\rep{l}{r} \circ \rep{l'}{r'} = \rep{(M l)l'}{r'(Mr)}$.
 
-Graphically, this is placing the first optic into the hole of the second:
+Graphically, this is substituting the first optic for the hole of the second:
 \begin{center}
   \input{diagrams/generic-optic-noline.tikz}
   \qquad\raisebox{1.5cm}{$\circ$}\qquad
@@ -271,12 +272,12 @@ The identity optic $(S, S') \hto (S, S')$ is given by $\rep{\lambda^{-1}_S}{\lam
 \begin{center}
   \input{diagrams/identity-optic-full.tikz}
 \end{center}
-This dashed line above the diagram represents the unit object. As is standard, we will elide the unit object and unitors in future diagrams unless they are necessary. The diagram for the identity becomes:
+This dashed line above the diagram represents the unit object. It is common in string diagrams to omit unitors and the unit object unless they are necessary to make sense of the diagram. In this case, we would draw:
 \begin{center}
   \input{diagrams/identity-optic.tikz}
 \end{center}
 
-\begin{proposition}
+\begin{proposition}\label{prop-optic-is-cat}
   The above data form a category $\Optic_\C$.
 \end{proposition}
 \begin{proof}
@@ -319,7 +320,7 @@ This dashed line above the diagram represents the unit object. As is standard, w
 The remainder of this section comprises some useful observations that were not made in~\cite{Doubles}.
 
 \begin{proposition}
-  There is a functor $\iota : \C \times \C^\op \to \Optic_\C$, which is given on objects by $\iota(S, S') = (S, S')$ and for a morphism $(f, g) : (S, S') \to (A, A')$ by $\iota(f, g) = \rep{ \lambda_A^{-1} f}{ g \lambda_{A'}}$.
+  There is a functor $\iota : \C \times \C^\op \to \Optic_\C$, which is given on objects by $\iota(S, S') = (S, S')$ and for a morphism $(f, g) : (S, S') \to (A, A')$ by $\iota(f, g) = \rep{\lambda_A^{-1} f}{g \lambda_{A'}}$.
 \end{proposition}
 \begin{proof}
   Graphically, this is:
@@ -327,16 +328,16 @@ The remainder of this section comprises some useful observations that were not m
     \input{diagrams/iota.tikz}
   \end{center}
 
-  This preserves identities, as the identity on an object $(S, S')$ in $\Optic_\M$ is defined to be exactly $\rep{ \lambda^{-1}_S}{ \lambda_{S'}}$. To check functoriality, suppose we have $(f, g) : (S, S') \to (A, A')$ and $(f', g') : (A, A') \to (B, B')$ in $\C \times \C^\op$. Then:
+  This preserves identities, as the identity on an object $(S, S')$ in $\Optic_\M$ is defined to be exactly $\rep{\lambda^{-1}_S}{\lambda_{S'}}$. To check functoriality, suppose we have $(f, g) : (S, S') \to (A, A')$ and $(f', g') : (A, A') \to (B, B')$ in $\C \times \C^\op$. Then:
   \begin{align*}
     \iota(f', g') \circ \iota(f, g)
-    &= \rep{ \lambda^{-1}_B f'}{ g' \lambda_{B'}} \circ \rep{ \lambda^{-1}_A f}{ g \lambda_{A'}} \\
-    &= \rep{ (I\otimes (\lambda^{-1}_B f'))\lambda^{-1}_A f}{ g \lambda_{A'} (I\otimes (g' \lambda_{B'})} && \text{(By definition of $\circ$)}\\
-    &= \rep{ (I \otimes \lambda^{-1}_B) (I \otimes f')\lambda^{-1}_A f}{ g \lambda_{A'} (I \otimes g')(I\otimes \lambda_{B'}} && \text{(Functoriality of $I \otimes -$)}\\
-    &= \rep{ (I\otimes \lambda^{-1}_B) \lambda^{-1}_B f' f}{ g g' \lambda_{B'} (I\otimes \lambda_{B'}} && \text{(Naturality of $\lambda$)}\\
-    &= \rep{ (\lambda^{-1}_I \otimes B) \lambda^{-1}_B f' f}{ g g' \lambda_{B'} (\lambda_I \otimes B'} && \text{(Unitality of action)} \\
-    &= \rep{ \lambda^{-1}_B f' f}{ g g' \lambda_{B'} (\lambda_I \otimes B') (\lambda^{-1}_I \otimes B')} && \text{(Coend relation)}  \\
-    &= \rep{ \lambda^{-1}_B f'f}{ g g' \lambda_{B'}} \\
+    &= \rep{\lambda^{-1}_B f'}{g' \lambda_{B'}} \circ \rep{\lambda^{-1}_A f}{g \lambda_{A'}} \\
+    &= \rep{(I\otimes (\lambda^{-1}_B f'))\lambda^{-1}_A f}{g \lambda_{A'} (I\otimes (g' \lambda_{B'})} && \text{(By definition of $\circ$)}\\
+    &= \rep{(I \otimes \lambda^{-1}_B) (I \otimes f')\lambda^{-1}_A f}{g \lambda_{A'} (I \otimes g')(I\otimes \lambda_{B'}} && \text{(Functoriality of $I \otimes -$)}\\
+    &= \rep{(I\otimes \lambda^{-1}_B) \lambda^{-1}_B f' f}{g g' \lambda_{B'} (I\otimes \lambda_{B'}} && \text{(Naturality of $\lambda$)}\\
+    &= \rep{(\lambda^{-1}_I \otimes B) \lambda^{-1}_B f' f}{g g' \lambda_{B'} (\lambda_I \otimes B'} && \text{(Unitality of action)} \\
+    &= \rep{\lambda^{-1}_B f' f}{g g' \lambda_{B'} (\lambda_I \otimes B') (\lambda^{-1}_I \otimes B')} && \text{(Coend relation)}  \\
+    &= \rep{\lambda^{-1}_B f'f}{g g' \lambda_{B'}} \\
     &= \iota(f'f, gg')
   \end{align*}
   Graphically, there is not much to do:
@@ -428,34 +429,34 @@ The remainder of this section comprises some useful observations that were not m
 % \end{proof}
 
 \begin{theorem}
-  $\Optic_\C$ is symmetric monoidal, where $(S, S') \otimes (T, T') = (S \otimes T, S' \otimes T')$, the unit object is $(I, I)$, and the action on a pair of morphisms $\rep{ l}{ r} : S \hto A$ and $\rep{ l'}{ r'} : T \hto B$ is given by:
+  $\Optic_\C$ is symmetric monoidal, where $(S, S') \otimes (T, T') = (S \otimes T, S' \otimes T')$, the unit object is $(I, I)$, and the action on a pair of morphisms $\rep{l}{r} : S \hto A$ and $\rep{l'}{r'} : T \hto B$ is given by:
   \begin{center}
     \input{diagrams/tensor-on-morphisms.tikz}
   \end{center}
 \end{theorem}
 \begin{proof}
-  Equationally, suppose the two optics have complements $M$ and $N$ respectively. Then:
+  Suppose the two optics have complements $M$ and $N$ respectively. Written equationally, their tensor is:
   \begin{align*}
-    \rep{ l}{ r} \otimes \rep{ l'}{ r'} &:= \rep{(M \otimes s_{A,N} \otimes B)(l \otimes l')}{(r \otimes r')(M \otimes s_{A',N} \otimes B')}
+    \rep{l}{r} \otimes \rep{l'}{r'} &:= \rep{(M \otimes s_{A,N} \otimes B)(l \otimes l')}{(r \otimes r')(M \otimes s_{A',N} \otimes B')}
   \end{align*}
   This is well-defined, as the calculus of string diagrams allows us to combine the coend relation on each optic to establish the coend relation for the compound diagram. \todo{draw this?}
 
   Let us check functoriality of $\otimes$. Suppose we have optics:
   \begin{align*}
-    \rep{ l_1}{ r_1} : (S_1, S_1') &\hto (S_2, S_2') \\
-    \rep{ l_2}{ r_2} : (S_2, S_2') &\hto (S_3, S_3') \\
-    \rep{ p_1}{ q_1} : (T_1, T_1') &\hto (T_2, T_2') \\
-    \rep{ p_2}{ q_2} : (T_2, T_2') &\hto (T_3, T_3')
+    \rep{l_1}{r_1} : (S_1, S_1') &\hto (S_2, S_2') \\
+    \rep{l_2}{r_2} : (S_2, S_2') &\hto (S_3, S_3') \\
+    \rep{p_1}{q_1} : (T_1, T_1') &\hto (T_2, T_2') \\
+    \rep{p_2}{q_2} : (T_2, T_2') &\hto (T_3, T_3')
   \end{align*}
-  The string diagram for $(\rep{ l_2}{ r_2} \circ \rep{ l_1}{ r_1}) \otimes (\rep{ p_2}{ q_2} \circ \rep{ p_1}{ q_1})$ is:
+  The string diagram for $(\rep{l_2}{r_2} \circ \rep{l_1}{r_1}) \otimes (\rep{p_2}{q_2} \circ \rep{p_1}{q_1})$ is:
   \begin{center}
     \input{diagrams/tensor-functorial-left.tikz}
   \end{center}
-  And for $(\rep{ l_2}{ r_2} \otimes \rep{ p_2}{ q_2}) \circ (\rep{ l_1}{ r_1} \otimes \rep{ p_1}{ q_1})$ is:
+  And for $(\rep{l_2}{r_2} \otimes \rep{p_2}{q_2}) \circ (\rep{l_1}{r_1} \otimes \rep{p_1}{q_1})$ is:
   \begin{center}
     \input{diagrams/tensor-functorial-right.tikz}
   \end{center}
-  These two diagrams are equivalent. We can use the naturality of the symmetry morphism to push $l_2$ and $r_2$ through to be next to $l_1$ and $r_1$ respectively. This creates two extra twists that can be cancelled in the center of the diagram.
+  These two diagrams are equivalen: We can use the naturality of the symmetry morphism to push $l_2$ and $r_2$ past the crossing to be next to $l_1$ and $r_1$ respectively. This creates two extra twists that can be cancelled in the center of the diagram (implicitly using the coend relation).
 
   %%%% Note: The following is the above argument written equationally:
   % For future convenience, note that
@@ -497,28 +498,28 @@ The remainder of this section comprises some useful observations that were not m
     s_{(S, S'), (T, T')} &:= \iota(s_{S, T}, s_{T', S'})
   \end{align*}
 
-  Note that because $\iota(S, S') = (S, S')$, required equations for $\iota$ to be a monoidal functor hold by definition (although we don't yet know that $\Optic_\otimes$ is monoidal). The pentagon and triangle axioms then hold in $\Optic_\otimes$, as they are the image of the same axioms in $\C \times \C^\op$ under $\iota$. The only remaining thing to verify is that these structure maps are natural in $\Optic_\otimes$.
+  Note that because $\iota(S, S') = (S, S')$, required equations for $\iota$ to be a monoidal functor hold by definition (although we don't yet know that $\Optic_\otimes$ is monoidal). The pentagon and triangle equations then hold in $\Optic_\otimes$, as they are the image of the same axioms in $\C \times \C^\op$ under $\iota$. The only remaining thing to verify is that these structure maps are natural in $\Optic_\otimes$.
 
-  Let us check that $\alpha_{(R, R'), (S, S'), (T, T')}$ is natural in $(R, R')$. Suppose $f : (Q, Q') \hto (R, R')$ has representative $(l, r) : (Q \to M \otimes R, M \otimes R' \to Q')$, then:
+  Let us check that $\alpha_{(R, R'), (S, S'), (T, T')}$ is natural in $(R, R')$. Suppose $\rep{l}{r} : (Q, Q') \hto (R, R')$ is an optic with complement $M$.
   \begin{align*}
     &\alpha_{(R, R'), (S, S'), (T, T')} \circ (f \otimes (S, S')) \otimes (T, T') \\
-    &= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1})  \circ (\rep{ l}{ r} \otimes (S, S')) \otimes (T, T') \\
-    &= \rep{\lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T}}{\alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'}}  \circ \rep{(l \otimes S) \otimes T}{ (r \otimes S') \otimes T'} \\
+    &= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1})  \circ (\rep{l}{r} \otimes (S, S')) \otimes (T, T') \\
+    &= \rep{\lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T}}{\alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'}}  \circ \rep{(l \otimes S) \otimes T}{(r \otimes S') \otimes T'} \\
     &= \rep{(M \otimes \lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T})((l \otimes S) \otimes T)}{((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'} )} \\
     &=\rep{(M \otimes \alpha_{R,S,T})((l \otimes S) \otimes T)}{((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} )} \\
     &= \rep{(l \otimes (S \otimes T))\alpha_{Q,S,T}}{\alpha_{Q',S',T'}^{-1}(r \otimes (S' \otimes T'))} \\
     &= \rep{(I \otimes l \otimes (S \otimes T)) \lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}}{(I \times r \otimes (S' \otimes T')) \alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')}} \\
     &= \rep{l \otimes (S \otimes T)}{r \otimes (S' \otimes T')} \circ \rep{\lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}}{\alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')} } \\
-    &= \rep{ l}{ r} \otimes ((S, S') \otimes (T, T')) \circ \iota(\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}) \\
+    &= \rep{l}{r} \otimes ((S, S') \otimes (T, T')) \circ \iota(\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}) \\
     &= f \otimes ((S, S') \otimes (T, T')) \circ \alpha_{(Q, Q'), (S, S'), (T, T')}
   \end{align*}
-  \todo{There is some cheating going on here, composition actually adds an extra $\alpha$, but that wouldn't get in the way.}
 
-  \todo{convert this to a string diagram}
+Naturality in the other variables is similar, as is the naturality of the unitors.
+  \todo{convert this to a string diagram?}
 \end{proof}
 
 \begin{remark}
-  In the Haskell \texttt{lens} library, the monoidal product on optics is denoted ``\texttt{alongside}'' for the product and ``\texttt{without}'' for the coproduct.
+  In the Haskell \lenslib{} library, the monoidal product on optics is denoted ``\texttt{alongside}'' for the product and ``\texttt{without}'' for the coproduct.
 \end{remark}
 
 \begin{proposition}
@@ -529,7 +530,7 @@ The remainder of this section comprises some useful observations that were not m
 \end{proof}
 
 \begin{proposition}
-  $\iota : \C \times \C^\op \to \Optic_\C$ is a monoidal functor.
+  $\iota : \C \times \C^\op \to \Optic_\C$ is a strict monoidal functor.
 \end{proposition}
 \begin{proof}
   This is clear, as the structure morphisms in $\Optic_\C$ are exactly the structure morphisms in $\C \times \C^\op$ under $\iota$.
@@ -557,7 +558,7 @@ There is some further useful structure in $\Optic_\C$.
 
 \todo{Is there a relationship between $\Optic_\C/(I, I)$ and $[2, \C]$?}
 
-In particular, for any $S \in \C$, the image of the identity yields an optic $c_S : (S, S) \hto (I, I)$, that we will call the connector:
+In particular, for any $S \in \C$, the identity $\id_S$ yields an optic $c_S = \rep{\rho_S^{-1}}{\rho_S} : (S, S) \hto (I, I)$, that we will call the connector:
 \begin{center}
   \input{diagrams/connector-full.tikz}
 \end{center}
@@ -591,9 +592,9 @@ Or, again omitting the unitors:
   A monoidal functor $F : \C \to \D$ induces a functor $\Optic(F) : \Optic_\C \to \Optic_\D$.
 \end{proposition}
 \begin{proof}
-  On objects this is simply $\Optic(F)(S, S') = (FS, FS')$. On a morphism $\rep{ l}{ r} : (S, S') \to (A, A')$, we define
+  On objects this is simply $\Optic(F)(S, S') = (FS, FS')$. On a morphism $\rep{l}{r} : (S, S') \to (A, A')$, we define
   \begin{align*}
-    F\rep{ l}{ r} := \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}}
+    \Optic(F)\rep{l}{r} := \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}}
   \end{align*}
   where $\phi_{M,A} : FM \otimes FA \to F(M \otimes A)$ is the structure map of the monoidal functor.
   \todo{functoriality}
@@ -604,24 +605,24 @@ Or, again omitting the unitors:
   Collectively this operation defines a 2-functor \[\Optic : \SymmMonCat \to \SymmMonCat.\] \qed
 \end{proposition}
 \todo{Haven't actually checked natural transformations}
-\todo{Also we run into the large coend issue again, it's probably not well defined on every symm mon cat.}
+\todo{Also we run into the large coend issue again, it's not defined on every symm mon cat.}
 
 \subsection{Teleological Categories}
 \label{teleological-categories}
 
-In this section we establish a universal property of the $\Optic$ construction. The idea is that every optic $\rep{ l}{ r} : (S, S') \hto (A, A')$ consists of a morphism $S \to M \otimes A$ and the `formal dual' of a morphism $M \otimes A' \to S'$, composed with a `formal counit' that traces out the object $M$:
+In this section we establish a universal property of the $\Optic$ construction. The idea is that every optic $\rep{l}{r} : (S, S') \hto (A, A')$ consists of a morphism $S \to M \otimes A$ and the `formal dual' of a morphism $M \otimes A' \to S'$, composed with a `formal counit' that traces out the object $M$:
 \begin{center}
   \input{diagrams/generic-optic-folded.tikz}
 \end{center}
 
-We assume temporarily that $\C$ is a \emph{strict} symmetric monoidal category. It will be convenient to equip $\Optic_\C$ with a slightly different symmetric monoidal structure. The universal property for $\Optic_\C$ given in this section is an argument for this being the ``morally correct'' tensor, although it does seem a little strange.
+We assume in this section that $\C$ is a \emph{strict} symmetric monoidal category. It will be convenient to equip $\Optic_\C$ with a slightly different symmetric monoidal structure. The universal property for $\Optic_\C$ given in this section is an argument for this being the ``morally correct'' tensor, although it does seem a little strange.
 
 \begin{definition}
   The \emph{switched} monoidal product on $\Optic_\C$ is given on objects by
   \begin{align*}
     (S, S') \switched (T, T') := (S \otimes T, T' \otimes S')
   \end{align*}
-  And on morphisms $\rep{ l}{ r} : S \hto A$ and $\rep{ l'}{ r'} : T \hto B$ by:
+  And on morphisms $\rep{l}{r} : S \hto A$ and $\rep{l'}{r'} : T \hto B$ by:
   \begin{center}
     \input{diagrams/switched-tensor-on-morphisms.tikz}
   \end{center}
@@ -639,7 +640,7 @@ We assume temporarily that $\C$ is a \emph{strict} symmetric monoidal category. 
     s_{(S, S'), (T, T')} &:= \iota(s_{S, T}, s_{S', T'})
   \end{align*}
 
-  The categories are monoidally equivalent via the identity functor $I : (\Optic_\C, \switched, (I, I)) \to (\Optic_\C, \otimes, (I, I))$, where the structure isomorphisms are given by
+  The categories are monoidally equivalent via the identity functor \[I : (\Optic_\C, \switched, (I, I)) \to (\Optic_\C, \otimes, (I, I)),\] where the structure isomorphisms are given by
   \begin{align*}
     \iota(\id_{S \otimes S'}, s_{T, T'}) : I(S, S') \otimes I(T, T') \to I((S, S') \switched (T, T'))
   \end{align*}
@@ -706,7 +707,7 @@ where $f : X \to Y$ is in $\C_d$.
 %   Compact closed categories very nearly form examples of teleological categories. In a compact closed category, there are canonical isomorphisms $(X \otimes Y)^* \cong Y^* \otimes X^*$. In a teleological category, however, duality does not reverse the order of the tensor. \todo{If $\C$ is strict, as it is here, does this matter?}
 % \end{remark}
 
-Note that because $\C_d$ is symmetric monoidal and has the same collection of objects as $\C$, the symmetric monoidal structure morphisms of $\C$ must all be in $\C_d$.
+Note that because $\C_d$ is symmetric monoidal and has the same collection of objects as $\C$, the symmetric monoidal structure morphisms of $\C$ must be contained in $\C_d$.
 
 \begin{example}
   Any symmetric monoidal category with terminal monoidal unit is trivially teleological, setting the dualisable morphisms to be the structure maps of the monoidal category.
@@ -716,9 +717,9 @@ Note that because $\C_d$ is symmetric monoidal and has the same collection of ob
   Any compact closed category is a teleological category, where every morphism is dualisable and the unit morphisms have been forgotten.
 \end{example}
 
-\todo{\begin{example}
-    The funny graph example from the coherence paper?
-  \end{example}}
+\begin{example}
+  \todo{The funny graph example from the coherence paper?}
+\end{example}
 
 \begin{definition}
   A \emph{teleological functor} $F : \C \to \D$ is a symmetric monoidal functor that restricts to a functor $F_d : \C_d \to \D_d$ on the dualisable subcategories, and such that $F(\varepsilon_X) = \varepsilon_{FX}$ \todo{up to the structure isomorphisms of $F$}
@@ -758,7 +759,7 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
   \end{center}
   Monoidality: \todo{there is basically nothing to do in the graphical calculus}
 
-  Note that the diagrams required to commute all terminate with the unit $I$, so in view of Proposition~\ref{prop-costates} we should not be surprised that they correspond to equality of maps in $\C$.
+  Note that the diagrams that are required to commute in the definition of teleological category all terminate with the unit $I$, so in view of Proposition~\ref{prop-costates} we should not be surprised that they correspond to equality of maps in $\C$.
 \end{proof}
 
       %       \todo{They stress about the empty set, have I avoided that issue?}
@@ -772,11 +773,11 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
   First, $F$ preserves the dualisable morphisms. If $\iota(f, g) : (S, S') \hto (A, A')$,
   \begin{align*}
     F\iota(f, g)
-    &= F(\rep{ \lambda_A^{-1} f}{ g \lambda_{A'}}) \\
+    &= F(\rep{\lambda_A^{-1} f}{g \lambda_{A'}}) \\
     &= \rep{\phi^{-1}_{I,A} (F(\lambda_A^{-1} f))}{(F(g \lambda_{A'})) \phi_{I,A'}} \\
-    &= \rep{ \phi^{-1}_{I,A} (F\lambda_A^{-1}) (Ff)}{(Fg)(F \lambda_{A'}) \phi_{I,A'}} \\
-    &= \rep{ (\phi^{-1}_I \otimes FA) \phi^{-1}_{I,A} (F\lambda_A^{-1}) (Ff)}{(Fg)(F \lambda_{A'}) \phi_{I,A'} (\phi_I \otimes FA)} \\
-    &= \rep{ \lambda_{FA}^{-1} (Ff)}{ (Fg)\lambda_{FA'}} \\
+    &= \rep{\phi^{-1}_{I,A} (F\lambda_A^{-1}) (Ff)}{(Fg)(F \lambda_{A'}) \phi_{I,A'}} \\
+    &= \rep{(\phi^{-1}_I \otimes FA) \phi^{-1}_{I,A} (F\lambda_A^{-1}) (Ff)}{(Fg)(F \lambda_{A'}) \phi_{I,A'} (\phi_I \otimes FA)} \\
+    &= \rep{\lambda_{FA}^{-1} (Ff)}{(Fg)\lambda_{FA'}} \\
     &= \iota(Ff, Fg)
   \end{align*}
 
@@ -784,10 +785,10 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
   \begin{align*}
     F(\varepsilon_{(S, S')})
     &= F(c_{S \otimes S'}) \\
-    &= F(\rep{ \rho_S^{-1}}{ \rho_{S'}}) \\
+    &= F(\rep{\rho_S^{-1}}{\rho_{S'}}) \\
     &= \rep{\phi^{-1}_{S,I} (F \rho_S^{-1})}{(F \rho_{S'}) \phi_{S',I}} \\
-    &= \rep{ (FS \otimes \phi_I^{-1}) \phi^{-1}_{S,I} (F \rho_S^{-1})}{ (F \rho_{S'}) \phi_{S',I} (FS \otimes \phi_I)} \\
-    &= \rep{ \rho_{FS}^{-1}}{ \rho_{FS'} } \\
+    &= \rep{(FS \otimes \phi_I^{-1}) \phi^{-1}_{S,I} (F \rho_S^{-1})}{(F \rho_{S'}) \phi_{S',I} (FS \otimes \phi_I)} \\
+    &= \rep{\rho_{FS}^{-1}}{\rho_{FS'} } \\
     &= \varepsilon_{(FS, FS')}
   \end{align*}
 
@@ -814,14 +815,16 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
       %       where we have drawn the normally invisible strings corresponding to the unit $I$.
       %       \end{proof}
 
+To establish the universal property of $\Optic_\M$, we will 
+
 \begin{proposition}\label{prop-optic-decompose}
-  Suppose $\rep{ l}{ r} : (S, S') \hto (A, A')$ has complement $M$. Then
+  Suppose $\rep{l}{r} : (S, S') \hto (A, A')$ has complement $M$. Then
   \begin{align*}
-    \rep{ l}{ r} = ((A, I) \switched \varepsilon_{(M, I)} \switched (I, A'))(j(s_{M,A}l) \switched j(rs_{A',M})^*)
+    \rep{l}{r} = ((A, I) \switched \varepsilon_{(M, I)} \switched (I, A'))(j(s_{M,A}l) \switched j(rs_{A',M})^*)
   \end{align*}
   where $j : \C \to \Optic_\C$ is the functor $j(A) := \iota(A, I)$.
-  \todo{The symmetries could have been avoided in the above expression if the Optic category had been defined with the tensor in the opposite order!}
 \end{proposition}
+The symmetries in the above expression could have been avoided if $\Optic$ had been defined as $\int^{M \in \C} \C(S, A \otimes M) \times \C(A' \otimes M, S')$, but it is too late to change the convention now!
 \begin{proof}
   First note that because $\C$ is strict monoidal, the counit $\varepsilon_{(M, I)} : (M \otimes I, M \otimes I) = (M, M) \hto (I, I)$ is equal to the connector $c_M : (M, M) \hto (I, I)$.
 
@@ -833,31 +836,30 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
   \begin{center}
     \input{diagrams/optic-decomposed-inner.tikz}
   \end{center}
-  so the two pairs of twists cancel, and we are left exactly with the diagram for $\rep{ l}{ r}$.
+  so the two pairs of twists cancel, and we are left exactly with the diagram for $\rep{l}{r}$.
 \end{proof}
 
 \begin{theorem}
   \label{optic-is-free-teleological-cat}
   Suppose $\C$ is a strict symmetric monoidal category and $\T$ is a teleological category. For all symmetric monoidal functors $F : \C \to \T_d$, there exists a teleological functor $K : \Optic_\C \to \T$, unique up to isomorphism, such that $Kj \cong F$.
-  % $\Optic$ is left adjoint to $(-)_d$, so $\Optic_\C$ is the free teleological category on a category of dualisable morphisms $\C$.
 \end{theorem}
 \begin{proof}
-  On objects, define $K(S, S') = FS \otimes (FS')^*$. Suppose $\rep{ l}{ r} : (S, S') \hto (A, A')$ is an optic. By the previous Proposition,
+  We begin by constructing $K$. On objects, define $K(S, S') = FS \otimes (FS')^*$. Suppose $\rep{l}{r} : (S, S') \hto (A, A')$ is an optic. By the previous Proposition,
   \begin{align*}
-    \rep{ l}{ r} = ((A, I) \switched \varepsilon_{(M, I)} \switched (I, A'))(j(s_{M,A}l) \switched j(rs_{M,A'})^*)
+    \rep{l}{r} = ((A, I) \switched \varepsilon_{(M, I)} \switched (I, A'))(j(s_{M,A}l) \switched j(rs_{M,A'})^*)
   \end{align*}
-  But now, in order for $K$ to be a teleological functor with $Kj \cong F$, each piece of this expression must be preserved by $K$, so we are forced to define:
+  Which suggests defining
   \begin{align*}
-    K\rep{ l}{ r} = (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F(s_{M,A}l) \otimes (F(rs_{A', M}))^* )
+    K\rep{l}{r} = (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F(s_{M,A}l) \otimes (F(rs_{A', M}))^* )
   \end{align*}
-
-  We must show that this is well defined. Suppose we have two lenses related by the coend relation:
+  
+  We must show that this is well defined. Suppose we have two optics related by the coend relation:
   \begin{align*}
-    \rep{ (f \otimes A) l}{ r} = \rep{ l}{ r (f \otimes A')}
+    \rep{(f \otimes A) l}{r} = \rep{l}{r (f \otimes A')}
   \end{align*}
   Then: \todo{maybe do as string diagram}
   \begin{align*}
-    K\rep{ (f \otimes A) l}{ r}
+    K\rep{(f \otimes A) l}{r}
     &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F(s_{M,A}(f \otimes A)l) \otimes (F(rs_{A',M}))^* ) \\
     &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F((A \otimes f)s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
     % &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(FA \otimes Ff \otimes FM \otimes FA')(F(s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
@@ -865,14 +867,22 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
     &= (FA \otimes (\varepsilon_{FN} (FN \otimes (Ff)^*)) \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(rs_{A',M}))^* ) \\
     &= (FA \otimes \varepsilon_{FN} \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(rs_{A',M}(A' \otimes f)))^* ) \\
     &= (FA \otimes \varepsilon_{FN} \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(r(f \otimes A')s_{A',N}))^* ) \\
-    &= K\rep{  l}{ r (f \otimes A')}
+    &= K\rep{ l}{r (f \otimes A')}
   \end{align*}
   \todo{functoriality} \todo{monoidal} \todo{preserves dualisable morphisms} \todo{preserves counit}
+  \todo{uniqueness} 
+\end{proof}
+
+\begin{theorem}
+$\Optic : \SymmMonCat \to \Tele$ is left biadjoint to the underlying dualisable morphisms functor ${(-)}_d : \Tele \to \SymmMonCat$
+\end{theorem}
+\begin{proof}
+\todo{figure out exactly what else needs proving}
 \end{proof}
 
 \subsection{Optics for a Monoidal Action}
 
-To capture the \texttt{Iso}s, \texttt{Traversal}s and \texttt{Setter}s of the Haskell \texttt{lens} library (see~\ref{lawful-examples}), we generalise to the case of a monoidal action of one category on another.
+To capture the \texttt{Iso}s, \texttt{Traversal}s and \texttt{Setter}s of the Haskell \lenslib{} library (see~\ref{lawful-examples}), we generalise to the case of a monoidal action of one category on another.
 
 \begin{definition}
   Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category. An \emph{action of $\M$ on $\C$} is a strong monoidal functor $a : \M \to [\C, \C]$. The action of an object $M \in \M$ on $A \in \C$ is written $MA$.
@@ -883,30 +893,40 @@ Given such an action, we define
   \Optic_\M((S, S'), (A, A')) := \int^{M \in \C} \C(S, MA) \times \C(MA', S')
 \end{align*}
 
+The following are analogous to Propositions~\ref{prop-optic-is-cat} and \ref{prop-change-of-action-monoidal}.
+
 \begin{proposition}
   We have a category $\Optic_\M$ and a functor $\iota : \C \times \C^\op \to \Optic_\M$. \qed
 \end{proposition}
 
 \begin{proposition}\label{prop-change-of-action}
-  Suppose $\C$ and $\D$ are categories acted on by $\M$ and $\mathcal{N}$ respectively. If $F : \C \to \D$ is a functor that commutes with the actions, then there is an induced functor $\Optic(F) : \Optic_\M \to \Optic_\N$.
+  Suppose $\C$ and $\D$ are categories acted on by $\M$ and $\mathcal{N}$ respectively. Let $F : \C \to \D$ be a functor that commutes with the actions, in the sense that there exist natural isomorphisms
+  \begin{align*}
+  \phi &: F(IA) \to I(FA) \\
+  \phi_{M,A} &: (FM)(FA) \to F(MA)
+  \end{align*}
+satisfying conditions analogous to those for a monoidal functor.
+  
+Then there is an induced functor $\Optic(F) : \Optic_\M \to \Optic_\N$. \qed
 \end{proposition}
-\begin{proof}
-  Analogous to Proposition~\ref{prop-change-of-action-monoidal}
-\end{proof}
 
-For the remainder of the paper we work in this slightly more general setting.
+For the remainder of the paper we work in this more general setting.
 
 \section{Lawful Optics}
 \todo{intro}
-\todo{Here I am using ; to mean composition in diagrammatic order, I need to make a final decision on which to use}
+
+In this section I use $;$ to denote composition of $\C$ in diagrammatic order. The reason for this is that the coend relation can be applied simply by shifting the position of $\mid$ in a representative:
+\begin{align*}
+\rep{l;\phi A}{r} = \rep{l}{\phi A;r}
+\end{align*}
+
+\todo{Should I switch everything else to use diagrammatic order?}
 
 \begin{remark}
   In this section we will focus only on optics of the form $p : (S,S) \hto (A, A)$. For brevity we will write $\Optic_\M((S, S), (A, A))$ as $\Optic_\M(S, A)$ and $p : (S, S) \hto (A, A)$ as $p : S \hto A$.
 \end{remark}
 
-\todo{In this section I am using semicolon to mean composition in diagrammatic order. Should I also switch the comma in $\rep{ l}{ r}$ to be a $\mid$?}
-
-For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $\outside : \Optic_\M(S, A) \to \C(S, S)$, given equationally by $\outside(\rep{ l}{ r}) = l ; r$
+For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $\outside : \Optic_\M(S, A) \to \C(S, S)$, given equationally by $\outside(\rep{l}{r}) = l ; r$
 
 There are also maps two maps
 \begin{align*}
@@ -914,8 +934,8 @@ There are also maps two maps
 \end{align*}
 defined by
 \begin{align*}
-  \once(\rep{ l}{ r}) &= \repthree{ l}{ \id_{MA}}{ r} \\
-  \twice(\rep{ l}{ r} \rangle) &= \repthree{l}{r;l}{r}
+  \once(\rep{l}{r}) &= \repthree{ l}{\id_{MA}}{r} \\
+  \twice(\rep{l}{r} \rangle) &= \repthree{l}{r;l}{r}
 \end{align*}
 
 \begin{definition}
@@ -938,83 +958,115 @@ We will see that in all the standard examples of optics, this specialises to the
 \begin{proof}
   The identity optic $\iota(\id_S, \id_S)$ is lawful:
   \begin{align*}
-    \outside(\rep{ \lambda^{-1}_S}{ \lambda_{S}}) &= \lambda_{S} \lambda^{-1}_S = \id_S \\
+    \outside(\rep{\lambda^{-1}_S}{\lambda_{S}}) &= \lambda_{S} \lambda^{-1}_S = \id_S \\
     \intertext{and}
-    \once(\rep{ \lambda^{-1}_S}{ \lambda_{S}})
+    \once(\rep{\lambda^{-1}_S}{\lambda_{S}})
                                                           &= \repthree{\lambda^{-1}_S}{\id_{IA}}{\lambda_{S}} \\
                                                           &= \repthree{\lambda^{-1}_S}{\lambda_{S};\lambda^{-1}_S}{\lambda_{S}} \\
-                                                          &= \twice(\rep{ \lambda^{-1}_S}{ \lambda_{S}})
+                                                          &= \twice(\rep{\lambda^{-1}_S}{\lambda_{S}})
   \end{align*}
 
-  Suppose we have two lawful optics $\rep{ l}{ r} : R \hto S$ and $\rep{ l'}{ r'} : S \hto A$, where $l : R \to MS$ and $l' : S \to NA$. We must show that $\rep{ (Ml')l}{ r (Mr') }$ is also a lawful optic. The first equation is straightforward:
+  Suppose we have two lawful optics $\rep{l}{r} : R \hto S$ and $\rep{l'}{r'} : S \hto A$, where $l : R \to MS$ and $l' : S \to NA$. We must show that $\rep{(Ml')l}{r (Mr') }$ is also a lawful optic. The first equation is straightforward:
   \begin{align*}
-    \outside(\rep{ l; (Ml')}{(Mr') ; r  })
+    \outside(\rep{l; (Ml')}{(Mr') ; r  })
     &= l ; Ml' ; Mr' ; r \\
     &= l ; M(l'r') ; r \\
     &= l ; M\id_{NA} ; r \\
     &= l ; r \\
-    &= \id_{MNA}
+    &= \id_S
   \end{align*}
 
   For the second, we must show
-  \[ \repthree{ l;(Ml')}{ (Mr'); r;l;(Ml')}{(Mr') ; r } = \rep{ l;(Ml')}{ \id_{MNA}}{ (Mr') ; r }. \]
+  \[ \repthree{ l;(Ml')}{(Mr'); r;l;(Ml')}{(Mr') ; r } = \rep{l;(Ml')}{\id_{MNA}}{(Mr') ; r }. \]
 
-  We do this by showing that, in some sense, the expressions in the above equation respect the coend relations defining the codomains of $\once(\rep{ l}{ r})$ and $\once(\rep{ l'}{ r'})$.
+  We do this by showing that, in some sense, the expressions in the above equation respect the coend relations defining the codomains of $\once(\rep{l}{r})$ and $\once(\rep{l'}{r'})$.
 
-  So consider the generating relation $\repthree{ l;\phi_S}{ c}{r} = \rep{ l}{ \phi_S ; c}{r}$ in \[\int^{M_1, M_2 \in \M} \C(R, M_1 S) \times \C(M_1 S, M_2 S) \times \C(M_2 S, R).\]
+  So consider the generating relation $\repthree{ l;\phi_S}{c}{r} = \repthree{l}{\phi_S ; c}{r}$ in \[\int^{M_1, M_2 \in \M} \C(R, M_1 S) \times \C(M_1 S, M_2 S) \times \C(M_2 S, R).\]
   This implies that
   \begin{align*}
-    \rep{ l;\phi_S;(Ml')}{ (Mr'); c ;(Ml')}{(Mr') ; r}
-    &= \rep{ l;(Ml');\phi_{NA}}{ (Mr'); c ;(Ml')}{(Mr') ; r} && \text{(functoriality)} \\
-    &= \rep{ l;(Ml')}{ \phi_{NA};(Mr'); c ;(Ml')}{(Mr') ; r} && \text{(coend relation)} \\
-    &= \rep{ l;(Ml')}{ (Mr');\phi_{S}; c ;(Ml')}{(Mr') ; r} && \text{(functoriality)}
+    \repthree{l;\phi_S;(Ml')}{(Mr'); c ;(Ml')}{(Mr') ; r}
+    &= \repthree{l;(Ml');\phi_{NA}}{(Mr'); c ;(Ml')}{(Mr') ; r} && \text{(functoriality)} \\
+    &= \repthree{l;(Ml')}{\phi_{NA};(Mr'); c ;(Ml')}{(Mr') ; r} && \text{(coend relation)} \\
+    &= \repthree{l;(Ml')}{(Mr');\phi_{S}; c ;(Ml')}{(Mr') ; r} && \text{(functoriality)}
   \end{align*}
-  And similarly for the other generating relation, $\rep{l}{ c;\phi_S}{r } = \rep{l}{c}{\phi_S; r }$.
+  And similarly for the other generating relation, $\repthree{l}{c;\phi_S}{r } = \repthree{l}{c}{\phi_S; r }$.
 
-  Therefore, the chain of relations proving $\rep{l}{ r;l}{r } = \rep{l}{ \id_{MA}}{ r }$ can be replicated to show
+  Therefore, the chain of relations proving $\repthree{l}{r;l}{r } = \repthree{l}{\id_{MA}}{r }$ can be replicated to show
   \begin{align*}
-    \rep{l;(Ml')}{ (Mr');r;l;(Ml')}{(Mr') ; r } &= \rep{l;(Ml')}{ (Mr');\id_{MA};(Ml')}{ (Mr') ; r },
+    \repthree{l;(Ml')}{(Mr');r;l;(Ml')}{(Mr') ; r } &= \repthree{l;(Ml')}{(Mr');\id_{MA};(Ml')}{(Mr') ; r },
   \end{align*}
-  which is equal to $\rep{l;(Ml')}{ M(r'l')}{ (Mr') ; r }$.
+  which is equal to $\repthree{l;(Ml')}{M(r'l')}{(Mr') ; r }$.
 
-  Similarly, a generating relation $\rep{l';\psi_A}{ c'}{ r' } = \rep{l'}{ \psi_A ; c'}{ r' }$ in \[\int^{N_1, N_2 \in \M} \C(S, N_1 A) \times \C(N_1 A, N_2 A) \times \C(M_2 A, S)\]
+  Similarly, a generating relation $\repthree{l';\psi_A}{c'}{r' } = \repthree{l'}{\psi_A ; c'}{r' }$ in \[\int^{N_1, N_2 \in \M} \C(S, N_1 A) \times \C(N_1 A, N_2 A) \times \C(M_2 A, S)\]
   implies that
   \begin{align*}
-    \rep{l;M(l';\psi_A)}{ Mc'}{ (Mr') ; r }
-    &= \rep{l;Ml';M\psi_A}{ Mc'}{ (Mr') ; r } \\
-    &= \rep{l;Ml'}{ M\psi_A ; Mc'}{ (Mr') ; r } \\
-    &= \rep{l;Ml'}{ M(\psi_A;c')}{ (Mr') ; r }
+    \repthree{l;M(l';\psi_A)}{Mc'}{(Mr') ; r }
+    &= \repthree{l;Ml';M\psi_A}{Mc'}{(Mr') ; r } \\
+    &= \repthree{l;Ml'}{M\psi_A ; Mc'}{(Mr') ; r } \\
+    &= \repthree{l;Ml'}{M(\psi_A;c')}{(Mr') ; r }
   \end{align*}
-  So again we can replicate the chain of relations proving $\rep{l'}{ r';l'}{ r' } = \rep{l'}{ \id_{MA}}{ r' }$ to show that
-  \[\rep{l;(Ml')}{ M(r'l')}{ (Mr') ; r } = \rep{l;(Ml')}{ \id_{MNA}}{ (Mr') ; r } \]
+  So again we can replicate the chain of relations proving $\repthree{l'}{r';l'}{r' } = \repthree{l'}{\id_{MA}}{r' }$ to show that
+  \[\repthree{l;(Ml')}{M(r'l')}{(Mr') ; r } = \repthree{l;(Ml')}{\id_{MNA}}{(Mr') ; r } \]
 
   We conclude that composition preserves lawfulness, so $\Lawful_\M$ is indeed a subcategory of $\Optic_\M$.
-
-  \todo{There is probably a more conceptual way to do this}
 \end{proof}
 
 \begin{proposition}
   If $F : \C \to \D$ is a functor that commutes with the monoidal actions on $\C$ and $\D$, then $\Optic(F) : \Optic_\M \to \Optic_\N$ restricts to a functor $\Lawful_\M \to \Lawful_\N$.
 \end{proposition}
 \begin{proof}
-  If $p = \rep{l}{ r }$ is lawful, \todo{todo}
+  If $p = \rep{l}{r}$ is lawful, then verifying the first equation is easy:
+  \begin{align*}
+  \once(\Optic(F)(\rep{l}{r})) 
+  &= \once(\rep{(Fl);\phi^{-1}_{M,A} }{\phi_{M,A'};(Fr) }) \\
+  &= (Fl);\phi^{-1}_{M,A};\phi_{M,A'};(Fr)\\
+  &= (Fl);(Fr)\\
+  &= \id_{FS}
+  \end{align*}
+  where $\phi_{M,A'} : (FM)(FA) \to F(MA)$ is the structure map for $F$ commuting with the actions.
+  
+  For the second equation, consider a generating relation $\repthree{l;\psi A}{c}{r} = \repthree{l}{\psi A ; c}{r}$. We can use the naturality of $\phi$ to show
+  \begin{align*}
+  \repthree{F(l;\psi A);\phi^{-1}_{M,A}}{\phi_{M,A};Fc;\phi^{-1}_{N,A}}{\phi_{N,A};Fr} 
+  &= \repthree{F(l);F(\psi A);\phi^{-1}_{M,A}}{\phi_{M,A};Fc;\phi^{-1}_{N,A}}{\phi_{N,A};Fr} \\
+  &= \repthree{F(l);\phi^{-1}_{M',A};(F\psi) A}{\phi_{M,A};Fc;\phi^{-1}_{N,A}}{\phi_{N,A};Fr} \\
+  &= \repthree{F(l);\phi^{-1}_{M',A}}{(F\psi) A;\phi_{M,A};Fc;\phi^{-1}_{N,A}}{\phi_{N,A};Fr} \\
+  &= \repthree{F(l);\phi^{-1}_{M',A}}{\phi_{M,A};F(\psi A);Fc;\phi^{-1}_{N,A}}{\phi_{N,A};Fr} \\
+  &= \repthree{F(l);\phi^{-1}_{M',A}}{\phi_{M,A};F(\psi A;c);\phi^{-1}_{N,A}}{\phi_{N,A};Fr} \\
+  \end{align*}
+  Similarly, 
+  \begin{align*}
+    \repthree{Fl;\phi^{-1}_{M,A}}{\phi_{M,A};Fc;\phi^{-1}_{N,A}}{\phi_{N,A};F(\psi_A;r)} 
+    &= \repthree{Fl;\phi^{-1}_{M,A}}{\phi_{M,A};F(c;\psi A);\phi^{-1}_{N,A}}{\phi_{N,A};Fr} 
+  \end{align*}
+
+  If $\rep{l}{r}$ is lawful, we can therefore replicate the chain of relations proving $\twice(\rep{l}{r}) = \once(\rep{l}{r})$ to show:
+  \begin{align*}
+  \twice(\Optic(F)(\rep{l}{r})) 
+  &= \repthree{Fl;\phi^{-1}_{M,A}}{\phi_{M,A};F(r;l);\phi^{-1}_{M,A}}{\phi_{M,A};Fr}  \\
+  &= \repthree{Fl;\phi^{-1}_{M,A}}{\phi_{M,A};F(\id_MA);\phi^{-1}_{M,A}}{\phi_{M,A};Fr}  \\
+  &= \repthree{Fl;\phi^{-1}_{M,A}}{\id_{(FM)A}}{\phi_{M,A};Fr}  \\
+  &= \once(\Optic(F)(\rep{l}{r})) 
+  \end{align*}
+  
+  \todo{There is probably a more conceptual way to do this}
 \end{proof}
 
 The requirement that $\once(p) = \twice(p)$ is mysterious, but there are sufficient conditions that are easier to verify.
 
 \begin{proposition}
-  Let $\rep{l}{ r } : S \hto A$ be an optic. If $l;r = \id_S$ and $r;l = \phi A$ for some $\phi : M \to M$ in $\M$, then $\rep{l}{ r }$ is lawful.
+  Let $\rep{l}{r } : S \hto A$ be an optic. If $l;r = \id_S$ and $r;l = \phi A$ for some $\phi : M \to M$ in $\M$, then $\rep{l}{r }$ is lawful.
 \end{proposition}
 \begin{proof}
-  The $\outside(\rep{l}{ r }) = l;r = \id_S$ is exactly the first condition. And for the second, we verify:
+  The $\outside(\rep{l}{r }) = l;r = \id_S$ is exactly the first condition. And for the second, we verify:
   \begin{align*}
-    \twice(\rep{l}{ r })
-    &= \rep{l}{ r;l}{ r } \\
-    &= \rep{l}{ \phi A}{ r } && \text{($r;l = \phi A$)}\\
-    &= \rep{l (\phi A)}{ \id_{MA}}{ r } && \text{(coend relation)} \\
-    &= \rep{l;r;l}{ \id_{MA}}{ r } && \text{($r;l = \phi A$ again)}\\
-    &= \rep{l}{ \id_{MA}}{ r }  && \text{($l;r = \id_S$)}\\
-    &= \once(\rep{l}{ r })
+    \twice(\rep{l}{r })
+    &= \repthree{l}{r;l}{r } \\
+    &= \repthree{l}{\phi A}{r } && \text{($r;l = \phi A$)}\\
+    &= \repthree{l (\phi A)}{\id_{MA}}{r } && \text{(coend relation)} \\
+    &= \repthree{l;r;l}{\id_{MA}}{r } && \text{($r;l = \phi A$ again)}\\
+    &= \repthree{l}{\id_{MA}}{r }  && \text{($l;r = \id_S$)}\\
+    &= \once(\rep{l}{r })
   \end{align*}
 \end{proof}
 
@@ -1022,69 +1074,40 @@ The requirement that $\once(p) = \twice(p)$ is mysterious, but there are suffici
   Even if $r;l = \phi A$ for some $\phi$, the same is not necessarily true of any other representative of the same optic.
 \end{remark}
 
-Let $\inside : \Optic_\M(S, A) \to \int^{M \in \M} \C(M A, M A)$ be the map induced by $\inside(\rep{l}{ r }) = \langle r ; l \rangle$. We might ask that instead of requiring $r;l = \phi A$ exactly, we have $\langle r ; l \rangle = \langle \phi A \rangle$ in $\int^{M \in \M} \C(M A, M A)$. In fact, this is equivalent:
+Let $\inside : \Optic_\M(S, A) \to \int^{M \in \M} \C(M A, M A)$ be the map induced by $\inside(\rep{l}{r }) = \langle r ; l \rangle$. We might ask that instead of requiring $r;l = \phi A$ exactly, we have $\langle r ; l \rangle = \langle \phi A \rangle$ in $\int^{M \in \M} \C(M A, M A)$. In fact, this is equivalent:
 
 \begin{proposition}\label{prop-onthenose}
-  Suppose $p : S \hto A$ satisfies $\outside(p) = \id_S$ and $\inside(p) = \langle \phi A \rangle$. Then there exists a representative $\rep{l}{ r }$ such that $l ; r = \psi A$ on the nose for some (possibly different) $\psi : M \to M$.
+  Suppose $p : S \hto A$ satisfies $\outside(p) = \id_S$ and $\inside(p) = \langle \phi A \rangle$. Then there exists a representative $\rep{l}{r }$ such that $l ; r = \psi A$ on the nose for some (possibly different) $\psi : M \to M$.
 \end{proposition}
 \begin{proof}
-  \todo{Go through this proof for formatting again.}
+  The generating relation for $\int^{M \in \M} \C(M A, M A)$ is 
+  \[ \langle f \phi_A \rangle = \langle \phi_A f \rangle \] 
+  whenever $f : N A \to M A$ and $\phi : M \to N$. This relation $f \phi_A \rightsquigarrow \phi_A f$ is not likely to be symmetric or transitive in general.
 
-  The coend relation in $\int^{M \in \M} \C(M A, M A)$ states that two morphisms $f : M A \to M A$ and $g : N A \to N A$ are identified when there exists a $k : N A \to M A$ and morphism $\phi : M \to N$ such that
-  \[
-    \begin{tikzcd}
-      M A \ar[r, "\phi_A"] \ar[d, "f", swap] & N A \ar[d, "g"] \ar[dl, "k"] \\
-      M A \ar[r, "\phi_A", swap] & N A
-    \end{tikzcd}
-  \]
-  commutes. This gives a binary relation $f \rightsquigarrow g$ that is not likely to be symmetric or transitive in general. The coend is obtained by identifying all morphisms related in this way, $\langle f \rangle = \langle g \rangle$ iff there exists a zigzag $f = u_1 \leftrightsquigarrow u_2 \leftrightsquigarrow \dots  \leftrightsquigarrow u_{n-1} \leftrightsquigarrow u_n = g$ where the relation may apply in either direction.
+  Note that if $f \phi_A \rightsquigarrow \phi_A f$ then $f \phi_A f \phi_A \rightsquigarrow \phi_A f \phi_A f$. More generally, if $f \rightsquigarrow g$ then $f^n \rightsquigarrow g^n$ for any $n$.
+  
+  Now let $\rep{l}{r}$ be a representative for $p$, so $rl = \id_S$ and $\langle lr \rangle = \langle \psi A\rangle$. There therefore exists a finite chain of relations $lr = u_1 \leftrightsquigarrow \dots \leftrightsquigarrow u_n = \psi A$.
+  
+Suppose the first relation faces rightward, so there exists a $k$ and $\phi$ with $r;l = \phi_A;k$ and $u_2 = k;\phi_A$. Define $l' = l;\phi_A$ and $r' = k;r$. Then:
+\begin{align*}
+\rep{l'}{r'} 
+&= \rep{l ; \phi_A}{k ; r} \\
+&= \rep{l}{\phi_A ; k ; r} \\
+&= \rep{l}{r ; l; r} \\
+&= \rep{l}{r}
+\end{align*}
+This new representative satisfies
+\begin{align*}
+l';r' &= l;\phi_A;k;r = l;r;l;r = \id_S \\
+r';l' &= k;r;l;\phi_A = k;\phi_A;k;\phi_A = u_2^2
+\end{align*}
 
-  Note that if $f \rightsquigarrow g$ then $ff \rightsquigarrow gg$: this is clear by stacking the above diagram, and then taking $k' = fk = kg$. This argument can be repeated to show that $f^n \rightsquigarrow g^n$ for any $n$.
+  A symmetric argument shows that if instead the relation faces leftward, so $lr \leftsquigarrow u_2$, there again exists $l'$ and $r'$ so that $\rep{l}{r} = \rep{l'}{r'}$, and both $l';r' = \id_S$ and $r';l' = u_2^2$.
 
-  Similarly two representatives $\rep{l}{ r } : S \hto A$ and $\rep{l'}{ r' } : S \hto A$ with complements $M$ and $N$ respectively are identified when there exists a $\phi : M \to N$ such that
-  \[
-    \begin{tikzcd}
-      M A \ar[r, "\phi_A"] \ar[d, "r", swap] & N A \ar[d, "r'"] \\
-      S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "l'"]  \\
-      MA \ar[r, "\phi_A"] & N A
-    \end{tikzcd}
-  \]
-  commutes.
-
-  Now suppose $p = \rep{l}{ r } : S \hto A$ is a lawful optic, so $rl = \id_S$ and $\langle lr \rangle = \langle \psi A\rangle$. There therefore must exist a finite chain of relations $lr = u_1 \leftrightsquigarrow \dots \leftrightsquigarrow u_n = \psi A$.
-  Supposing that the first relation faces rightwards, we have a diagram:
-  \[
-    \begin{tikzcd}
-      M A \ar[r, "\phi_A"] \ar[d, "r", swap] & N A \ar[dd, "u_2"] \ar[ddl, "k"] \\
-      S \ar[d,"l",swap] & \\
-      M A \ar[r, "\phi_A", swap] & N A
-    \end{tikzcd}
-  \]
-  Note that $r = rlr = rk\phi_A$. We therefore have the commutative diagram
-  \[
-    \begin{tikzcd}
-      M A \ar[r, "\phi_A"] \ar[d, "r", swap] & N A \ar[d, "rk"] \\
-      S \ar[r, equal] \ar[d, "l", swap] & S \ar[d, "\phi_Al"] \\
-      MA \ar[r, "\phi_A", swap] & N A
-    \end{tikzcd}
-  \]
-  Define $l' = \phi_A l$ and $r' = rk$. The above diagram is a witness that $\rep{l}{ r } = \rep{l'}{ r' }$ as an optic $S \hto A$.
-
-  The composite $l'r'$ is:
-  \begin{align*}
-    l'r' &= \phi_A l r k \\
-         &= \phi_A k \phi_A k \\
-         &= u_2^2
-  \end{align*}
-
-  A symmetric argument shows that if instead the relation faces leftward, so $lr \leftsquigarrow g$, there exists $l'$ and $r'$ so that $\rep{l}{ r } = \rep{l'}{ r' }$ and $l'r' = u_2^2$.
-
-  We can now inductively apply the above argument to the shorter chain \[l'r' = u_1^2 \leftrightsquigarrow \dots \leftrightsquigarrow u_n^2 \leftrightsquigarrow (\psi A)^2 = \psi^2 A,\] obtained by squaring each morphism in the original chain, until we are left with a representative $\rep{l^*}{ r^* }$ such that $l^*r^* = \psi^N A$, for some $N>0$. This pair $\rep{l^*}{ r^* }$ is the required representative.
+  We can now inductively apply the above argument to the shorter chain \[l'r' = u_1^2 \leftrightsquigarrow \dots \leftrightsquigarrow u_n^2 \leftrightsquigarrow (\psi A)^2 = \psi^2 A,\] obtained by squaring each morphism in the original chain, until we are left with a representative $\rep{l^*}{r^*}$ such that $r^*;l^* = \psi^N_A$, for some $N>0$. This pair $\rep{l^*}{r^* }$ is the required representative.
 \end{proof}
 
 The above argument has a similar form to some that appear in \cite{OnTheTrace}, which considered (among other things) coends of the form $\int^{c \in \C} \C(c, Fc)$ for an endofunctor $F : \C \to \C$.
-
-Finally, lawfulness is preserved by the change-of-action functors of Proposition \ref{prop-change-of-action}.
 
 \section{Examples}
 \label{lawful-examples}
@@ -1109,7 +1132,7 @@ The optics for this action correspond exactly to pairs of $\fget$ and $\fput$ fu
                                   &=: \mathbb{O}((S, S'), (A, A'))
 \end{align*}
 
-Explicitly this isomorphism states that, given an optic $\rep{l}{ r } : (S, S') \hto (A, A')$, the corresponding element of $\mathbb{O}((S, S'), (A, A'))$ is the pair $(\fget, \fput)$, where $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $(\fget, \fput)$, the corresponding optic has representative $\rep{[\id_S, \fget]}{\fput}$.
+Explicitly this isomorphism states that, given an optic $\rep{l}{r } : (S, S') \hto (A, A')$, the corresponding element of $\mathbb{O}((S, S'), (A, A'))$ is the pair $(\fget, \fput)$, where $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $(\fget, \fput)$, the corresponding optic has representative $\rep{[\id_S, \fget]}{\fput}$.
 
 \begin{remark}\label{lens-iota-not-faithful}
   For the category of sets, the functor $\iota(-, -) : \Set \times \Set^\op \to \Optic_\times$ is not faithful. The problem is the empty set: the functor $0 \times (-)$ is not faithful. Any pair of maps $f : 0 \to A$, $g : A' \to S'$ yield equivalent optics $\iota(f, g)$, as the corresponding $\fget$ and $\fput$ functions must be the unique maps from $0$.
@@ -1139,7 +1162,7 @@ We now discuss lawful lenses.
   \[\mathbb{D}(S, A) := \C(S, A) \times \C(S \times A, A) \times \C(S \times A \times A, S)\]
   with the isomorphism given by
   \begin{align*}
-    \Phi(\repthree{l}{ c}{ r }) = (&\pi_2 l, \\
+    \Phi(\repthree{l}{c}{r }) = (&\pi_2 l, \\
                                    &\pi_2 c (\pi_1 l \times A), \\
                                    &r(\pi_1 c (\pi_1 l \times A) \times A))
   \end{align*}
@@ -1151,7 +1174,7 @@ We now discuss lawful lenses.
 
   We now have to slog through evaluating $\Phi(\once(p))$ and $\Phi(\twice(p))$.
   \begin{alignat*}{3}
-    \Phi(\once(\rep{[\id_S, \fget]}{ \fput})) &=
+    \Phi(\once(\rep{[\id_S, \fget]}{\fput})) &=
     \Phi(&&\repthree{[\id_S, \fget]}{\id_{S \times A}}{\fput}) \\
     &= (&&\pi_2 [\id_S, \fget], \\
     &&&\pi_2 \id_{S \times A} (\pi_1 [\id_S, \fget] \times A), \\
@@ -1162,7 +1185,7 @@ We now discuss lawful lenses.
     &&& \fput \pi_{1,3} \quad) \\
     %%%%
     %%%%
-    \Phi(\twice(\rep{[\id_S, \fget]}{ \fput})) &=
+    \Phi(\twice(\rep{[\id_S, \fget]}{\fput})) &=
     \Phi(&&\repthree{[\id_S, \fget]}{[\id_S, \fget]\fput}{\fput}) \\
     &= (&&\pi_2 [\id_S, \fget], \\
     &&&\pi_2 [\id_S, \fget]\fput (\pi_1 [\id_S, \fget] \times A), \\
@@ -1222,7 +1245,7 @@ In favourable conditions, we can upgrade this result to show that the existence 
       C \times A \ar[r, "i \times A", swap] & S \times A
     \end{tikzcd}
   \]
-  is a witness that $\rep{\fput (i \times A)}{ [j,\fget] } = \rep{\fput}{ [\id_S, \fget] }$ as elements of $\Optic_\M(S, A)$.
+  is a witness that $\rep{\fput (i \times A)}{[j,\fget] } = \rep{\fput}{[\id_S, \fget] }$ as elements of $\Optic_\M(S, A)$.
 \end{proof}
 
 \todo{There may be something generalisable here with ``monoidal factorisation systems''}
@@ -1241,7 +1264,7 @@ If $\C$ is closed monoidal, we can use a similar trick to eliminate the coends.
 \end{align*}
 where $\homC(A', S')$ denotes the internal hom. If $\C$ is cartesian, this is of course isomorphic to the pair of maps discussed in the previous section.
 
-For an optic, the corresponding element of $\mathbb{O}((S, S'), (A, A'))$ will be called $\funzip$. The above isomorphism sends $\funzip$ to the element $\rep{\funzip }{ \ev_{A', S'} }$, where $\ev_{A', S'} : \homC(A',S') \otimes A' \to S'$ is the evaluation map. In the other direction, given $\rep{l}{ r }$ we have $\funzip = (\tilde r \otimes A)l$ where $\tilde r : M \to \homC(A', S')$ denotes the transpose of $r$.
+For an optic, the corresponding element of $\mathbb{O}((S, S'), (A, A'))$ will be called $\funzip$. The above isomorphism sends $\funzip$ to the element $\rep{\funzip }{\ev_{A', S'} }$, where $\ev_{A', S'} : \homC(A',S') \otimes A' \to S'$ is the evaluation map. In the other direction, given $\rep{l}{r }$ we have $\funzip = (\tilde r \otimes A)l$ where $\tilde r : M \to \homC(A', S')$ denotes the transpose of $r$.
 
 We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting as we lack projections, but using the same techniques as for cartesian lenses above we can devise some new ones:
 
@@ -1261,20 +1284,20 @@ We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting
     &\cong \int^{M_1 \in \C} \C(S, M_1 \otimes A) \times \C(M_1, \homC(A, \homC(A, S) \otimes A)) \\
     &\cong \C(S, \homC(A, \homC(A, S) \otimes A) \otimes A)
   \end{align*}
-  which evaluated on an element $\repthree{l}{ c}{r }$ is given by
+  which evaluated on an element $\repthree{l}{c}{r }$ is given by
   \begin{align*}
-    \Phi(\repthree{l}{ c}{r}) &= (\widetilde{(\tilde{r} \otimes A)c} \otimes A)l
+    \Phi(\repthree{l}{c}{r}) &= (\widetilde{(\tilde{r} \otimes A)c} \otimes A)l
   \end{align*}
-  Now suppose we are given an optic $p$ with corresponding element of $\mathbb{O}(S, A)$ is $\funzip$. Then $\outside(\rep{\funzip }{ \ev_{A, S} }) = \ev_{A, S} \; \funzip$, giving the first law.
+  Now suppose we are given an optic $p$ with corresponding element of $\mathbb{O}(S, A)$ is $\funzip$. Then \[\outside(\rep{\funzip }{\ev_{A, S} }) = \ev_{A, S} \; \funzip,\] giving the first law.
 
   Now we evaluate $\Phi(\once(p))$ and $\Phi(\twice(p))$.
   \begin{align*}
-    \Phi(\once(\rep{\funzip }{ \ev_{A, S} }))
-    &= \Phi(\repthree{\funzip }{ \id_{\homC(A,S) \otimes A}}{\ev_{A, S} }) \\
+    \Phi(\once(\rep{\funzip }{\ev_{A, S} }))
+    &= \Phi(\repthree{\funzip }{\id_{\homC(A,S) \otimes A}}{\ev_{A, S} }) \\
     &= (\widetilde{(\tilde{\ev_{A, S}} \otimes A)\id_{\homC(A,S) \otimes A}} \otimes A)\funzip \\
     &= (\coev_{\homC(A, S), A} \otimes A)\funzip \\
-    \Phi(\twice(\rep{\funzip }{ \ev_{A, S} }))
-    &= \Phi(\repthree{\funzip }{ \funzip \; \ev_{A, S}}{ \ev_{A, S} }) \\
+    \Phi(\twice(\rep{\funzip }{\ev_{A, S} }))
+    &= \Phi(\repthree{\funzip }{\funzip \; \ev_{A, S}}{\ev_{A, S} }) \\
     &= (\widetilde{(\tilde{\ev_{A, S}} \otimes A)(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
     &= (\widetilde{(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
     &= ((\funzip \circ -) \otimes A)\funzip
@@ -1282,8 +1305,6 @@ We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting
   \todo{Fix those overtildes}
   So indeed the optic is lawful iff $(\coev_{\homC(A, S), A} \otimes A)\funzip = ((\funzip \circ -) \otimes A)\funzip$.
 \end{proof}
-
-\todo{The use of lenses in a language with linear types seems worth exploring!}
 
 \subsection{``Achromatic'' Lenses}
 \todo{http://oleg.fi/gists/posts/2018-03-28-achromatic-lens.html}
@@ -1313,13 +1334,13 @@ Prisms are dual to lenses:
   Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} is the category of lawful optics with respect to this action: $\Prism = \Lawful_\sqcup$.
 \end{definition}
 
-Just as optics for $\times$ correspond to a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$, optics for $\sqcup$ correspond to pairs of maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \texttt{lens} library.
+Just as optics for $\times$ correspond to a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$, optics for $\sqcup$ correspond to pairs of maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \lenslib{} library.
 \begin{align*}
   \Optic_\sqcup((S, S'), (A, A')) &= \int^{M \in \C} \C(S, M \sqcup A) \times \C(M \sqcup A', S') \\
                                   &\cong \int^{M \in \C} \C(S, M \sqcup A) \times \C(M, S') \times \C(A, S') && \text{(universal property of coproduct)} \\
                                   &\cong \C(S, S' \sqcup A) \times \C(A', S') && \text{(co-Yoneda)}
 \end{align*}
-If we are given a prism $\rep{l}{ r } : (S, S') \hto (A, A')$ then associated $\freview$ and $\fmatching$ morphisms are given by $\freview = r \inr$ and $\fmatching = (r\inl \sqcup A)l$
+If we are given a prism $\rep{l}{r } : (S, S') \hto (A, A')$ then associated $\freview$ and $\fmatching$ morphisms are given by $\freview = r \inr$ and $\fmatching = (r\inl \sqcup A)l$
 
 The laws for prisms are the obvious duals to the lens laws:
 \begin{align*}
@@ -1328,7 +1349,7 @@ The laws for prisms are the obvious duals to the lens laws:
   (\fmatching \sqcup A) \fmatching &= \mathrm{in}_{1,3} \, \fmatching
 \end{align*}
 
-In the \texttt{lens} library documentation the third law is missing, on account of following:
+In the \lenslib{} library documentation the third law is missing, on account of following:
 
 \begin{proposition}
   When $\C = \Set$, the third law is implied by the other two.
@@ -1359,13 +1380,13 @@ For any category $\C$, there is a unique action of the terminal category $1$ on 
 \end{proof}
 
 \begin{proposition}
-  An iso $\rep{l}{ r }$ is lawful iff (as expected) $l$ and $r$ are mutual inverses.
+  An iso $\rep{l}{r }$ is lawful iff (as expected) $l$ and $r$ are mutual inverses.
 \end{proposition}
 \begin{proof}
   \[ \int^{M_1, M_2 \in \M} \C(S, M_1 \otimes A) \times \C(M_1 \otimes A, M_2 \otimes A) \times \C(M_2 \otimes A, S) \]
   specialises in this case to just
   \[ \C(S, A) \times \C(A, A) \times \C(A, S) \]
-  The condition $\outside(\rep{l}{ r }) = \id_S$ is the claim that $rl = \id_S$, and $\once(\rep{l}{ r }) = (l, \id_A, r)$ is equal to $\twice(\rep{l}{ r }) = (l, lr, r)$ iff $lr = \id_A$.
+  The condition $\outside(\rep{l}{r }) = \id_S$ is the claim that $rl = \id_S$, and $\once(\rep{l}{r }) = (l, \id_A, r)$ is equal to $\twice(\rep{l}{r }) = (l, lr, r)$ iff $lr = \id_A$.
 \end{proof}
 
 \subsection{Setters}
@@ -1559,7 +1580,7 @@ Given such a polymorphic optic in $[\D, \C]$, we can always `monomorphise' to ob
   \begin{align*}
     \mathsf{mono} : \D \times \Optic_{[\D, \C]} \to \Optic_\C
   \end{align*}
-  that sends an object $D \in \D$ and optic $\rep{l}{ r } : F \hto G$ in $\Optic_{[\D, \C]}$ to the optic $\rep{l_D}{ r_D } : FD \hto GD$ in $\Optic_\C$.
+  that sends an object $D \in \D$ and optic $\rep{l}{r } : F \hto G$ in $\Optic_{[\D, \C]}$ to the optic $\rep{l_D}{r_D } : FD \hto GD$ in $\Optic_\C$.
 \end{proposition}
 \begin{proof}
   \todo{todo}
@@ -1596,7 +1617,7 @@ There is also an analogous notion of optics of composites of functors.
 
 % \subsection{Equivalence of Optics}
 %
-% One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\rep{l}{ r }, \langle l', r' \rangle : S \hto A$
+% One issue with the definition of optic given in the last section is that it could be difficult to determine when two optics $\rep{l}{r }, \langle l', r' \rangle : S \hto A$
 are equal. For some choices of $\M$, however, we can reduce a zigzag of relations to a single one.
 %
 % \todo{This may work in general with some huge number of conditions: something like $-A$ reflects monomorphisms and preserves binary coproducts, all subobjects in $\M$ have complements.}
@@ -1694,7 +1715,7 @@ are equal. For some choices of $\M$, however, we can reduce a zigzag of relation
 % \end{proof}
 
 \section{Profunctor Optics}
-The Haskell \texttt{lens} library implements optics using what is known as the \emph{profunctor encoding}. Lenses are defined as follows:
+The Haskell \lenslib{} library implements optics using what is known as the \emph{profunctor encoding}. Lenses are defined as follows:
 
 \begin{minted}{haskell}
 class Profunctor p => Strong p where
@@ -1769,18 +1790,18 @@ There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is 
     \xrightarrow{\copr_{MN}} \quad&\int^{N \in \M} \int^{C,D \in \C} \C(MA, NC) \times P(C,D) \times  \C(ND, MB) \\
     = \quad&\Pastro_\M P (MA, MB)
   \end{align*}
-  for all $C, D \in \C$ and $N \in \M$. Equationally, this is $\alpha_{A,B,M}(\repthree{l}{ p}{ r} ) = \rep{Ml}{ p}{ Mr} $.
+  for all $C, D \in \C$ and $N \in \M$. Equationally, this is $\alpha_{A,B,M}(\repthree{l}{p}{r} ) = \rep{Ml}{p}{Mr} $.
 \end{definition}
 
 \begin{proposition}
   $\Pastro_\M : \Prof(\C, \C) \to \Tamb(\M)$ is left adjoint to $U : \Tamb(\M) \to \Prof(\C, \C)$.
 \end{proposition}
 \begin{proof}
-  For any $P \in \Prof(\C, \C)$, there is a map $\eta : P \hto U \Phi_\M P$, given by $\eta(p) = \repthree{\id_A}{ p}{\id_B }$.
+  For any $P \in \Prof(\C, \C)$, there is a map $\eta : P \hto U \Phi_\M P$, given by $\eta(p) = \repthree{\id_A}{p}{\id_B }$.
 
-  Suppose we have an element $\rep{l}{ p}{r} \in \Pastro_\M P(A,B)$. Then one can check that this element is equal to
+  Suppose we have an element $\rep{l}{p}{r} \in \Pastro_\M P(A,B)$. Then one can check that this element is equal to
   \begin{align*}
-    \repthree{l}{ p}{r } = \Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)
+    \repthree{l}{p}{r } = \Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)
   \end{align*}
   where $\alpha_{A, B, M}$ is the module structure map for $\Pastro_\M P$.
 
@@ -1788,17 +1809,17 @@ There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is 
 
   The data of such a map $\hat f : \Phi_\M P \hto T$ is a natural transformation between the underlying profunctors. For the factorisation property to hold, we must have that $\hat{f}\eta(p) = f(p)$ for any $p \in P(A,B)$, but then the action on the remainder of $\Phi_\M P(A, B)$ is fixed:
   \begin{align*}
-    \hat{f}(\rep{l}{ p}{r }) &= \hat{f}(\Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)) \\
+    \hat{f}(\rep{l}{p}{r }) &= \hat{f}(\Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)) \\
                                      &=T(l, r) \; \beta_{A, B, N} \; f(p)
   \end{align*}
   This establishes uniqueness. It remains to show that $\hat{f}$ so defined is actually a Tambara module morphism, but this is easy:
   \begin{align*}
-    \hat{f}\alpha_{A,B,N}(\rep{l}{ p}{r })
-    &= \hat{f}(\rep{Nl}{ p}{ Nr }) \\
+    \hat{f}\alpha_{A,B,N}(\rep{l}{p}{r })
+    &= \hat{f}(\rep{Nl}{p}{Nr }) \\
     &= T(Nl, Nr) \; \beta_{A, B, NM} \; f(p) \\
     &= T(Nl, Nr) \beta_{MA,MB,N} \; \beta_{A, B, M} \; f(p) \\
     &= \beta_{A,B,N} T(l, r) \; \beta_{A, B, M} \; f(p) \\
-    &= \beta_{A,B,N} \hat{f} (\rep{l}{ p}{r })
+    &= \beta_{A,B,N} \hat{f} (\rep{l}{p}{r })
   \end{align*}
 \end{proof}
 
@@ -1863,16 +1884,16 @@ type Lens s a = forall p. Strong p => p a a -> p s s
 For $p : S \hto A$, let $\tilde{p} : (U-)(A,A) \rightarrow (U-)(S,S)$ denote the corresponding natural transformation under this isomorphism, and for $t : (U-)(A,A) \rightarrow (U-)(S,S)$, let $\hat{t} : S \hto A$ be the corresponding optic.
 
 \begin{corollary}
-  A profunctor optic $p$ is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\repfour{\id_A}{ \id_A}{\id_A}{\id_A } \in (U \Pastro_\M E_A)(A, A)$.
+  A profunctor optic $p$ is determined by its component at $\Pastro_\M E_A$, and furthermore, this component is determined by its value on $\repfour{\id_A}{\id_A}{\id_A}{\id_A } \in (U \Pastro_\M E_A)(A, A)$.
 \end{corollary}
 \begin{proof}
-  This is the content of the first two isomorphisms above. Explicitly, suppose $\hat{p} = \rep{l}{ r }$ with $l : S \to MA$ and $r : MA \to S$. Then for any Tambara module $P$, the component of $p$ at $P$ is
+  This is the content of the first two isomorphisms above. Explicitly, suppose $\hat{p} = \rep{l}{r }$ with $l : S \to MA$ and $r : MA \to S$. Then for any Tambara module $P$, the component of $p$ at $P$ is
   \begin{align*}
     p_P = (UP)(l,r) \alpha_{A,A,M}
   \end{align*}
   where $\alpha$ is the module structure for $P$. In particular,
   \[
-    p_{\Pastro_\M E_A}(\repfour{\id_A}{ \id_A}{ \id_A}{\id_A }) = \repfour{l}{ \id_A}{\id_A}{ r }
+    p_{\Pastro_\M E_A}(\repfour{\id_A}{\id_A}{\id_A}{\id_A }) = \repfour{l}{\id_A}{\id_A}{r }
   \]
 \end{proof}
 
@@ -1898,13 +1919,13 @@ The next goal is to characterise the profunctor optics that correspond to lawful
 
 The exchange profunctor has a canonical comonoid structure, where the comultiplication $\Delta : E_A \to E_A \odot E_A$ and counit $\varepsilon : E_A(X, Y) \to \C(X, Y)$ are given by
 \begin{align*}
-  \Delta((f, g)) &= \repfour{f}{ \id_A}{\id_A}{ g}  \\
+  \Delta((f, g)) &= \repfour{f}{\id_A}{\id_A}{g}  \\
   \varepsilon((f, g)) &= gf
 \end{align*}
 Because $\Pastro_\M$ is oplax monoidal, the profunctor $U\Pastro_\M E_A$ has an induced comonoid structure, given by
 \begin{align*}
-  \Delta(\rep{l}{ r }) &= \repthree{l}{lr}{r } \\
-  \varepsilon(\rep{l}{ r }) &= rl
+  \Delta(\rep{l}{r }) &= \repthree{l}{lr}{r } \\
+  \varepsilon(\rep{l}{r }) &= rl
 \end{align*}
 
 Comparing these definitions with the definition of a lawful optic, we have immediately:
@@ -2100,13 +2121,15 @@ But that first map is the component at $A$ of a copointed natural transformation
   \end{align*}
 \end{example}
 
-Prelenses that satisfy the first two laws correspond to pairs $\rep{l}{ r }$ such that $rl = \id_S$ and $\pi_2lr = \pi_2$. \todo{prove?} This condition seems unavoidably tied to the product structure on $\C$; it is not clear whether this weakened notion of lens can be generalised to other optics.
+Prelenses that satisfy the first two laws correspond to pairs $\rep{l}{r }$ such that $rl = \id_S$ and $\pi_2lr = \pi_2$. \todo{prove?} This condition seems unavoidably tied to the product structure on $\C$; it is not clear whether this weakened notion of lens can be generalised to other optics.
 
 \subsection{Effectful Optics}
 
 Many attempts~\cite{ReflectionsOnMonadicLenses} \todo{more} to define effectful lenses have wrapped the result of one or both of $\fget$ and $\fput$ with a monad. This approach is a little ad-hoc; it is not obvious what the laws ought to be and there is no clear generalisation to other varieties of optic. The definition of optic given here suggests we instead set $\C$ to be the Kleisli category for some monad $T$.
 
 \section{Conclusion}
+
+\todo{Figure out the right numbering style}
 
 \bibliographystyle{alpha}
 \bibliography{optics.bib}

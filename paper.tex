@@ -113,11 +113,26 @@
 \newcommand{\freview}{\textsc{Review}}
 \newcommand{\fmatching}{\textsc{Matching}}
 \newcommand{\funzip}{\textsc{Unzip}}
+\newcommand{\fover}{\textsc{Over}}
 
 \newcommand{\inside}{\mathsf{inside}}
 \newcommand{\outside}{\mathsf{outside}}
 \newcommand{\once}{\mathsf{once}}
 \newcommand{\twice}{\mathsf{twice}}
+
+% Credit: Sam Buss
+\newbox\gnBoxA
+\newdimen\gnCornerHgt
+\setbox\gnBoxA=\hbox{$\ulcorner$}
+\global\gnCornerHgt=\ht\gnBoxA
+\newdimen\gnArgHgt
+\def\nameof #1{%
+    \setbox\gnBoxA=\hbox{$#1$}%
+    \gnArgHgt=\ht\gnBoxA%
+    \ifnum     \gnArgHgt<\gnCornerHgt \gnArgHgt=0pt%
+    \else \advance \gnArgHgt by -\gnCornerHgt%
+    \fi \raise\gnArgHgt\hbox{$\ulcorner$} \box\gnBoxA %
+    \raise\gnArgHgt\hbox{$\urcorner$}}
 
 % Special arrows
 \newcommand{\isoto}{\xrightarrow{\cong}}
@@ -165,10 +180,11 @@
 \todo{Contributions:
   \begin{itemize}
   \item A definition of optics general enough to encompass lenses, setters, traversals, and others?
+  \item A definition of lawful optic that specialises in the correct way and allows us to easily derive ad-hoc laws for new kids of optic
   \item A universal property satisfied by the category of optics in the monoidal case
   \item A satisfying categorical description of lens laws
   \item An attempt to isolate exactly what $\Set$-like properties are being used in various places
-  \item A couple of new avenues for generalising optics
+  \item New avenues for generalising optics
   \end{itemize}
 }
 
@@ -195,7 +211,7 @@ where $P$ is a functor $\M^\op \times \M \to \E$.
 \section{Optics}
 \label{sec-optics}
 
-We begin by constructing the category of optics in a symmetric monoidal category $\C$. This category was first defined in \cite[Section 6]{Doubles} to investigate the relationship between Tambara modules and the center of a monoidal category. There it is called the \emph{double} $\Double_l \C$ of a monoidal category, and our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses, and restricting our attention to the unenriched case.
+We begin by constructing the category of optics in a symmetric monoidal category $\C$. This category was first defined in \cite[Section 6]{Doubles} to investigate the relationship between Tambara modules and the center of a monoidal category. There it is called the \emph{double} of a monoidal category, and our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses and restricting our attention to the unenriched case.
 
 \begin{remark}
   In what follows, we use the standard cheat of omitting associativity isomorphisms.
@@ -926,16 +942,16 @@ In this section I use $;$ to denote composition of $\C$ in diagrammatic order. T
   In this section we will focus only on optics of the form $p : (S,S) \hto (A, A)$. For brevity we will write $\Optic_\M((S, S), (A, A))$ as $\Optic_\M(S, A)$ and $p : (S, S) \hto (A, A)$ as $p : S \hto A$.
 \end{remark}
 
-For a fixed $M \in \M$, there is a map $\C(S, M A) \times \C(M A, S) \to \C(S, S)$ given by composition. This induces a map $\outside : \Optic_\M(S, A) \to \C(S, S)$, given equationally by $\outside(\rep{l}{r}) = l ; r$
-
-There are also maps two maps
+Using the universal property of the coend, we define three maps:
 \begin{align*}
-  \once, \twice : \Optic_\M(S, A) \to \int^{M_1, M_2 \in \M} \C(S, M_1 A) \times \C(M_1 A, M_2 A) \times \C(M_2 A, S)
+  \outside &: \Optic_\M(S, A) \to \C(S, S) \\
+  \once, \twice &: \Optic_\M(S, A) \to \int^{M_1, M_2 \in \M} \C(S, M_1 A) \times \C(M_1 A, M_2 A) \times \C(M_2 A, S)
 \end{align*}
-defined by
+by
 \begin{align*}
-  \once(\rep{l}{r}) &= \repthree{ l}{\id_{MA}}{r} \\
-  \twice(\rep{l}{r} \rangle) &= \repthree{l}{r;l}{r}
+  \outside(\rep{l}{r}) &= l;r \\
+  \once(\rep{l}{r}) &= \repthree{l}{\id_{MA}}{r} \\
+  \twice(\rep{l}{r}) &= \repthree{l}{r;l}{r}
 \end{align*}
 
 \begin{definition}
@@ -946,7 +962,17 @@ defined by
   \end{align*}
 \end{definition}
 
-We will see that in all the standard examples of optics, this specialises to the expected laws for that type of optic.
+We will see that in all the common examples of optics, this specialises to the expected laws for that variant of optic.
+
+\begin{remark}
+The above definition of lawful does not match neatly with the constant complement idea, which might instead require that $r;l = \id_{MA}$ for some $M$. I argue that $\once(p) = \twice(p)$ is the correct condition for a few reasons. 
+
+The main reason is that it corresponds precisely to the ad-hoc lens laws with no additional requirements, whereas finding a complement for a lens requires further conditions on the category $\C$.
+
+Secondly, even if $r;l = \id_{MA}$ holds for a particular representative $\langle l, r \rangle$, the same is not likely to be true for a different representative. 
+
+Finally, we will later see an interpretation of optics as morphisms between certain comonoid objects. Lawfulness corresponds exactly to a morphism being a comonoid morphism.
+\end{remark}
 
 \begin{remark}
   Jeremy Gibbons notes (originally in the case of ordinary lenses) that the first law is equivalent to requiring that $p$ composed with the connector $c_A$ is equal to the connector $c_S$. This is an appealing description from a string diagram standpoint, but I do not know if there is a similar description for the second law. \todo{Something to do with embedding $\Optic_\C$ into a compact closed category then using the unit to compose the lenses vertically? Should I draw a picture of this?}
@@ -977,7 +1003,7 @@ We will see that in all the standard examples of optics, this specialises to the
   \end{align*}
 
   For the second, we must show
-  \[ \repthree{ l;(Ml')}{(Mr'); r;l;(Ml')}{(Mr') ; r } = \rep{l;(Ml')}{\id_{MNA}}{(Mr') ; r }. \]
+  \[ \repthree{ l;(Ml')}{(Mr'); r;l;(Ml')}{(Mr') ; r } = \repthree{l;(Ml')}{\id_{MNA}}{(Mr') ; r }. \]
 
   We do this by showing that, in some sense, the expressions in the above equation respect the coend relations defining the codomains of $\once(\rep{l}{r})$ and $\once(\rep{l'}{r'})$.
 
@@ -1112,9 +1138,9 @@ The above argument has a similar form to some that appear in \cite{OnTheTrace}, 
 \section{Examples}
 \label{lawful-examples}
 
-The general pattern is as follows. Once we choose a particular monoidal action $\M \to [\C, \C]$, we find an isomorphism between the set of optics $(S, S') \hto (A, A')$ and a set $\mathbb{O}((S, S'), (A, A'))$ that is easier to describe. Ideally, we then find a similar description $\mathbb{D}(S, A)$ for the set \[ \int^{M_1, M_2 \in \M} \C(S, M_1 A) \times \C(M_1 A, M_2 A) \times \C(M_2 A, S)\] appearing in the definition of a lawful optic. We can then ``read off'' what conditions on an element of $\mathbb{O}((S, S), (A, A))$ are needed to ensure that the corresponding element of $\Optic_\M(S, A)$ is lawful.
+The general pattern is as follows. Once we choose a particular monoidal action $\M \to [\C, \C]$, we find an isomorphism between the set of optics $(S, S') \hto (A, A')$ and a set $\mathbb{O}((S, S'), (A, A'))$ that is easier to describe. Ideally, we then also find a simplified description $\mathbb{D}(S, A)$ for the set \[ \int^{M_1, M_2 \in \M} \C(S, M_1 A) \times \C(M_1 A, M_2 A) \times \C(M_2 A, S)\] appearing in the definition of a lawful optic. We can then ``read off'' what conditions on an element of $\mathbb{O}((S, S), (A, A))$ are needed to ensure that the corresponding element of $\Optic_\M(S, A)$ is lawful. With no offence intended, we will call these more specific conditions the `ad-hoc' laws.
 
-\todo{As we get higher up in the hierarchy, the `ad-hoc' laws get closer to being the same as the coend laws}
+\todo{There is a common pattern in some of these examples, where the evaluation-at-$A$ functor $-A : \M \to \C$ has a left or right adjoint. Is it worth abstracting this out?}
 
 \subsection{Lenses}
 
@@ -1202,9 +1228,7 @@ We now discuss lawful lenses.
   So checking componentwise, $\Phi(\once(p))$ being equal to $\Phi(\twice(p))$ is exactly equivalent to the $\fput\fget$ and $\fput\fput$ laws holding.
 \end{proof}
 
-\todo{This last proposition should probably be deleted now}
-
-In favourable conditions, we can upgrade this result to show that the existence of a lens $S \hto A$ implies that $S \cong C \times A$ for some $C$. This is a generalised from the argument given in~\cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
+If we ask more of our category $\C$, we can upgrade this result to show that a lens $S \hto A$ implies the existence of a complement $\C$ with $S \cong C \times A$. This is a generalised from the argument given in~\cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
 
 \begin{proposition}
   Suppose $\C$ has pullbacks and that there is a morphism $x : 1 \to A$. If $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
@@ -1249,83 +1273,6 @@ In favourable conditions, we can upgrade this result to show that the existence 
 \end{proof}
 
 \todo{There may be something generalisable here with ``monoidal factorisation systems''}
-
-\subsection{Linear Lenses}
-\newcommand{\ev}{\mathsf{ev}}
-\newcommand{\coev}{\mathsf{coev}}
-
-If $\C$ is closed monoidal, we can use a similar trick to eliminate the coends.
-
-\begin{align*}
-  \Optic_\otimes((S, S'), (A, A')) &= \int^{M \in \C} \C(S, M \otimes A) \times \C(M \otimes A', S') \\
-                                   &\cong \int^{M \in \C} \C(S, M \otimes A) \times \C(M, \homC(A',S')) \\
-                                   &\cong \C(S, \homC(A',S') \otimes A) \\
-                                   &=: \mathbb{O}((S, S'), (A, A'))
-\end{align*}
-where $\homC(A', S')$ denotes the internal hom. If $\C$ is cartesian, this is of course isomorphic to the pair of maps discussed in the previous section.
-
-For an optic, the corresponding element of $\mathbb{O}((S, S'), (A, A'))$ will be called $\funzip$. The above isomorphism sends $\funzip$ to the element $\rep{\funzip }{\ev_{A', S'} }$, where $\ev_{A', S'} : \homC(A',S') \otimes A' \to S'$ is the evaluation map. In the other direction, given $\rep{l}{r }$ we have $\funzip = (\tilde r \otimes A)l$ where $\tilde r : M \to \homC(A', S')$ denotes the transpose of $r$.
-
-We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting as we lack projections, but using the same techniques as for cartesian lenses above we can devise some new ones:
-
-\begin{proposition}
-  A linear lens $p : S \hto A$ is lawful iff the following two laws for $\funzip$ hold:
-  \begin{align*}
-    \ev_{A, S} \; \funzip &= \id_S && \textsc{(Rezip)} \\
-    (\coev_{\homC(A, S), A} \otimes A)\funzip &= ((\funzip \circ -) \otimes A)\funzip && \textsc{(ZipZip)}
-  \end{align*}
-  where \[ \funzip \circ - : \homC(A, S) \to \homC(A, \homC(A, S) \otimes A) \] denotes the internal composition. \todo{I obviously need better names for the laws}
-\end{proposition}
-\begin{proof}
-  We have an isomorphism:
-  \begin{align*}
-    & \int^{M_1, M_2 \in \C} \C(S, M_1 \otimes A) \times \C(M_1 \otimes A, M_2 \otimes A) \times \C(M_2 \otimes A, S) \\
-    &\cong \int^{M_1, M_2 \in \C} \C(S, M_1 \otimes A) \times \C(M_1, \homC(A, M_2 \otimes A)) \times \C(M_2, \homC(A, S)) \\
-    &\cong \int^{M_1 \in \C} \C(S, M_1 \otimes A) \times \C(M_1, \homC(A, \homC(A, S) \otimes A)) \\
-    &\cong \C(S, \homC(A, \homC(A, S) \otimes A) \otimes A)
-  \end{align*}
-  which evaluated on an element $\repthree{l}{c}{r }$ is given by
-  \begin{align*}
-    \Phi(\repthree{l}{c}{r}) &= (\widetilde{(\tilde{r} \otimes A)c} \otimes A)l
-  \end{align*}
-  Now suppose we are given an optic $p$ with corresponding element of $\mathbb{O}(S, A)$ is $\funzip$. Then \[\outside(\rep{\funzip }{\ev_{A, S} }) = \ev_{A, S} \; \funzip,\] giving the first law.
-
-  Now we evaluate $\Phi(\once(p))$ and $\Phi(\twice(p))$.
-  \begin{align*}
-    \Phi(\once(\rep{\funzip }{\ev_{A, S} }))
-    &= \Phi(\repthree{\funzip }{\id_{\homC(A,S) \otimes A}}{\ev_{A, S} }) \\
-    &= (\widetilde{(\tilde{\ev_{A, S}} \otimes A)\id_{\homC(A,S) \otimes A}} \otimes A)\funzip \\
-    &= (\coev_{\homC(A, S), A} \otimes A)\funzip \\
-    \Phi(\twice(\rep{\funzip }{\ev_{A, S} }))
-    &= \Phi(\repthree{\funzip }{\funzip \; \ev_{A, S}}{\ev_{A, S} }) \\
-    &= (\widetilde{(\tilde{\ev_{A, S}} \otimes A)(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
-    &= (\widetilde{(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
-    &= ((\funzip \circ -) \otimes A)\funzip
-  \end{align*}
-  \todo{Fix those overtildes}
-  So indeed the optic is lawful iff $(\coev_{\homC(A, S), A} \otimes A)\funzip = ((\funzip \circ -) \otimes A)\funzip$.
-\end{proof}
-
-\subsection{``Achromatic'' Lenses}
-\todo{http://oleg.fi/gists/posts/2018-03-28-achromatic-lens.html}
-
-Suppose $\C$ is cartesian closed and has finite coproducts. Then $\C$ acts on itself via $M \cdot A = (M \sqcup 1) \times A$.
-\begin{align*}
-  \Optic((S, S'), (A, A'))
-  &= \int^{M \in \C} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
-  &= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \sqcup 1) \times A', S') \\
-  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \times A') \sqcup A', S') \\
-  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M \times A', S') \times \C(A', S') \\
-  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M, \homC(A', S')) \times \C(A', S') \\
-  &\cong \C(S, (\homC(A', S') \sqcup 1) \times A) \times \C(A', S') \\
-  &\cong \C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S') \\
-\end{align*}
-
-\begin{remark}
-  Equivalently, we could let $\M$ be the category of pointed objects of $\C$ and pointed maps between them.
-\end{remark}
-
-\todo{Is it worth working the laws out?}
 
 \subsection{Prisms}
 Prisms are dual to lenses:
@@ -1439,10 +1386,11 @@ In what follows, we will exploit the convenient $\lambda$-calculus syntax for mo
 
 \begin{lemma}
   Suppose $\C$ is cartesian closed and $F : \C \to \C$ is strong with respect to $\times$. Then for any objects $A, B \in \C$, \[\C(A, FB) \cong \Strong_\C(\times)(A \times \homC(B, -), F)\]
+naturally in $A$ and $F$. In other words, the functor $(A \mapsto A \times \homC(B, -)) : \C \to \Strong_\C$ is left adjoint to the evaluation-at-$B$ functor $-B : \Strong_\C \to \C$.
 \end{lemma}
 \begin{proof}
-  We construct the isomorphism $\Phi: C(A, FB) \cong \Strong_\C(\times)(A \times \homC(B, -), F)$ and its inverse $\Psi$.
-  Given a $f \in \C(A, FB)$, let $\Phi(f)$ be the natural transformation such that the component at $C$ is the composite
+  We construct the isomorphism $P : C(A, FB) \cong \Strong_\C(\times)(A \times \homC(B, -), F)$ and its inverse $Q$.
+  Given a $f \in \C(A, FB)$, let $P(f)$ be the natural transformation such that the component at $C$ is the composite
   \begin{align*}
     A \times \homC(B, C) \to FB \times \homC(B, C) \to F(B \times \homC(B, C)) \to FC
   \end{align*}
@@ -1457,13 +1405,13 @@ In what follows, we will exploit the convenient $\lambda$-calculus syntax for mo
   where $\theta$ is the strength for $F$.
   \todo{Check this is a strong natural transformation}
 
-  Conversely, given a strong natural transformation $\eta : A \times \homC(B, -) \Rightarrow F$, the component at $B$ is a function $\eta_B : A \times \homC(B, B) \to FB$; we define $\Psi(\eta) : A \to FB$ by $\Psi(\eta)(a) = \eta_B(a, \id_B)$
+  Conversely, given a strong natural transformation $\eta : A \times \homC(B, -) \Rightarrow F$, the component at $B$ is a function $\eta_B : A \times \homC(B, B) \to FB$; we define $Q(\eta) : A \to FB$ by $Q(\eta)(a) = \eta_B(a, \id_B)$
 
       %       $\Psi(\eta) : A \to FB$ to be $A \xrightarrow{A \times \const_{\id_B}} A \times \homC(B, B) \xrightarrow{\eta_B} FB$.
 
   Now, verifying these are inverse:
   \begin{align*}
-    \Phi(\Psi(\eta))_C (a,g)
+    P(Q(\eta))_C (a,g)
     &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, \Psi(\eta)(a))) \\
     &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, \eta_B(a, \id_B))) \\
     &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(\id, \eta_B)(g, (a, \id_B))) \\
@@ -1476,17 +1424,18 @@ In what follows, we will exploit the convenient $\lambda$-calculus syntax for mo
   \end{align*}
   And in the other direction:
   \begin{align*}
-    \Psi(\Phi(f))(a)
-    &= \Phi(f)_B(a, \id_B) \\
+    Q(P(f))(a)
+    &= P(f)_B(a, \id_B) \\
     &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, B), B}(\id_B, f a))\\
     &= F(\lambda x. \lambda h. h x)(F(\lambda b. (\id_B, b)))\theta_{1, B}(f a) && \text{(naturality of $\theta$)}\\
     &= F(\lambda b. \id_B b)\theta_{1, B}(f a)\\
     &= \theta_{1, B}(f a) && \text{(strength of $\theta$)}\\
     &= f a
   \end{align*}
+\todo{Naturality}
 \end{proof}
 
-This is a generalisation of~\cite[Proposition 2.2]{SecondOrderFunctionals}, isolating the properties of $\Set$ that are used. We can now construct setters:
+This is a generalisation of~\cite[Proposition 2.2]{SecondOrderFunctionals}, isolating the properties of $\Set$ that are used. We can finally construct setters:
 
 \begin{definition}
   Supposed $\C$ is cartesian closed and let $\Strong(\C)$ act on $\C$ by evaluation. The \emph{category of setters} $\Setter_\C$ is the category of optics for this action.
@@ -1499,14 +1448,114 @@ Due to the above lemma, we can eliminate the coend from the definition:
                                &\cong \C(S \times \homC(A, A'), S') \\
                                &\cong \C(\homC(A, A'), \homC(S,S'))
 \end{align*}
+In the Haskell \lenslib{} library, the map $\homC(A, A) \to \homC(S,S)$ corresponding to a setter is called $\fover$: we think of a setter as allowing us to apply a function $A \to A$ over some parts of $S$.
 
-\todo{laws}
+The laws for setters are a kind of `functoriality':
 
-\todo{This previous section might also work just with monoidal closed?}
+\begin{proposition}
+A setter $p : S \hto A$ is lawful iff 
+\begin{align*}
+\fover \; \nameof{\id_A} &= \nameof{\id_S} \\
+({-} \circ =)(\fover \times \fover) &= \fover ({-} \circ =)
+\end{align*}
+where  $\circ$ denotes internal composition and $\nameof{\id_A} : 1 \to \homC(A, A)$ is the `name of' $\id_A$, and similarly for $\id_S$.
+\end{proposition}
+\begin{proof}
+We have a chain of isomorphisms
+\begin{align*}
+&\int^{M_1, M_2 \in \Strong_\C} \C(S, M_1 A) \times \C(M_1 A, M_2  A) \times \C(M_2 A, S) \\
+&\cong \int^{M_1, M_2 \in \Strong_\C} \Strong_\C(S \times \homC(A, -), M_1) \times \Strong_\C(M_1 A \times \homC(A, -), M_2) \times \C(M_2 A, S) \\
+&\cong \int^{M_2 \in \Strong_\C} \Strong_\C(S \times \homC(A, A) \times \homC(A, -), M_2) \times \C(M_2 A, S) \\
+&\cong \C(S \times \homC(A, A) \times \homC(A, A), S) \\
+&\cong \C(\homC(A, A) \times \homC(A, A), \homC(S,S))
+\end{align*}
+\todo{Worth writing out the rest?}
+\end{proof}
+
+\todo{This previous section might also work just with monoidal closed? I don't see where cartesianness was used.}
+
+\subsection{Linear Lenses}
+\newcommand{\ev}{\mathsf{ev}}
+\newcommand{\coev}{\mathsf{coev}}
+
+If $\C$ is closed monoidal, we can use a similar trick to eliminate the coends.
+
+\begin{align*}
+  \Optic_\otimes((S, S'), (A, A')) &= \int^{M \in \C} \C(S, M \otimes A) \times \C(M \otimes A', S') \\
+                                   &\cong \int^{M \in \C} \C(S, M \otimes A) \times \C(M, \homC(A',S')) \\
+                                   &\cong \C(S, \homC(A',S') \otimes A) \\
+                                   &=: \mathbb{O}((S, S'), (A, A'))
+\end{align*}
+where $\homC(A', S')$ denotes the internal hom. If $\C$ is cartesian, this is of course isomorphic to the pair of maps discussed in the previous section.
+
+For an optic, the corresponding element of $\mathbb{O}((S, S'), (A, A'))$ will be called $\funzip$. The above isomorphism sends $\funzip$ to the element $\rep{\funzip }{\ev_{A', S'}}$, where $\ev_{A', S'} : \homC(A',S') \otimes A' \to S'$ is the evaluation map. In the other direction, given $\rep{l}{r }$ we have $\funzip = (\tilde r \otimes A)l$ where $\tilde r : M \to \homC(A', S')$ denotes the transpose of $r$.
+
+We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting as we lack projections, but using the same techniques as for cartesian lenses above we can devise some new ones:
+
+\begin{proposition}
+  A linear lens $p : S \hto A$ is lawful iff the following two laws for $\funzip$ hold:
+  \begin{align*}
+    \ev_{A, S} \; \funzip &= \id_S && \textsc{(Rezip)} \\
+    (\coev_{\homC(A, S), A} \otimes A)\funzip &= ((\funzip \circ -) \otimes A)\funzip && \textsc{(ZipZip)}
+  \end{align*}
+  where \[ \funzip \circ - : \homC(A, S) \to \homC(A, \homC(A, S) \otimes A) \] denotes internal composition and \[\coev_{\homC(A, S), A} : \homC(A, S) \to \homC(A, \homC(A, S) \otimes A)\] is coevaluation.
+  \todo{I obviously need better names for the laws}
+\end{proposition}
+\begin{proof}
+  We have an isomorphism:
+  \begin{align*}
+    & \int^{M_1, M_2 \in \C} \C(S, M_1 \otimes A) \times \C(M_1 \otimes A, M_2 \otimes A) \times \C(M_2 \otimes A, S) \\
+    &\cong \int^{M_1, M_2 \in \C} \C(S, M_1 \otimes A) \times \C(M_1, \homC(A, M_2 \otimes A)) \times \C(M_2, \homC(A, S)) \\
+    &\cong \int^{M_1 \in \C} \C(S, M_1 \otimes A) \times \C(M_1, \homC(A, \homC(A, S) \otimes A)) \\
+    &\cong \C(S, \homC(A, \homC(A, S) \otimes A) \otimes A)
+  \end{align*}
+  which evaluated on an element $\repthree{l}{c}{r }$ is given by
+  \begin{align*}
+    \Phi(\repthree{l}{c}{r}) &= (\widetilde{(\tilde{r} \otimes A)c} \otimes A)l
+  \end{align*}
+  Now suppose we are given an optic $p$ with corresponding element of $\mathbb{O}(S, A)$ is $\funzip$. Then \[\outside(\rep{\funzip }{\ev_{A, S} }) = \ev_{A, S} \; \funzip,\] giving the first law.
+
+  Now we evaluate $\Phi(\once(p))$ and $\Phi(\twice(p))$.
+  \begin{align*}
+    \Phi(\once(\rep{\funzip }{\ev_{A, S} }))
+    &= \Phi(\repthree{\funzip }{\id_{\homC(A,S) \otimes A}}{\ev_{A, S} }) \\
+    &= (\widetilde{(\tilde{\ev_{A, S}} \otimes A)\id_{\homC(A,S) \otimes A}} \otimes A)\funzip \\
+    &= (\widetilde{(\id_{\homC(A, S)} \otimes A)} \otimes A)\funzip \\
+    &= (\coev_{\homC(A, S), A} \otimes A)\funzip \\
+    \Phi(\twice(\rep{\funzip }{\ev_{A, S} }))
+    &= \Phi(\repthree{\funzip }{\funzip \; \ev_{A, S}}{\ev_{A, S} }) \\
+    &= (\widetilde{(\tilde{\ev_{A, S}} \otimes A)(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
+    &= (\widetilde{(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
+    &= ((\funzip \circ -) \otimes A)\funzip
+  \end{align*}
+  \todo{Fix those overtildes}
+  So indeed the optic is lawful iff $\ev_{A, S} \; \funzip = \id_S$ and $(\coev_{\homC(A, S), A} \otimes A)\funzip = ((\funzip \circ -) \otimes A)\funzip$.
+\end{proof}
+
+\subsection{``Achromatic'' Lenses}
+\todo{http://oleg.fi/gists/posts/2018-03-28-achromatic-lens.html}
+
+Suppose $\C$ is cartesian closed and has finite coproducts. Then $\C$ acts on itself via $M \cdot A = (M \sqcup 1) \times A$.
+\begin{align*}
+  \Optic((S, S'), (A, A'))
+  &= \int^{M \in \C} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
+  &= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \sqcup 1) \times A', S') \\
+  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \times A') \sqcup A', S') \\
+  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M \times A', S') \times \C(A', S') \\
+  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M, \homC(A', S')) \times \C(A', S') \\
+  &\cong \C(S, (\homC(A', S') \sqcup 1) \times A) \times \C(A', S') \\
+  &\cong \C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S')
+\end{align*}
+
+\begin{remark}
+  Equivalently, we could let $\M$ be the category of pointed objects of $\C$ and pointed maps between them.
+\end{remark}
+
+\todo{Worth writing out?}
 
 \subsection{Affine Traversals}
 
-A folklore variant of a prism is the \emph{affine traversal}, which allows access to a target that may or may not be present. These are described in~\cite{AffineTraversalPost}, and are there hypothesised to correspond to pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. This is not precisely correct, but very close:
+A folklore variant of a prism is the \emph{affine traversal}, which allows access to a target that may or may not be present. These are described in~\cite{AffineTraversalPost}, and it is suggested they correspond to pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. This is not precisely correct, but very close:
 
 Suppose $\C$ is cartesian closed, and has binary coproducts. Then let $\mathsf{Aff}$ be the category $\C \times \C$, equipped with the monoidal structure
 \begin{align*}
@@ -1546,7 +1595,7 @@ Now the set of optics $(S, S') \hto (A, A')$ is:
   &\cong \C(S, S' \sqcup (\homC(A', S') \times A))
 \end{align*}
 
-This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the two are not equal. In other words, there are fewer affine traversals than expected.
+This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the two are not equal.
 
 \todo{Do laws? For \emph{lawful} affine traversals, there may not be a difference}
 
@@ -1580,18 +1629,11 @@ Given such a polymorphic optic in $[\D, \C]$, we can always `monomorphise' to ob
   \begin{align*}
     \mathsf{mono} : \D \times \Optic_{[\D, \C]} \to \Optic_\C
   \end{align*}
-  that sends an object $D \in \D$ and optic $\rep{l}{r } : F \hto G$ in $\Optic_{[\D, \C]}$ to the optic $\rep{l_D}{r_D } : FD \hto GD$ in $\Optic_\C$.
+  that sends an object $D \in \D$ and optic $\rep{l}{r } : F \hto G$ in $\Optic_{[\D, \C]}$ to the optic $\rep{l_D}{r_D } : FD \hto GD$ in $\Optic_\C$. Further, this preserves lawfulness.
 \end{proposition}
 \begin{proof}
   \todo{todo}
 \end{proof}
-
-Lawful optics in $\Optic_{[\D, \C]}$ are sent to lawful optics in $\Optic_\C$,  so we may restrict the domain to obtain a functor:
-\begin{align*}
-  \mathsf{mono} : \D \times \Lawful_{[\D, \C]} \to \Lawful_\C
-\end{align*}
-
-\todo{more to say?}
 
 \todo{What about the pointwise tensor of an entire functor?}
 
@@ -2130,6 +2172,8 @@ Many attempts~\cite{ReflectionsOnMonadicLenses} \todo{more} to define effectful 
 \section{Conclusion}
 
 \todo{Figure out the right numbering style}
+
+\todo{Maybe some of the long equational manipulations could be done by commutative diagram, using a pair of dashes to signal the start and end value?}
 
 \bibliographystyle{alpha}
 \bibliography{optics.bib}

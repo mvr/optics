@@ -70,27 +70,29 @@
 % Categories
 \newcommand{\Set}{\mathbf{Set}}
 \newcommand{\Cat}{\mathbf{Cat}}
+%\newcommand{\Hask}{\mathbf{Hask}}
 \newcommand{\Prof}{\mathbf{Prof}}
 \newcommand{\Core}{\mathbf{Core}}
 \newcommand{\MonCat}{\mathbf{MonCat}}
 \newcommand{\LaxMonCat}{\mathbf{LaxMonCat}}
 \newcommand{\SymmMonCat}{\mathbf{SymmMonCat}}
 \newcommand{\Tele}{\mathbf{Tele}}
+\newcommand{\Tamb}{\mathbf{Tamb}}
+
+\newcommand{\Endo}{\mathbf{Endo}}
+\newcommand{\Strong}{\mathbf{Strong}}
+\newcommand{\Point}{\mathbf{Point}}
+\newcommand{\CoPoint}{\mathbf{CoPoint}}
+\newcommand{\Traversable}{\mathbf{Traversable}}
 
 \newcommand{\Act}{\mathbf{Act}}
 \newcommand{\Optic}{\mathbf{Optic}}
 \newcommand{\Lawful}{\mathbf{Lawful}}
-\newcommand{\SemiOptic}{\mathbf{SemiOptic}}
+%\newcommand{\SemiOptic}{\mathbf{SemiOptic}}
 \newcommand{\Lens}{\mathbf{Lens}}
 \newcommand{\Prism}{\mathbf{Prism}}
 \newcommand{\Setter}{\mathbf{Setter}}
-\newcommand{\Hask}{\mathbf{Hask}}
-\newcommand{\Endo}{\mathbf{Endo}}
-\newcommand{\Strong}{\mathbf{Strong}}
-\newcommand{\Tamb}{\mathbf{Tamb}}
-\newcommand{\Point}{\mathbf{Point}}
-\newcommand{\CoPoint}{\mathbf{CoPoint}}
-\newcommand{\Traversable}{\mathbf{Traversable}}
+\newcommand{\Traversal}{\mathbf{Traversal}}
 
 \newcommand{\switched}{\mathbin{\tilde{\otimes}}}
 
@@ -1112,9 +1114,7 @@ Let $\inside : \Optic_\M(S, A) \to \int^{M \in \M} \C(M A, M A)$ be the map indu
 
   Note that if $f \phi_A \rightsquigarrow \phi_A f$ then $f \phi_A f \phi_A \rightsquigarrow \phi_A f \phi_A f$. More generally, if $f \rightsquigarrow g$ then $f^n \rightsquigarrow g^n$ for any $n$.
   
-  Now let $\rep{l}{r}$ be a representative for $p$, so $rl = \id_S$ and $\langle lr \rangle = \langle \psi A\rangle$. There therefore exists a finite chain of relations $lr = u_1 \leftrightsquigarrow \dots \leftrightsquigarrow u_n = \psi A$.
-  
-Suppose the first relation faces rightward, so there exists a $k$ and $\phi$ with $r;l = \phi_A;k$ and $u_2 = k;\phi_A$. Define $l' = l;\phi_A$ and $r' = k;r$. Then:
+  Now let $\rep{l}{r}$ be a representative for $p$, so $rl = \id_S$ and $\langle lr \rangle = \langle \psi A\rangle$. There therefore exists a finite chain of relations $lr = u_1 \leftrightsquigarrow \dots \leftrightsquigarrow u_n = \psi A$. Suppose the first relation faces rightward, so there exists a $k$ and $\phi$ with $r;l = \phi_A;k$ and $u_2 = k;\phi_A$. Define $l' = l;\phi_A$ and $r' = k;r$. Then:
 \begin{align*}
 \rep{l'}{r'} 
 &= \rep{l ; \phi_A}{k ; r} \\
@@ -1138,16 +1138,20 @@ The above argument has a similar form to some that appear in \cite{OnTheTrace}, 
 \section{Examples}
 \label{lawful-examples}
 
-The general pattern is as follows. Once we choose a particular monoidal action $\M \to [\C, \C]$, we find an isomorphism between the set of optics $(S, S') \hto (A, A')$ and a set $\mathbb{O}((S, S'), (A, A'))$ that is easier to describe. Ideally, we then also find a simplified description $\mathbb{D}(S, A)$ for the set \[ \int^{M_1, M_2 \in \M} \C(S, M_1 A) \times \C(M_1 A, M_2 A) \times \C(M_2 A, S)\] appearing in the definition of a lawful optic. We can then ``read off'' what conditions on an element of $\mathbb{O}((S, S), (A, A))$ are needed to ensure that the corresponding element of $\Optic_\M(S, A)$ is lawful. With no offence intended, we will call these more specific conditions the `ad-hoc' laws.
+The general pattern is as follows. Once we choose a particular monoidal action $\M \to [\C, \C]$, we find an isomorphism between the set of optics $(S, S') \hto (A, A')$ and a set $\mathbb{O}((S, S'), (A, A'))$ that is easier to describe. We follow \cite{ProfunctorOptics} (and others) in calling elements of $\mathbb{O}$ \emph{concrete optics}. There is no canonical choice for this set; our primary goal is to find a way to eliminate the coend so that we no longer have to deal with equivalence classes of morphisms.
+
+Ideally, we then also find a simplified description $\mathbb{D}(S, A)$ for the set \[ \int^{M_1, M_2 \in \M} \C(S, M_1 A) \times \C(M_1 A, M_2 A) \times \C(M_2 A, S)\] appearing in the definition of a lawful optic. We can then ``read off'' what conditions on are needed on a concrete optic to ensure that the corresponding element of $\Optic_\M(S, A)$ is lawful. With no offence intended, we will call these more conditions the `ad-hoc' laws.
 
 \todo{There is a common pattern in some of these examples, where the evaluation-at-$A$ functor $-A : \M \to \C$ has a left or right adjoint. Is it worth abstracting this out?}
+
+We begin with the most common kinds of optic before moving to more exotic possibilities.
 
 \subsection{Lenses}
 
 Lenses form the ur-example of a category of optics.
 
 \begin{definition}
-  Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} $\Lens$ is the category of lawful optics with respect to this action: $\Lens = \Lawful_\times$.
+  Suppose $\C$ has finite products, and let $\C$ act on itself via the bifunctor $\times : \C \times \C \to \C$. The \emph{category of lenses} $\Lens$ is the category of lawful optics with respect to this action.
 \end{definition}
 
 The optics for this action correspond exactly to pairs of $\fget$ and $\fput$ functions.
@@ -1228,9 +1232,9 @@ We now discuss lawful lenses.
   So checking componentwise, $\Phi(\once(p))$ being equal to $\Phi(\twice(p))$ is exactly equivalent to the $\fput\fget$ and $\fput\fput$ laws holding.
 \end{proof}
 
-If we ask more of our category $\C$, we can upgrade this result to show that a lens $S \hto A$ implies the existence of a complement $\C$ with $S \cong C \times A$. This is a generalised from the argument given in~\cite[Corollary 13]{AlgebrasAndUpdateStrategies} for $\Set$.
+If we ask more of our category $\C$, we can upgrade this result to show that a lens $S \hto A$ implies the existence of a complement $\C$ with $S \cong C \times A$. This doesn't appear to follow purely from the ad-hoc lens laws---an argument using a definition of lawfulness based on constant complements.
 
-\begin{proposition}
+\begin{proposition}[{Generalisation of \cite[Corollary 13]{AlgebrasAndUpdateStrategies}}]
   Suppose $\C$ has pullbacks and that there is a morphism $x : 1 \to A$. If $\fget : S \to A$ and $\fput : S \times A \to S$ satisfy the three lens laws then there exists $C \in \C$ with $S \cong C \times A$.
 \end{proposition}
 \begin{proof}
@@ -1278,7 +1282,7 @@ If we ask more of our category $\C$, we can upgrade this result to show that a l
 Prisms are dual to lenses:
 
 \begin{definition}
-  Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} is the category of lawful optics with respect to this action: $\Prism = \Lawful_\sqcup$.
+  Suppose $\C$ has finite coproducts, and let $\C$ act on itself via the bifunctor $\sqcup : \C \times \C \to \C$. The \emph{category of prisms} is the category of lawful optics with respect to $\sqcup$.
 \end{definition}
 
 Just as optics for $\times$ correspond to a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$, optics for $\sqcup$ correspond to pairs of maps $\freview : A \to S$ and $\fmatching : S \to S \sqcup A$. These names are taken from the Haskell \lenslib{} library.
@@ -1438,7 +1442,7 @@ naturally in $A$ and $F$. In other words, the functor $(A \mapsto A \times \homC
 This is a generalisation of~\cite[Proposition 2.2]{SecondOrderFunctionals}, isolating the properties of $\Set$ that are used. We can finally construct setters:
 
 \begin{definition}
-  Supposed $\C$ is cartesian closed and let $\Strong(\C)$ act on $\C$ by evaluation. The \emph{category of setters} $\Setter_\C$ is the category of optics for this action.
+  Supposed $\C$ is cartesian closed and let $\Strong(\C)$ act on $\C$ by evaluation. The \emph{category of setters} $\Setter_\C$ is the category of lawful optics for this action.
 \end{definition}
 
 Due to the above lemma, we can eliminate the coend from the definition:
@@ -1473,6 +1477,75 @@ We have a chain of isomorphisms
 \end{proof}
 
 \todo{This previous section might also work just with monoidal closed? I don't see where cartesianness was used.}
+
+\subsection{Traversals}
+Let $\C = \Set$. \todo{define applicative/traversable functors}
+
+\begin{definition}
+The category $\Traversal_\C$ of traversals in $\C$ is the category of lawful optics for the action of $\Traversable_\C$ on $\C$ given by evaluation.
+\end{definition}
+
+(Yes, the names $\Traversal$ vs\@. $\Traversable$ are confusing.)
+
+It is known that traversable functors correspond to coalgebras for a particular parameterised comonad. See~\cite{AlgebrasForParameterisedMonads} for the relevant definitions of parameterised monads and algebras.
+
+\begin{proposition}[{\cite[Theorem 4.10, Proposition 5.4]{SecondOrderFunctionals}}]
+Traversable structures on a functor $T : \Set \to \Set$ correspond to parameterised coalgebra structures
+\begin{align*}
+t_{A, B} : TA \to UR^*_{A, B}(T B)
+\end{align*} 
+where $UR^*_{X,Y}$ is the parameterised comonad
+\begin{align*}
+UR^*_{X, Y} Z = \Sigma_{n\in \bN} X^n \times \homC(Y^n,Z)
+\end{align*}
+Moreover, this correspondence forms an isomorphism of categories between $\Traversable$ and the Eilenberg-Moore category of coalgebras for $UR^*_{-, -}$, which we denote $\C_T$.
+\end{proposition}
+
+\begin{remark}
+In~\cite[Section 2.3]{ProfunctorOptics}, it is claimed that a traversal $S \hto A$ exhibits an isomorphism \[S \cong \Sigma_n A^n \times \homC(A^n,S).\] This appears to be a misreading of~\cite[Proposition 5.4]{SecondOrderFunctionals}.
+\end{remark}
+
+The language of coalgebras now allows us to characterise traversals.
+
+\begin{lemma}
+  For any objects $A, B \in \Set$ and traversable functor $F$, \[\C(FA, B) \cong \Traversable(F, \Sigma_n (-)^n \times \homC(A^n,B))\]
+naturally in $B$ and $F$. In other words, the functor \[(B \mapsto \Sigma_n (-)^n \times \homC(A^n,B)) : \C \to \Traversable\] is right adjoint to the evaluation-at-$A$ functor $-A : \Traversable \to \C$.
+\end{lemma}
+\begin{proof}
+By~\cite[Proposition 6]{AlgebrasForParameterisedMonads}, there is a parameterised adjunction $L_T \dashv R_T$, where
+\begin{align*}
+L_T : \C^\op \times \C_T &\to \C \\
+(X, (F, f)) &\mapsto FX \\
+R_T : \C \times \C &\to \C_T \\
+(Y, Z) &\mapsto (UR^*_{-, Y} Z, \varepsilon) \\
+\end{align*}
+where $\varepsilon$ is the counit of $UR^*_{-, -}$. Evaluating these with the fixed parameter $A$, we get an ordinary adjunction 
+\begin{align*}
+L_T(A) : \C_T &\to \C \\
+(F, f) &\mapsto FA \\
+R_T(A) : \C &\to \C_T \\
+Z &\mapsto (UR^*_{-, A} Z, \varepsilon) \\
+\end{align*}
+But this is exactly the adjunction we were trying to show.
+\end{proof}
+
+We then reach the same characterisation of traversals as~\cite{ProfunctorOptics}:
+\begin{align*}
+\Optic_\Traversable((S, S'), (A, A')) &= \int^{F \in \Traversable} \C(S, F A) \times \C(F A', S') \\
+&\cong \int^{F \in \Traversable} \C(S, F A) \times \Traversable(F, \Sigma_n (-)^n \times \homC(A'^n,S')) \\
+&\cong \C(S, \Sigma_n A^n \times \homC(A'^n,S')) \\
+&=: \mathbb{O}((S, S'), (A, A'))
+\end{align*}
+
+\todo{laws}
+
+\begin{remark}
+\todo{todo?} A careful analysis would be needed to describe traversals in some other category, in particular, the description of $UR^*$ does not make sense if $\C$ is not locally cartesian closed.
+\end{remark}
+
+\begin{remark}
+Traversable functors can be described as a particular class of polynomial functors known as finitary containers. There may be something generalisable here with other classes of polynomial functors.
+\end{remark}
 
 \subsection{Linear Lenses}
 \newcommand{\ev}{\mathsf{ev}}
@@ -1555,7 +1628,7 @@ Suppose $\C$ is cartesian closed and has finite coproducts. Then $\C$ acts on it
 
 \subsection{Affine Traversals}
 
-A folklore variant of a prism is the \emph{affine traversal}, which allows access to a target that may or may not be present. These are described in~\cite{AffineTraversalPost}, and it is suggested they correspond to pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. This is not precisely correct, but very close:
+A folklore variant of a prism is the \emph{affine traversal}, which allows access to a target that may or may not be present. 
 
 Suppose $\C$ is cartesian closed, and has binary coproducts. Then let $\mathsf{Aff}$ be the category $\C \times \C$, equipped with the monoidal structure
 \begin{align*}
@@ -1578,7 +1651,7 @@ so that as expected,
 \end{align*}
 
 \begin{remark}
-  It is important here that the morphisms in $\mathsf{Aff}$ are only those that arise from pairs of morphisms $P \to P'$ and $Q \to Q'$, although in principle there are other natural transformations between the corresponding functors $(P, Q) \cdot -$ and $(P', Q') \cdot -$.
+  It is important here that the morphisms in $\mathsf{Aff}$ are only those that arise from pairs of morphisms $P \to P'$ and $Q \to Q'$, although in principle there may be other natural transformations between the corresponding functors $(P, Q) \cdot -$ and $(P', Q') \cdot -$.
 \end{remark}
 
 \todo{This feels similar to taking some sort of `compositum' of the two actions $\times$ and $\sqcup$, both embed in this category. Marco suggests taking the pushout of the projections into the pullback, calculated in the 2-cat of monoidal categories.}
@@ -1595,14 +1668,11 @@ Now the set of optics $(S, S') \hto (A, A')$ is:
   &\cong \C(S, S' \sqcup (\homC(A', S') \times A))
 \end{align*}
 
-This set includes into $\C(S, A \sqcup S') \times \C(S\times A', S')$, but the two are not equal.
+We note that this contradicts the folklore description of affine traversals as pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$, see~\cite{AffineTraversalPost}. That set is in fact ``too large'': the provided map $S \times A' \to S$ must be defined even on elements of $S$ whose image under the first map $S \to A \sqcup S'$ lies in the right-hand component, which is not the case in our description.
 
 \todo{Do laws? For \emph{lawful} affine traversals, there may not be a difference}
 
 \todo{Give an example of two elements of the set that correspond to the same affine traversal}
-
-\subsection{Traversals}
-\todo{todo}
 
 \subsection{Polymorphic Optics}
 Haskell's optics \todo{find an older reference from DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, the lens into the first entry of a tuple has type

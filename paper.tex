@@ -169,54 +169,81 @@
 
 \section{Introduction}
 
-\todo{Past work:
-  \begin{itemize}
-  \item The Haskell lens people: edwardk, shachaf, xplat, roconnor... (TODO: find out who these people are)
-  \item The Doubles paper
-  \item Bartosz's blog post which was written about the same time I started this. (Only tensor-like optics, no discussion of laws, confusion about enrichment(?))
-  \item The profunctor optics paper out of Oxford. (No generality, nothing categorical, no discussion of laws)
-  \item Very old Dialectica category stuff
-  \end{itemize}
-}
+%\todo{Past work:
+%  \begin{itemize}
+%  \item The Haskell lens people: edwardk, shachaf (Shachaf Ben-Kiki), xplat, roconnor... (TODO: find out who these people are)
+%  \item The Doubles paper
+%  \item Bartosz's blog post which was written about the same time I started this. (Only tensor-like optics, no discussion of laws, confusion about enrichment(?))
+%  \item The profunctor optics paper out of Oxford. (No generality, nothing categorical, no discussion of laws)
+%  \item Very old Dialectica category stuff
+%  \end{itemize}
+%}
 
-\todo{Contributions:
-  \begin{itemize}
-  \item A definition of optics general enough to encompass lenses, setters, traversals, and others?
-  \item A definition of lawful optic that specialises in the correct way and allows us to easily derive ad-hoc laws for new kids of optic
-  \item A universal property satisfied by the category of optics in the monoidal case
-  \item A satisfying categorical description of lens laws
-  \item An attempt to isolate exactly what $\Set$-like properties are being used in various places
-  \item New avenues for generalising optics
-  \end{itemize}
-}
-
-A lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$ that typically obeys three laws (whose names are in diagrammatic order):
+In their most concrete form, a lens from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$. Typically we want our lenses to obey the following laws (whose names should be considered in diagrammatic order): 
 \begin{itemize}
 \item ``$\fput\fget$'': $\fget \; \fput = \pi_2$ as maps $S \times A \to A$, so that any update to $A$ should be represented faithfully in $S$;
 \item ``$\fget\fput$'': $\fput [\id_S, \fget] = \id_S$ as maps $S \to S$, so that if $A$ is not changed then $S$ should not change; and,
 \item ``$\fput\fput$'': $\fput (\fput \times A) = \fput \, \pi_{1, 3}$ as maps $S \times A \times A \to S$, so any update to $A$ completely overwrites previous updates.
 \end{itemize}
+In some of the literature, lenses obeying these conditions are called \emph{very well-behaved}. Since this is the only set of conditions we are interested in, we will call such lenses \emph{lawful}.
 
-\todo{talk about ``constant complement'' idea}
+Lenses were discovered to be just one of a heirarchy of data accessors, including prisms, setters, traversals, and more. Each has a concrete description as a collection of certain maps, with attendant laws that make them well behaved. These are all implemented in the Haskell \lenslib{} library: see \cite{LensLibrary}.
 
-\todo{
-  \subsection{(Co)ends and (Co)Yoneda}
+\todo{Contributions:
+  \begin{itemize}
+  \item A definition of optics general enough to encompass lenses, setters, traversals, and others
+  \item A definition of lawfulness that specialises in the correct way in all examples and allows us to easily derive ad-hoc laws for new kids of optic
+  \item A universal property satisfied by the category of optics in the monoidal case
+  \item A satisfying categorical description of lens laws as the homomorphism condition on a morphism between certain comonoids
+  \item An attempt to isolate exactly what $\Set$-like properties are being used in various places
+  \item New avenues for generalising optics
+  \end{itemize}
 }
-If $\E$ is cocomplete, there is a formula for the coend as the coequaliser in the diagram
+
+\subsection{(Co)ends and (Co)Yoneda}
+
+In this paper we will make frequent use of the (co)end calculus. For a comprehensive introduction to ends and coends, see~\cite{CoendCofriend}. The most important results for us are:
+
+\begin{lemma}\label{lemma:calculate-coend}
+If $\E$ is cocomplete, the coend of $P : \M^\op \times \M \to \E$ can be calculated as the coequaliser in the diagram
 \[
   \begin{tikzcd}
-    \coprod_{M \to N} P(N, M) \ar[r,shift left=.75ex]  \ar[r,shift right=.75ex] & \coprod_{M \in \M} P(M, M) \ar[r] & \int^{M \in \M} P(M, M)
+    \displaystyle \coprod_{M \to N} P(N, M) \ar[r,shift left=.75ex]  \ar[r,shift right=.75ex] & \displaystyle\coprod_{M \in \M} P(M, M) \ar[r] & \displaystyle\int^{M \in \M} P(M, M)
   \end{tikzcd}
 \]
-where $P$ is a functor $\M^\op \times \M \to \E$.
+\qed
+\end{lemma}
+
+\begin{lemma}[Ninja Yoneda Lemma/Yoneda Reduction]
+For every functor $K : \C^\op \to \Set$ and $H : \C \to \Set$, we have the following natural isomorphisms:
+\begin{align*}
+K &\cong \int^c Kc \times \C(-,c) &
+K &\cong \int_c (Kc)^{\C(c,-)} \\
+H &\cong \int^c Hc \times \C(c,-)  &
+H &\cong \int_c (Hc)^{\C(-,c)}
+\end{align*}
+where the components of the isomorphisms at $X$ on the left are given by inclusion with the identity morphism $\C(X, X)$, and on the right projection onto the identity morphism.
+\qed
+\end{lemma}
+
+\begin{theorem}[Fubini Theorem]
+For a functor $F : \C^\op \times \C \times \D^\op \times \D \to \E$, there are canonical isomorphisms
+\begin{align*}
+\int^c \int^d F(c, c, d, d) \cong \int^{(c, d)} F(c, c, d, d) \cong \int^d \int^c F(c, c, d, d)
+\end{align*}
+\end{theorem}
+
+\todo{more?}
 
 \section{Optics}
 \label{sec-optics}
 
-We begin by constructing the category of optics in a symmetric monoidal category $\C$. This category was first defined in \cite[Section 6]{Doubles} to investigate the relationship between Tambara modules and the center of a monoidal category. There it is called the \emph{double} of a monoidal category, and our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses and restricting our attention to the unenriched case.
+We begin by defining the category of optics in a symmetric monoidal category $\C$. This category was first defined in \cite[Section 6]{Doubles} as the `double' of a monoidal category. There it was used for an entirely different purpose---to investigate the relationship between Tambara modules and the `center' of a monoidal category. Our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses, and restricting our attention to the unenriched setting.
+
+This section contains no discussion of laws. The optic category is  generalising the pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$, with no additional conditions imposed.
 
 \begin{remark}
-  In what follows, we use the standard cheat of omitting associativity isomorphisms.
+  To avoid getting lost in the notation we will use the standard cheat of omitting associativity morphisms and trust that the dedicated reader could insert them everywhere they are needed.
 \end{remark}
 
 \begin{definition}
@@ -226,13 +253,13 @@ We begin by constructing the category of optics in a symmetric monoidal category
   \end{align*}
 \end{definition}
 
-Because this coend takes place in $\Set$, we can describe the set $\Optic_\C((S, S'), (A, A'))$ explicitly. It is the set of pairs $(l, r)$, where $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, quotiented by the relation
+Because this coend takes place in $\Set$, we can use Lemma \ref{lemma:calculate-coend} to describe the set $\Optic_\C((S, S'), (A, A'))$ explicitly. It is the set of pairs $(l, r)$, where $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, quotiented by the relation
 \begin{align*}
   ((f \otimes A) l, r) \sim (l, r (f \otimes A'))
 \end{align*}
-where $l : S \to M \otimes A$, $r : N \otimes A' \to S'$ and $f : M \to N$.
+for any $l : S \to M \otimes A$, $r : N \otimes A' \to S'$ and $f : M \to N$.
 
-If $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, we write $\rep{l}{r} : (S, S') \hto (A, A')$ for the image of this pair in $\Optic_\C((S, S'), (A, A'))$, and say that $M$ is the complement for the representative. Optics will always be written with a crossed arrow $\hto$, to distinguish them from morphisms of $\C$.
+For a pair of maps $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, we write $\rep{l}{r} : (S, S') \hto (A, A')$ for their image in $\Optic_\C((S, S'), (A, A'))$, and say that $M$ is the complement for this representative. Optics will always be written with a crossed arrow $\hto$, to distinguish them from morphisms of $\C$.
 
 \begin{example}
   For any three objects $M, A, A' \in \C$, there is the \emph{tautological} optic \[t_{M,A} : (M \otimes A, M \otimes A') \hto (A, A')\] which is given by $\rep{\id_{M \otimes A}}{\id_{M \otimes A}}$.
@@ -259,7 +286,7 @@ Two optics can be composed as follows: \todo{I give possibly too much detail her
   &\left(\int^{M \in \C} \C(S, M \otimes A) \times \C(M \otimes A', S')\right) \times \left(\int^{M \in \C} \C(R, M \otimes S) \times \C(M \otimes S', R')\right) \\ &
                                                                                                                                                                        \quad \to \int^{M \in \C} \C(R, M \otimes A) \times \C(M \otimes A', R').
 \end{align*}
-The product in $\Set$ preserves colimits, so in particular coends. Using this fact, and the Fubini theorem for coends~\cite[Remark 1.9]{CoendCofriend}, the domain is isomorphic to
+The product in $\Set$ preserves colimits, so in particular coends. Using this fact and the Fubini theorem for coends, the domain is isomorphic to
 \begin{align*}
   \int^{(M, N) \in \C \times \C} \C(S, M \otimes A) \times \C(M \otimes A', S') \times \C(R, N \otimes S) \times \C(N \otimes S', R').
 \end{align*}
@@ -330,9 +357,7 @@ This dashed line above the diagram represents the unit object. It is common in s
 \end{proof}
 
 \begin{remark}
-  Note that the homsets of $\Optic_\C$ are given by a coend indexed by a possibly large category, so their existence is not guaranteed by the cocompleteness of $\Set$. We should be careful to only discuss $\Optic$ categories where we know that the coends exist by some other means, e.g., by exhibiting an isomorphism with some other set. For many---but not all---of the examples given later, we provide such an isomorphism.
-
-  \todo{How does the doubles paper get away with it?}
+  Note that the hom-sets of $\Optic_\C$ are given by a coend indexed by a possibly large category, so their existence is not guaranteed by the cocompleteness of $\Set$. We should be careful to only discuss $\Optic$ categories where we know that the coends exist by some other means, e.g., by exhibiting an isomorphism with some other set. For all of the examples given later, we provide such an isomorphism.
 \end{remark}
 
 The remainder of this section comprises some useful observations that were not made in~\cite{Doubles}.
@@ -900,10 +925,10 @@ $\Optic : \SymmMonCat \to \Tele$ is left biadjoint to the underlying dualisable 
 
 \subsection{Optics for a Monoidal Action}
 
-To capture the \texttt{Iso}s, \texttt{Traversal}s and \texttt{Setter}s of the Haskell \lenslib{} library (see~\ref{lawful-examples}), we generalise to the case of a monoidal action of one category on another.
+To capture more of the optic variants available in the Haskell \lenslib{} library, we generalise to the case of a monoidal action of one category on another.
 
 \begin{definition}
-  Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category. An \emph{action of $\M$ on $\C$} is a strong monoidal functor $a : \M \to [\C, \C]$. The action of an object $M \in \M$ on $A \in \C$ is written $MA$.
+  Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category. An \emph{action of $\M$ on $\C$} is a monoidal functor $a : \M \to [\C, \C]$. The action of an object $M \in \M$ on $A \in \C$ is written $MA$.
 \end{definition}
 
 Given such an action, we define

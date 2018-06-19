@@ -1,0 +1,28 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node[vert] (l) at (0, 0) {$Fl$};
+\node[vert] (r) at (0, -2) {$Fr^*$};
+\node[vert] (fd) at (1, -2.5) {$Ff^*$};
+
+\node (S) [left = 1.5 of l]{$FS$};
+\node (S') [left = 1.5 of r]{$FS'^*$};
+
+\node (A) [right =3 of l]{$FA$};
+\node (A') [right = 3 of r]{$FA'^*$};
+
+
+\draw[->] (S) -- (l);
+\draw[->] (l) -- (A);
+\draw[<-] (S') -- (r);
+\draw[<-] (r) -- (A');
+
+\draw[->, ->-=0.6] (l) 
+to[out=north east, in=west] ($(l) + (1,0.5)$)
+to[out=east, in=west] ($(l) + (2,-0.5)$)
+to[out=east, in=east] ($(fd) + (1,1)$)
+to[out=west, in=east] (fd);
+\draw[->] (fd)
+to[out=west, in=south east] (r);
+\end{scope}
+\end{tikzpicture}

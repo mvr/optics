@@ -32,6 +32,8 @@ tags
 *.ps
 # *.eps
 *.pdf
+/_minted-paper/
+/auto/
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl

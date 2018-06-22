@@ -65,7 +65,7 @@ fromDirect (Direct l r) = (copoint . l, r . l)
 -- (copoint . (\s -> (g s, f s)), g)
 -- (f, g)
 
-rt (Direct l r) = Direct (\s -> (s, copoint (l s))) fst
+rt (Direct l r) = Direct ((\p -> (p, copoint p)) . l) (r . fst)
 
 to :: (s -> a) -> (forall p. StrongCopointed p => p a a -> p s s)
 to l = dimap diag fst . encopointen . lmap l

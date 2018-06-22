@@ -118,6 +118,7 @@
 \newcommand{\fput}{\textsc{Put}}
 \newcommand{\fmodify}{\textsc{Modify}}
 \newcommand{\freview}{\textsc{Review}}
+\newcommand{\fcreate}{\textsc{Create}}
 \newcommand{\fmatching}{\textsc{Matching}}
 \newcommand{\funzip}{\textsc{Unzip}}
 \newcommand{\fover}{\textsc{Over}}
@@ -665,8 +666,8 @@ Or, again omitting the unitors:
 \todo{Haven't actually checked natural transformations}
 \todo{Also we run into the large coend issue again, it's not defined on every symm mon cat.}
 
-\subsection{Teleological Categories}
-\label{teleological-categories}
+\subsection{Teleological Categories}\label{sec:teleological-categories}
+\todo{I think there are strictness issues in this section, but the idea is correct}
 
 In this section we establish a universal property of the $\Optic$ construction. The idea is that every optic $\rep{l}{r} : (S, S') \hto (A, A')$ consists of a morphism $S \to M \otimes A$ and the `formal dual' of a morphism $M \otimes A' \to S'$, composed with a `formal counit' that traces out the object $M$:
 \begin{center}
@@ -711,12 +712,10 @@ The universal property for $\Optic_\otimes$ given in this section is an argument
   Just as in the unswitched case, if $\C$ is a strict monoidal category than so is $(\Optic_\otimes, \switched, (I, I))$.
 \end{remark}
 
-
-
 \begin{definition}[Compare {\cite[Definition 5.1]{CoherenceForLenses}}]
   A \emph{teleological category is} a symmetric monoidal category $(\C, \otimes, I)$, equipped with:
   \begin{itemize}
-  \item A wide symmetric monoidal subcategory $\C_d$ of \emph{dualisable morphisms}, with an involutive strong symmetric monoidal functor ${(-)}^* : \C_d \to \overline{\C_d^\op}$, where---not finding a standard symbol for such a thing---we mean $\overline{\C_d^\op}$ to be the category with both the direction of the arrows \emph{and} the order of the tensor flipped: ${(A \otimes B)}^* = B^* \otimes A^*$. \todo{Do we want this to be strict?}
+  \item A symmetric monoidal subcategory $\C_d$ of \emph{dualisable morphisms} containing all the objects of $\C$, with an involutive symmetric monoidal functor ${(-)}^* : \C_d \to \overline{\C_d^\op}$, where---not finding a standard symbol for such a thing---we mean $\overline{\C_d^\op}$ to be the category with both the direction of the arrows \emph{and} the order of the tensor flipped: ${(A \otimes B)}^* \cong B^* \otimes A^*$. Note that there is therefore a canonical isomorphism $\phi : I \cong I^*$
   \item A symmetric monoidal extranatural family of morphisms $\varepsilon_X : X \otimes X^* \to I$, called \emph{counits}, natural with respect to the morphisms in $\C_d$.
   \end{itemize}
 \end{definition}
@@ -729,9 +728,14 @@ Unpacking the definition, $\varepsilon$ being a symmetric monoidal extranatural 
   \begin{tikzcd}
     X^* \otimes X \ar[r, "\sigma"]  \ar[dr, "\varepsilon_{X^*}", swap] & X \otimes X^* \ar[d, "\varepsilon_X"] \\
     & I
-  \end{tikzcd} \hspace{1cm}
+  \end{tikzcd}\]
+\[
   \begin{tikzcd}
     X \otimes Y \otimes Y^* \otimes X^* \ar[r, "X \otimes \varepsilon_Y \otimes X^*"]  \ar[dr, "\varepsilon_{X \otimes Y}", swap] & X \otimes X^* \ar[d, "\varepsilon_X"] \\
+    & I
+  \end{tikzcd} \hspace{1cm}
+  \begin{tikzcd}
+    I \otimes I^* \ar[r,"I \otimes \phi"] \ar[dr, swap, "\varepsilon_I"] & I \ar[d, equal] \\
     & I
   \end{tikzcd}
 \]
@@ -777,15 +781,36 @@ Note that because $\C_d$ is symmetric monoidal and has the same collection of ob
   Any compact closed category is a teleological category, where every morphism is dualisable and the unit morphisms have been forgotten.
 \end{example}
 
-\begin{example}
-  \todo{The funny graph example from the coherence paper?}
-\end{example}
+%\begin{example}
+%  \todo{The funny graph example from the coherence paper?}
+%\end{example}
+
+%There are few surprises in the following definitions.
 
 \begin{definition}
-  A \emph{teleological functor} $F : \C \to \D$ is a symmetric monoidal functor that restricts to a functor $F_d : \C_d \to \D_d$ on the dualisable subcategories, and such that $F(\varepsilon_X) = \varepsilon_{FX}$ \todo{up to the structure isomorphisms of $F$}
-\end{definition}
+  A \emph{teleological functor} $F : \C \to \D$ is a symmetric monoidal functor that restricts to a functor $F_d : \C_d \to \D_d$ on the dualisable subcategories, commutes with the duality and such that the counits are preserved:
+  \[
+   \begin{tikzcd}
+    F(X \otimes X^*) \ar[r, "\cong"]  \ar[d, "F\varepsilon_X", swap] & FX \otimes FX^* \ar[d, "\varepsilon_{FX}"] \\
+    FI \ar[r, "\cong", swap] & I
+  \end{tikzcd}
+  \]
+\end{definition} 
+
+%\begin{definition}
+%  A \emph{teleological natural transformation} $\alpha : F \Rightarrow G$ is a monoidal natural transformation that is additionally compatible with the dualisation:
+%  \[
+%  \begin{tikzcd}
+%    (FX)^* \ar[r, "\cong"]  \ar[d, "(\alpha_X)^*", swap] & F(X^*) \ar[d, "\alpha_{X^*}"] \\
+%    (GX)^* \ar[r, "\cong", swap] & G(X^*)
+%  \end{tikzcd}
+%  \]
+%  whenever $\alpha_X$ is dualisable. \todo{Does adding this condition make sense?}
+%\end{definition}
 
 Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological categories and teleological functors. There are evident functors $U : \Tele \to \SymmMonCat$ and ${(-)}_d : \Tele \to \SymmMonCat$, that take a teleological category to its underlying symmetric monoidal category and subcategory of dualisable morphisms respectively.
+
+The definition of teleological category suggests a string diagram calculus similar to that for compact closed categories, but where only counits exist, and only morphisms known to be dualisable may be passed around a counit by extranaturality. We have of course not proven that such a calculus is sound for teleological categories, but we trust that a sceptical reader could verify our arguments equationally.
 
 \begin{proposition}
   $\Optic_\otimes$ forms a teleological category, where:
@@ -852,7 +877,7 @@ Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological
     &= \varepsilon_{(FS, FS')}
   \end{align*}
 
-  \todo{This works fine when $\C$ is not strict}
+%  \todo{This works fine when $\C$ is not strict}
 \end{proof}
 
       %       \begin{proposition}
@@ -901,14 +926,14 @@ The symmetries in the above expression could have been avoided if $\Optic$ had b
 
 \begin{theorem}
   \label{optic-is-free-teleological-cat}
-  Suppose $\C$ is a strict symmetric monoidal category and $\T$ is a teleological category. For all symmetric monoidal functors $F : \C \to \T_d$, there exists a teleological functor $K : \Optic_\otimes \to \T$, unique up to isomorphism, such that $Kj \cong F$.
+  Suppose $\C$ is a strict symmetric monoidal category and $\T$ is a teleological category. For all symmetric monoidal functors $F : \C \to \T_d$, there exists a teleological functor $K : \Optic_\otimes \to \T$, unique up to teleological natural isomorphism with the property $Kj \cong F$.
 \end{theorem}
 \begin{proof}
-  We begin by constructing $K$. On objects, define $K(S, S') = FS \otimes (FS')^*$. Suppose $\rep{l}{r} : (S, S') \hto (A, A')$ is an optic. By the previous Proposition,
+  We begin by constructing $K$. Note that any $(S, S')$ in $\Optic_\otimes$ can be written as $j(S) \switched j(S')^*$, so on objects define $K(S, S') = FS \otimes (FS')^*$. Suppose $\rep{l}{r} : (S, S') \hto (A, A')$ is an optic. By the previous Proposition,
   \begin{align*}
-    \rep{l}{r} = ((A, I) \switched \varepsilon_{(M, I)} \switched (I, A'))(j(s_{M,A}l) \switched j(rs_{M,A'})^*)
+    \rep{l}{r} = ((A, I) \switched \varepsilon_{(M, I)} \switched (I, A'))(j(s_{M,A}l) \switched j(rs_{A', M})^*)
   \end{align*}
-  Which suggests defining
+  So up to isomorphism we are forced to define
   \begin{align*}
     K\rep{l}{r} = (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F(s_{M,A}l) \otimes (F(rs_{A', M}))^* )
   \end{align*}
@@ -917,18 +942,6 @@ The symmetries in the above expression could have been avoided if $\Optic$ had b
     \input{diagrams/k-generic-optic.tikz}
   \end{center}
   
-  We must show that this is well defined. Suppose we have two optics related by the coend relation:
-  \begin{align*}
-    \rep{(f \otimes A) l}{r} = \rep{l}{r (f \otimes A')}
-  \end{align*}
-  Then well definedness is shown by the equivalence of the diagrams
-  \begin{center}
-    \input{diagrams/k-well-defined-left.tikz}
-    \qquad \raisebox{1.5cm}{$=$} \qquad
-    \input{diagrams/k-well-defined-right.tikz}
-  \end{center}
-  using naturality of the symmetry and extranaturality of the counit.
-%\todo{maybe do as string diagram}
 %  \begin{align*}
 %    K\rep{(f \otimes A) l}{r}
 %    &= (FA \otimes \varepsilon_{FM} \otimes (FA')^*)(F(s_{M,A}(f \otimes A)l) \otimes (F(rs_{A',M}))^* ) \\
@@ -940,9 +953,73 @@ The symmetries in the above expression could have been avoided if $\Optic$ had b
 %    &= (FA \otimes \varepsilon_{FN} \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(r(f \otimes A')s_{A',N}))^* ) \\
 %    &= K\rep{ l}{r (f \otimes A')}
 %  \end{align*}
-  \todo{todo: functoriality, monoidality, preserves dualisable morphisms, preserves counit}
-  
-  \todo{uniqueness} 
+
+There are now a lot of things to check. 
+\begin{itemize}
+\item Well-definedness: Suppose we have two optics related by the coend relation:
+  \begin{align*}
+    \rep{(f \otimes A) l}{r} = \rep{l}{r (f \otimes A')}
+  \end{align*}
+  Then well-definedness is shown by the equivalence of diagrams
+  \begin{center}
+    \input{diagrams/k-well-defined-left.tikz}
+    \qquad \raisebox{1.5cm}{$=$} \qquad
+    \input{diagrams/k-well-defined-right.tikz}
+  \end{center}
+  using naturality of the symmetry and extranaturality of the counit.
+\item Functoriality: We have an equivalence of diagrams
+  \begin{center}
+    \input{diagrams/k-functorial-left.tikz}
+    \quad \raisebox{1.5cm}{$=$} \quad
+    \input{diagrams/k-functorial-right.tikz}
+  \end{center}
+using naturality of the symmetry, and monoidality of the counit.
+\item Preservation of duals:
+\begin{align*}
+K((S, S')^*) 
+= K(S', S) 
+= FS' \otimes (FS)^*
+\cong (FS \otimes (FS')^*)^*
+= (K(S, S'))^*
+\end{align*}
+\item Monoidality: We have the isomorphism
+\begin{align*}
+K((S, S') \switched (T, T')) 
+&= K(S \otimes T, T' \otimes S) \\
+&= F(S \otimes T) \otimes F(T' \otimes S')^* \\
+&\cong FS \otimes FT \otimes (FS')^* \otimes (FT')^* \\
+&\cong FS \otimes (FS')^* \otimes FT \otimes (FT')^* \\
+&= K(S, S') \otimes K(T, T')
+\end{align*}
+using the symmetry of $\T$, and
+\begin{align*}
+K(I, I) 
+&= FI \otimes (FI)^* \\
+&\cong I \otimes I^* \\
+&\cong I
+\end{align*}
+That these obey the required coherences is straightforward. More difficult is showing that the first isomorphism is natural in $(S, S')$ and $(T, T')$: \todo{todo}
+\item Preservation of dualisable morphisms:  For a morphism $\iota(f, g)$:
+\begin{align*}
+K(\iota(f, g))
+    &= K(\rep{\lambda_A^{-1} f}{g \lambda_{A'}}) \\
+    &= (FA \otimes \varepsilon_{FI} \otimes (FA')^*)(F(s_{I,A}\lambda_A^{-1} f) \otimes (F(g \lambda_{A'}s_{A', I}))^* ) \\
+    &= (FA \otimes (FA')^*)(Ff \otimes (Fg)^* ) \\
+    &= Ff \otimes (Fg)^*
+\end{align*}
+and this is dualisable, as dualisability is preserved by taking the monoidal product and duals.
+\item Preservation of counits: 
+\begin{align*}
+K(\varepsilon_{(S, S')}) 
+&= K(c_{S \otimes S'}) \\
+&= K(\rep{\rho_{S \otimes S'}^{-1}}{\rho_{S \otimes S'}}) \\
+&= (FI \otimes \varepsilon_{F(S \otimes S')} \otimes (FI)^*)(F(s_{S \otimes S',I}\rho_{S \otimes S'}^{-1}) \otimes (F(\rho_{S \otimes S'} s_{I, S \otimes S'}))^* ) \\
+&= (\varepsilon_{F(S \otimes S')})(F(S \otimes S') \otimes F(S \otimes S')^* ) \\
+&= \varepsilon_{F(S \otimes S')}
+\end{align*}
+by strictness of the monoidal unit.
+\todo{Show this is actually the morphism we want}
+\end{itemize}
 \end{proof}
 
 \begin{theorem}
@@ -957,12 +1034,12 @@ $\Optic : \SymmMonCat \to \Tele$ is left biadjoint to the underlying dualisable 
 To capture more of the optic variants available in the Haskell \lenslib{} library, we generalise to the case of a monoidal action of one category on another.
 
 \begin{definition}
-  Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category. An \emph{action of $\M$ on $\C$} is a monoidal functor $a : \M \to [\C, \C]$. For two objects $M \in \M$ and $A \in \C$, the action $a(M)(A)$ is abbreviated $MA$.
+  Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category. An \emph{action of $\M$ on $\C$} is a monoidal functor $a : \M \to [\C, \C]$. For two objects $M \in \M$ and $A \in \C$, the action $a(M)(A)$ is abbreviated $MA$. The tensor product in $\M$ will also be written as juxtaposition, so $(NM)A \cong N(MA)$.
 \end{definition}
 
 Given such an action, we define
 \begin{align*}
-  \Optic_\M((S, S'), (A, A')) := \int^{M \in \C} \C(S, MA) \times \C(MA', S')
+  \Optic_\M((S, S'), (A, A')) := \int^{M \in \M} \C(S, MA) \times \C(MA', S')
 \end{align*}
 
 The following are analogous to Propositions~\ref{prop-optic-is-cat} and \ref{prop-change-of-action-monoidal}.
@@ -1106,8 +1183,8 @@ Finally, we will later see an interpretation of optics as morphisms between cert
 \begin{proof}
   If $p = \rep{l}{r}$ is lawful, then verifying the first equation is easy:
   \begin{align*}
-  \once(\Optic(F)(\rep{l}{r})) 
-  &= \once(\rep{(Fl);\phi^{-1}_{M,A} }{\phi_{M,A'};(Fr) }) \\
+  \outside(\Optic(F)(\rep{l}{r})) 
+  &= \outside(\rep{(Fl);\phi^{-1}_{M,A} }{\phi_{M,A'};(Fr) }) \\
   &= (Fl);\phi^{-1}_{M,A};\phi_{M,A'};(Fr)\\
   &= (Fl);(Fr)\\
   &= \id_{FS}
@@ -1202,7 +1279,7 @@ The general pattern is as follows. Once we choose a particular monoidal action $
 
 Ideally, we then also find a simplified description $\conctwice(S, A)$ for the set \[ \int^{M_1, M_2 \in \M} \C(S, M_1 A) \times \C(M_1 A, M_2 A) \times \C(M_2 A, S)\] appearing in the definition of a lawful optic. We can then ``read off'' what conditions on are needed on a concrete optic to ensure that the corresponding element of $\Optic_\M(S, A)$ is lawful. We will call these conditions the \emph{concrete} laws.
 
-It is worth emphasising that once a monoidal action has been chosen and a concrete description of the corresponding optics found, no further work is needed to show that the result forms a category of optics, with a subcategory of lawful optics. This is especially useful when devising new optic variants, as we do later.
+It is worth emphasising that once a monoidal action has been chosen and a concrete description of the corresponding optics found, no further work is needed to show that the result forms a category of optics with a subcategory of lawful optics. This is especially useful when devising new optic variants, as we do later.
 
 We begin with the most common kinds of optic before moving to more exotic possibilities.
 
@@ -1337,7 +1414,7 @@ If we ask more of our category $\C$, we can upgrade this result to show that a l
   is a witness that $\rep{\fput (i \times A)}{[j,\fget] } = \rep{\fput}{[\id_S, \fget] }$ as elements of $\Optic_\M(S, A)$.
 \end{proof}
 
-\todo{There may be something generalisable here with ``monoidal factorisation systems''}
+%\todo{There may be something generalisable here with ``monoidal factorisation systems''}
 
 \begin{remark}
 Much of the work on bidirectional transformations \cite{CombinatorsForBidirectionalTreeTransformations} considers lenses that are only `well-behaved', not `very well-behaved': they obey the $\fput\fget$ and $\fget\fput$ laws but not the $\fput\fput$ law.
@@ -1637,11 +1714,11 @@ We then reach the same characterisation of traversals as~\cite{ProfunctorOptics}
 \todo{laws}
 
 \begin{remark}
-\todo{todo?} A careful analysis would be needed to describe traversals in some other category, in particular, the description of $UR^*$ does not make sense if $\C$ is not locally cartesian closed.
+A careful analysis would be needed to describe traversals in some other category, in particular, the description of $UR^*$ does not make sense if $\C$ is not locally cartesian closed.
 \end{remark}
 
 \begin{remark}
-Traversable functors can be described as a particular class of polynomial functors known as finitary containers. There may be something generalisable here with other classes of polynomial functors.
+Traversable functors can be described as a particular class of polynomial functors known as finitary containers. It may be possible to generalise this to other classes of polynomial functors.
 \end{remark}
 
 \subsection{Linear Lenses}\label{sec:linear-lenses}
@@ -1700,75 +1777,6 @@ We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting
   \todo{Fix those overtildes}
   So indeed the optic is lawful iff $\ev_{A, S} \; \funzip = \id_S$ and $(\coev_{\homC(A, S), A} \otimes A)\funzip = ((\funzip \circ -) \otimes A)\funzip$.
 \end{proof}
-
-\subsection{``Achromatic'' Lenses}
-\todo{http://oleg.fi/gists/posts/2018-03-28-achromatic-lens.html}
-
-Suppose $\C$ is cartesian closed and has finite coproducts. Then $\C$ acts on itself via $M \cdot A = (M \sqcup 1) \times A$.
-\begin{align*}
-  \Optic((S, S'), (A, A'))
-  &= \int^{M \in \C} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
-  &= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \sqcup 1) \times A', S') \\
-  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \times A') \sqcup A', S') \\
-  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M \times A', S') \times \C(A', S') \\
-  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M, \homC(A', S')) \times \C(A', S') \\
-  &\cong \C(S, (\homC(A', S') \sqcup 1) \times A) \times \C(A', S') \\
-  &\cong \C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S')
-\end{align*}
-
-\begin{remark}
-  Equivalently, we could let $\M$ be the category of pointed objects of $\C$ and pointed maps between them.
-\end{remark}
-
-\todo{Worth writing out?}
-
-\subsection{Affine Traversals}
-
-A folklore variant of a prism is the \emph{affine traversal}, which allows access to a target that may or may not be present. 
-
-Suppose $\C$ is cartesian closed, and has binary coproducts. Then let $\mathsf{Aff}$ be the category $\C \times \C$, equipped with the monoidal structure
-\begin{align*}
-  (P', Q') \otimes (P, Q) &= (P' \sqcup (Q' \times P) , Q' \times Q)
-\end{align*}
-\todo{check $\mathsf{Aff}$ is actually a monoidal category}
-
-Define a monoidal action $\mathsf{Aff} \to [\C, \C]$ where $(P, Q)$ acts on $A$ by
-\begin{align*}
-  (P, Q) \cdot A = P \sqcup (Q \times A)
-\end{align*}
-so that as expected,
-\begin{align*}
-  (P', Q') \cdot (P, Q) \cdot A
-  &= (P', Q') \cdot  (P \sqcup (Q \times A)) \\
-  &= P' \sqcup (Q' \times (P \sqcup (Q \times A))) \\
-  &\cong P' \sqcup (Q' \times P) \sqcup (Q' \times Q \times A) \\
-  &= (P' \sqcup (Q' \times P) , Q' \times Q) \cdot A \\
-  &= ((P', Q') \otimes (P, Q)) \cdot A
-\end{align*}
-
-\begin{remark}
-  It is important here that the morphisms in $\mathsf{Aff}$ are only those that arise from pairs of morphisms $P \to P'$ and $Q \to Q'$, although in principle there may be other natural transformations between the corresponding functors $(P, Q) \cdot -$ and $(P', Q') \cdot -$.
-\end{remark}
-
-\todo{This feels similar to taking some sort of `compositum' of the two actions $\times$ and $\sqcup$, both embed in this category. Marco suggests taking the pushout of the projections into the pullback, calculated in the 2-cat of monoidal categories.}
-
-Now the set of optics $(S, S') \hto (A, A')$ is:
-\begin{align*}
-  \Optic_{\mathsf{Aff}}((S, S'), (A, A'))
-  &= \int^{M \in \mathsf{Aff}} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
-  &\cong \int^{P,Q \in \C} \C(S, (P,Q) \cdot A) \times \C((P,Q) \cdot A', S') \\
-  &= \int^{P,Q \in \C} \C(S, P \sqcup (Q \times A)) \times \C(P \sqcup (Q \times A'), S') \\
-  &\cong \int^{P,Q \in \C} \C(S, P \sqcup (Q \times A)) \times \C(P,S') \times \C(Q \times A', S') \\
-  &\cong \int^{Q \in \C} \C(S, S' \sqcup (Q \times A)) \times \C(Q \times A', S') \\
-  &\cong \int^{Q \in \C} \C(S, S' \sqcup (Q \times A)) \times \C(Q, \homC(A', S')) \\
-  &\cong \C(S, S' \sqcup (\homC(A', S') \times A))
-\end{align*}
-
-We note that this contradicts the folklore description of affine traversals as pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$, see~\cite{AffineTraversalPost}. That set is in fact ``too large'': the provided map $S \times A' \to S$ must be defined even on elements of $S$ whose image under the first map $S \to A \sqcup S'$ lies in the right-hand component, which is not the case in our description.
-
-\todo{Do laws? For \emph{lawful} affine traversals, there may not be a difference}
-
-\todo{Give an example of two elements of the set that correspond to the same affine traversal}
 
 \subsection{Polymorphic Optics}
 Haskell's optics \todo{find an older reference from DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, the lens into the first entry of a tuple has type
@@ -1847,7 +1855,7 @@ A \otimes X \xrightarrow{A \otimes \underline{f}} A \otimes TY \xrightarrow{\the
 \end{align*}
 Functoriality follows from the requirement that $\theta$ commute with the unit and multiplication of $T$. \todo{Draw this out?}
 
-Our goal is to show that $A \mapsto A \otimes -$ is a monoidal functor $a : \C \to [\C_T, \C_T]$. A morphism $f : A \to B$ in $\C$ induces a natural transformation $A \otimes - \to B \otimes -$ with components $A \otimes X \to T(B \otimes X)$ given by composing $A \otimes X \to B \otimes X$ with the unit of the monad. This transformation is natural by \todo{todo}.
+Our goal is to show that the assignment $A \mapsto A \otimes -$ extends to a monoidal functor $a : \C \to [\C_T, \C_T]$. A morphism $f : A \to B$ in $\C$ induces a natural transformation $A \otimes - \to B \otimes -$ with components $A \otimes X \to T(B \otimes X)$ given by composing $A \otimes X \to B \otimes X$ with the unit of the monad. This transformation is natural by \todo{todo}.
 
 Finally, the functor $a$ is monoidal, with the structure maps given by the associativity and unit maps of $\C$. \todo{this uses that the strength commutes with unitors and associativity}
 \end{proof}
@@ -1857,27 +1865,28 @@ Suppose $\C$ is a monoidal closed category and $T : \C \to \C$ is a strong monad
 \begin{align*}
 \Optic((S, S'), (A, A'))
 &= \int^{M \in \C} \C_T(S, M \monact A) \times \C_T(M \monact A', S') \\
-&= \int^{M \in \C} \C_T(S, M \monact A) \times \C(M \times A', T S') \\
+&= \int^{M \in \C} \C_T(S, M \monact A) \times \C(M \otimes A', T S') \\
 &\cong \int^{M \in \C} \C_T(S, M \monact A) \times \C(M, \homC(A', T S')) \\
 &\cong \C_T(S, \homC(A', T S') \monact A) \\
-&\cong \C(S, T(\homC(A', T S') \times A))
+&\cong \C(S, T(\homC(A', T S') \otimes A))
 \end{align*}
 
-Concrete effectful lenses therefore consist of a single morphism $\munzip : S \to T(\homC(A', T S') \times A)$.
+Concrete effectful lenses therefore consist of a single morphism $\munzip : S \to T(\homC(A', T S') \otimes A)$. The category $\C$ includes into $\C_T$ in a way that preserves the action of $\C$, so there is an induced inclusion $\Optic_\otimes \to \Optic_\monact$.
 
 \begin{proposition}
-\todo{this is sketchy}
 A concrete effectful lens is lawful iff
   \begin{align*}
     \mu_S T(\ev_{A, TS}) \; \munzip &= \eta_S \\
-    T(\coev_{\homC(A, TS), A} \otimes A)\munzip &= T((T\munzip \circ -) \otimes A)\munzip 
+    T(\eta_{\homC(A, TS) \otimes A)}\coev_{\homC(A, TS), A} \otimes A)\munzip &= T((\munzip \circ_T -) \otimes A)\munzip 
   \end{align*}
+  where \[ \munzip \circ_T - : \homC(A, TS) \to \homC(A, T(\homC(A, TS) \otimes A)) \] denotes internal Kleisli composition and \[\coev_{\homC(A, TS), A} : \homC(A, TS) \to \homC(A, \homC(A, TS) \otimes A) \] is coevaluation.
 \end{proposition}
   Or, if you prefer do-notation:
 \begin{minted}{haskell}
 do (c, a) <- munzip s
    c a
-== return s
+== 
+return s
 
 do (c, a) <- munzip s
    let f a' = do
@@ -1902,7 +1911,7 @@ This is exactly analogous to Proposition \ref{prop:concrete-linear-lawful} for l
 %\end{align*}
 \end{proof}
 
-We can say more once we make a specific choice of strong monad.
+If we choose a specific monad, we can hope to simplify the description of concrete effectful lenses and their laws.
 
 %\subsubsection{Partial Lenses}
 %
@@ -1925,7 +1934,7 @@ where $Q$ is the set of states.
 \todo{todo: define its unit, multiplication and strength}
 \end{definition}
 
-We can find a concrete description of optics for the action $\monact : \C \times \C_{T_Q} \to \C_{T_Q}$:
+Working in a cartesian closed category, we can find a concrete description of optics for the action $\monact : \C \times \C_{T_Q} \to \C_{T_Q}$ that is closer to that for ordinary lenses.
 \begin{align*}
 \Optic((S, S'), (A, A'))
 &= \int^{M \in \C} \C_{T_Q}(S, M \monact A) \times \C_{T_Q}(M \monact A', S') \\
@@ -1986,6 +1995,54 @@ Of course, having theoretical justification does not mean that this kind of effe
 \end{remark}
 
 \todo{Try out some examples given in other papers?}
+
+\subsection{Further Examples}
+\todo{I probably don't have the standing to get away with saying} The dedicated reader may enjoy re-deriving the concrete representation and laws for the following optic varieties:
+
+\begin{itemize}
+\item \emph{``Achromatic'' Lenses} \cite[Section 5.2]{ProfunctorOpticsThesis} are lenses that also admit an operation $\fcreate : A \to S$. These are optics for the action of $\C$ on itself by $M \cdot A = (M \sqcup 1) \times A$, or equivalently, of the category of pointed objects of $\C$ on $\C$ by cartesian product. Concrete achromatic lenses $S \hto A$ are elements of the set \[\C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S').\]
+%\begin{align*}
+%  \Optic((S, S'), (A, A'))
+%  &= \int^{M \in \C} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
+%  &= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \sqcup 1) \times A', S') \\
+%  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \times A') \sqcup A', S') \\
+%  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M \times A', S') \times \C(A', S') \\
+%  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M, \homC(A', S')) \times \C(A', S') \\
+%  &\cong \C(S, (\homC(A', S') \sqcup 1) \times A) \times \C(A', S') \\
+%  &\cong \C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S')
+%\end{align*}
+\item \emph{Affine Traversals} \cite{AffineTraversalPost} allow access to a target that may or may not be present. Suppose $\C$ is cartesian closed and has binary coproducts. Let $\mathsf{Aff}$ be the category $\C \times \C$, equipped with the monoidal structure
+\begin{align*}
+  (P', Q') \otimes (P, Q) &= (P' \sqcup (Q' \times P) , Q' \times Q)
+\end{align*}
+The category $\mathsf{Aff}$ acts on $\C$ by $(P, Q) \cdot A = P \sqcup (Q \times A)$. A concrete representation of the optics for this action is \[\C(S, S' \sqcup (\homC(A', S') \times A)).\]
+
+Affine traversals are described in the folklore as pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. Such a pair does determine an affine traversal, but in fact gives more information than is necessary: the right-hand map need not be defined at all $S$.
+
+%\begin{align*}
+%  (P', Q') \cdot (P, Q) \cdot A
+%  &= (P', Q') \cdot  (P \sqcup (Q \times A)) \\
+%  &= P' \sqcup (Q' \times (P \sqcup (Q \times A))) \\
+%  &\cong P' \sqcup (Q' \times P) \sqcup (Q' \times Q \times A) \\
+%  &= (P' \sqcup (Q' \times P) , Q' \times Q) \cdot A \\
+%  &= ((P', Q') \otimes (P, Q)) \cdot A
+%\end{align*}
+%\begin{remark}
+%  It is important here that the morphisms in $\mathsf{Aff}$ are only those that arise from pairs of morphisms $P \to P'$ and $Q \to Q'$, although in principle there may be other natural transformations between the corresponding functors $(P, Q) \cdot -$ and $(P', Q') \cdot -$.
+%\end{remark}
+%\todo{This feels similar to taking some sort of `compositum' of the two actions $\times$ and $\sqcup$, both embed in this category. Marco suggests taking the pushout of the projections into the pullback, calculated in the 2-cat of monoidal categories.}
+%Now the set of optics $(S, S') \hto (A, A')$ is:
+%\begin{align*}
+%  \Optic_{\mathsf{Aff}}((S, S'), (A, A'))
+%  &= \int^{M \in \mathsf{Aff}} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
+%  &\cong \int^{P,Q \in \C} \C(S, (P,Q) \cdot A) \times \C((P,Q) \cdot A', S') \\
+%  &= \int^{P,Q \in \C} \C(S, P \sqcup (Q \times A)) \times \C(P \sqcup (Q \times A'), S') \\
+%  &\cong \int^{P,Q \in \C} \C(S, P \sqcup (Q \times A)) \times \C(P,S') \times \C(Q \times A', S') \\
+%  &\cong \int^{Q \in \C} \C(S, S' \sqcup (Q \times A)) \times \C(Q \times A', S') \\
+%  &\cong \int^{Q \in \C} \C(S, S' \sqcup (Q \times A)) \times \C(Q, \homC(A', S')) \\
+%  &\cong \C(S, S' \sqcup (\homC(A', S') \times A))
+%\end{align*}
+\end{itemize}
 
 \subsection{Degenerate Optics}
 \todo{This doesn't work yet:}
@@ -2149,10 +2206,10 @@ Let $I = \C(-,{=}) : \C \hto \C$ be the identity profunctor and $\odot$ be profu
   \begin{align*}
     \alpha_{A,B,M} : P(A,B) \to P(MA, MB)
   \end{align*}
-  natural in $A$ and $B$, and dinatural in $M$. Further, we must have that $\alpha_{A,B,I} = \id_{P(A,B)}$, and that the following diagram commutes:
+  natural in $A$ and $B$, and dinatural in $M$, and such that $\alpha_{A,B,I} = \id_{P(A,B)}$, and $\alpha$ commutes with the tensor of $\M$:
   \[
     \begin{tikzcd}
-      P(A,B) \ar[r, "\alpha_{A,B,M}"] \ar[dr, "\alpha_{A, B, N \otimes M}" below left] & P(MA, MB) \ar[d, "\alpha_{MA, MB, N}" right] \\
+      P(A,B) \ar[r, "\alpha_{A,B,M}"] \ar[dr, "\alpha_{A, B, NM}" below left] & P(MA, MB) \ar[d, "\alpha_{MA, MB, N}" right] \\
       & P(NMA, NMB)
     \end{tikzcd}
   \]
@@ -2205,7 +2262,7 @@ There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is 
     \xrightarrow{\copr_{MN}} \quad&\int^{N \in \M} \int^{C,D \in \C} \C(MA, NC) \times P(C,D) \times  \C(ND, MB) \\
     = \quad&\Pastro_\M P (MA, MB)
   \end{align*}
-  for all $C, D \in \C$ and $N \in \M$. Equationally, this is $\alpha_{A,B,M}(\repthree{l}{p}{r} ) = \rep{Ml}{p}{Mr} $.
+  for all $C, D \in \C$ and $N \in \M$. Equationally, this is $\alpha_{A,B,M}(\repthree{l}{p}{r} ) = \repthree{Ml}{p}{Mr} $.
 \end{definition}
 
 \begin{proposition}
@@ -2214,7 +2271,7 @@ There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is 
 \begin{proof}
   For any $P \in \Prof(\C, \C)$, there is a map $\eta : P \hto U \Phi_\M P$, given by $\eta(p) = \repthree{\id_A}{p}{\id_B }$.
 
-  Suppose we have an element $\rep{l}{p}{r} \in \Pastro_\M P(A,B)$. Then one can check that this element is equal to
+  Suppose we have an element $\repthree{l}{p}{r} \in \Pastro_\M P(A,B)$. Then one can check that this element is equal to
   \begin{align*}
     \repthree{l}{p}{r } = \Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)
   \end{align*}
@@ -2224,17 +2281,17 @@ There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is 
 
   The data of such a map $\hat f : \Phi_\M P \hto T$ is a natural transformation between the underlying profunctors. For the factorisation property to hold, we must have that $\hat{f}\eta(p) = f(p)$ for any $p \in P(A,B)$, but then the action on the remainder of $\Phi_\M P(A, B)$ is fixed:
   \begin{align*}
-    \hat{f}(\rep{l}{p}{r }) &= \hat{f}(\Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)) \\
+    \hat{f}(\repthree{l}{p}{r}) &= \hat{f}(\Pastro_\M P(l, r) \alpha_{A, B, M} \; \eta(p)) \\
                                      &=T(l, r) \; \beta_{A, B, N} \; f(p)
   \end{align*}
   This establishes uniqueness. It remains to show that $\hat{f}$ so defined is actually a Tambara module morphism, but this is easy:
   \begin{align*}
-    \hat{f}\alpha_{A,B,N}(\rep{l}{p}{r })
-    &= \hat{f}(\rep{Nl}{p}{Nr }) \\
-    &= T(Nl, Nr) \; \beta_{A, B, NM} \; f(p) \\
-    &= T(Nl, Nr) \beta_{MA,MB,N} \; \beta_{A, B, M} \; f(p) \\
-    &= \beta_{A,B,N} T(l, r) \; \beta_{A, B, M} \; f(p) \\
-    &= \beta_{A,B,N} \hat{f} (\rep{l}{p}{r })
+    \hat{f}\alpha_{A,B,N}(\repthree{l}{p}{r })
+    &= \hat{f}(\repthree{Nl}{p}{Nr }) && \text{(definition of $\alpha$)}\\
+    &= T(Nl, Nr) \; \beta_{A, B, NM} \; f(p) && \text{(definition of $\hat{f}$)}\\
+    &= T(Nl, Nr) \beta_{MA,MB,N} \; \beta_{A, B, M} \; f(p) && \text{($\beta$ commutes with tensor in $\M$)} \\
+    &= \beta_{A,B,N} T(l, r) \; \beta_{A, B, M} \; f(p) && \text{(naturality of $\beta$)} \\
+    &= \beta_{A,B,N} \hat{f} (\repthree{l}{p}{r}) && \text{(definition of $\hat{f}$)}
   \end{align*}
 \end{proof}
 
@@ -2246,7 +2303,7 @@ There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is 
 \end{proof}
 
 \begin{remark}
-  The right adjoint to $U$ is described in \cite{NotionsOfComputationAsMonoids}, and was used to investigate Haskell's \mintinline{haskell}{Arrow} typeclass.
+  The right adjoint to $U$ is described in \cite{NotionsOfComputationAsMonoids} to investigate Haskell's \mintinline{haskell}{Arrow} typeclass.
 \end{remark}
 
 \subsection{Optics}

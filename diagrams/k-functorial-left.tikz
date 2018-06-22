@@ -1,0 +1,37 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node[vert] (l) at (0, 0) {$Fl_1$};
+\node[vert] (r) at (0, -2) {$Fr_1^*$};
+
+\node (S) [left = 1.2 of l]{$FS$};
+\node (S') [left = 1.2 of r]{$FS'^*$};
+
+\node[vert] (l') [right = 2.2 of l] {$Fl_2$};
+\node[vert] (r') [right = 2.2 of r] {$Fr_2^*$};
+
+\node (A) [right = 2 of l']{$FA$};
+\node (A') [right = 2 of r']{$FA'^*$};
+
+\draw[->] (S) -- (l);
+\draw[->] (l) -- (l');
+\draw[->] (l') -- (A);
+\draw[<-] (S') -- (r);
+\draw[<-] (r) -- (r');
+\draw[<-] (r') -- (A');
+
+\draw[->-=0.5, ->] (l) 
+to[out=north east, in=west] ($(l) + (0.5,0.5)$)
+to[out=east, in=west] ($(l) + (1.5,-0.5)$)
+to[out=east, in=east] ($(r) + (1.5,0.5)$)
+to[out=west, in=east] ($(r) + (0.5,-0.5)$)
+to[out=west, in=south east] (r);
+
+\draw[->-=0.5, ->] (l') 
+to[out=north east, in=west] ($(l') + (0.5,0.5)$)
+to[out=east, in=west] ($(l') + (1.5,-0.5)$)
+to[out=east, in=east] ($(r') + (1.5,0.5)$)
+to[out=west, in=east] ($(r') + (0.5,-0.5)$)
+to[out=west, in=south east] (r');
+\end{scope}
+\end{tikzpicture}

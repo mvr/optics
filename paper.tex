@@ -189,23 +189,23 @@
 %  \end{itemize}
 %}
 
-In their most concrete form, a \emph{lens} from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$. From an engineering standpoint, such a lens allows us to ``zoom in'' to a small part $A$ of a larger $S$, manipulate it in some way, then ``zoom back out'' and have our changes in $A$ represented in $S$. 
+In its most concrete form, a \emph{lens} from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$. From a software engineering standpoint, such a lens allows us to ``zoom in'' on $S$ to focus on a small part $A$, manipulate $A$ in some way, then ``zoom out'' and have our changes reflected $S$. 
 
-Typically we want our lenses to obey the following laws (that are named in view of composition in diagrammatic order!): 
+We consider a lens well-behaved if it obeys the following laws: 
 \begin{itemize}
 \item ``$\fput\fget$'': $\fget \; \fput = \pi_2$ as maps $S \times A \to A$, so that any update to $A$ should be represented faithfully in $S$;
 \item ``$\fget\fput$'': $\fput [\id_S, \fget] = \id_S$ as maps $S \to S$, so that if $A$ is not changed then $S$ should not change; and,
 \item ``$\fput\fput$'': $\fput (\fput \times A) = \fput \, \pi_{1, 3}$ as maps $S \times A \times A \to S$, so any update to $A$ completely overwrites previous updates.
 \end{itemize}
-In some of the literature, lenses obeying these conditions are called \emph{very well-behaved}. Since this is the only set of conditions we are interested in, we will call such lenses \emph{lawful}.
+We will call such lenses \emph{lawful}. (The names of the laws make more sense when the equations are written with composition in diagrammatic order!)
 
-Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals, and more, collectively called \emph{optics}. Each has a concrete description as a collection of certain maps, with attendant laws that make them (very) well behaved. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} in a sufficiently general way to encompass almost all the optic variants in use in the wild. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see how the general definitions specialise to the optic variants we know and love.
+Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals, and more, collectively called \emph{optics}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} in a sufficiently general way to encompass almost all the optic variants in use in the wild. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a generic category of optics. Then in Section~\ref{sec:examples} we see how the generic definitions specialise to the optic variants we know and love.
 
-The widely used Haskell \lenslib{} library contains implementations of all these optic variants: see \cite{LensLibrary}. There, optics are written in a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given here in Section \ref{sec:optics}. As this note was being written, Bartosz Milewski~\cite{ProfunctorOpticsPost} independently described the relationship between some forms of optic and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we extend this to more of the optic hierarchy and translate the lens laws into the profunctor setting.
+The widely used Haskell \lenslib{} library contains implementations of all these optic variants: see \cite{LensLibrary}. There, optics are written in a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given in Section~\ref{sec:optics}. As this note was being written, Bartosz Milewski~\cite{ProfunctorOpticsPost} independently described the relationship between some forms of optic and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we extend this to more of the optic hierarchy and translate the lens laws into the profunctor setting.
 
 More recently, concrete lenses have found use in compositional game theory \cite{CompositionalGameTheory}. The $\fget$ function is thought of as mapping observations on the state of play to choices of what move to make. The $\fput$ function computes the utility of the moves that the players make. There is interest in generalising this to a probabilistic setting, but it is not clear what the right replacement for concrete lenses is.
 
-Much of what is known about lenses and their variants is folklore, and careful verification of some of their categorical properties has been lacking. The aim of the present paper is to fill this gap, with the hope that a better understanding of the general properties of these categories will make it easier to generalise to new and exotic settings. This is particularly important with the advent of linear types in Haskell, which enables a new branch of the lens family tree, and with the new applications in game theory.
+Much of what is known about lenses and their variants is folklore, and careful verification of some of their categorical properties has been lacking. The aim of the present paper is to fill this gap, with the hope that a better understanding of the general structure of these categories will make it easier to generalise to new and exotic settings. This is particularly important with the advent of linear types in Haskell, which enables a new branch of the lens family tree, and with the new applications to game theory.
 
 \todo{Contributions:
   \begin{itemize}
@@ -213,7 +213,7 @@ Much of what is known about lenses and their variants is folklore, and careful v
   \item A definition of lawfulness that specialises in the correct way in all examples and allows us to easily derive concrete laws for new kids of optic
   \item A universal property satisfied by the category of optics in the monoidal case
   \item A satisfying categorical description of lens laws as the homomorphism condition on a morphism between certain comonoids
-  \item An attempt to isolate what $\Set$-like properties are being used in various places
+  \item An attempt to isolate what $\Set$-like properties are being used in some places
   \end{itemize}
 }
 
@@ -639,15 +639,7 @@ Or, again omitting the unitors:
   Because the interior of this coend is mute in the contravariant position, the coend is equal to the colimit of the functor $\C(I, - \otimes A) : \C \to \Set$. But $\C$ has a terminal object, so $\int^{M \in \C} \C(I, M \otimes A) \cong \C(I, I \otimes A) \cong \C(I, A)$.
 \end{proof}
 
-      %       \begin{proposition}
-      %       \todo{Entrywise Coproduct}
-      %       \end{proposition}
-      %
-      %       \begin{remark}
-      %       The motivating example here is that of coproducts distributing over the tensor product.
-      %       \end{remark}
-
-\begin{proposition}\label{prop-change-of-action-monoidal}
+\begin{proposition}\label{prop:change-of-action-monoidal}
   A monoidal functor $F : \C \to \D$ induces a functor $\Optic(F) : \Optic_\otimes \to \Optic_\D$.
 \end{proposition}
 \begin{proof}
@@ -1042,17 +1034,17 @@ Given such an action, we define
   \Optic_\M((S, S'), (A, A')) := \int^{M \in \M} \C(S, MA) \times \C(MA', S')
 \end{align*}
 
-The following are analogous to Propositions~\ref{prop-optic-is-cat} and \ref{prop-change-of-action-monoidal}.
+The following are analogous to Propositions~\ref{prop-optic-is-cat} and \ref{prop:change-of-action-monoidal}.
 
 \begin{proposition}
   We have a category $\Optic_\M$ and a functor $\iota : \C \times \C^\op \to \Optic_\M$. \qed
 \end{proposition}
 
-\begin{proposition}\label{prop-change-of-action}
-  Suppose $\C$ and $\D$ are categories acted on by $\M$ and $\mathcal{N}$ respectively. Let $F : \C \to \D$ be a functor that commutes with the actions, in the sense that there exist natural isomorphisms
+\begin{proposition}\label{prop:change-of-action}
+  Suppose $\C$ and $\D$ are categories acted on by $\M$ and $\mathcal{N}$ respectively. Let $F_1 : \M \to N$ be a monoidal functor and $F_2 : \C \to \D$ be a functor that commutes with the actions, in the sense that there exist natural isomorphisms
   \begin{align*}
-  \phi &: F(IA) \to I(FA) \\
-  \phi_{M,A} &: (FM)(FA) \to F(MA)
+  \phi &: F_2(I A) \to F_1(I)(F_2A) \\
+  \phi_{M,A} &: F_2(MA) \to (F_1 M)(F_2 A) 
   \end{align*}
 satisfying conditions analogous to those for a monoidal functor.
   
@@ -1060,6 +1052,14 @@ Then there is an induced functor $\Optic(F) : \Optic_\M \to \Optic_\N$. \qed
 \end{proposition}
 
 For the remainder of the paper we work in this more general setting.
+
+      %       \begin{proposition}
+      %       \todo{Entrywise Coproduct}
+      %       \end{proposition}
+      %
+      %       \begin{remark}
+      %       The motivating example here is that of coproducts distributing over the tensor product.
+      %       \end{remark}
 
 \section{Lawful Optics}\label{sec:lawful-optics}
 \todo{intro}
@@ -1177,7 +1177,7 @@ Finally, we will later see an interpretation of optics as morphisms between cert
 \todo{todo}
 \end{proof}
 
-\begin{proposition}
+\begin{proposition} \todo{This is broken, is supposed to use $F_1$ and $F_2$.}
   If $F : \C \to \D$ is a functor that commutes with the monoidal actions on $\C$ and $\D$, then $\Optic(F) : \Optic_\M \to \Optic_\N$ restricts to a functor $\Lawful_\M \to \Lawful_\N$.
 \end{proposition}
 \begin{proof}
@@ -1367,7 +1367,7 @@ We now discuss lawful lenses.
     &&& \fget \; \fput, \\
     &&& \fput (\fput \times A) \quad)
   \end{alignat*}
-  So checking componentwise, $\Phi(\once(p))$ being equal to $\Phi(\twice(p))$ is exactly equivalent to the $\fput\fget$ and $\fput\fput$ laws holding.
+  So looking componentwise, $\Phi(\once(p))$ being equal to $\Phi(\twice(p))$ is exactly equivalent to the $\fput\fget$ and $\fput\fput$ laws holding.
 \end{proof}
 
 If we ask more of our category $\C$, we can upgrade this result to show that a lens $S \hto A$ implies the existence of a complement $\C$ with $S \cong C \times A$. This doesn't appear to follow purely from the concrete lens laws---an argument that a definition of lawfulness based on constant complements is not the correct generalisation.
@@ -1655,10 +1655,8 @@ We have a chain of isomorphisms
 Let $\C = \Set$. \todo{define applicative/traversable functors}
 
 \begin{definition}
-The category $\Traversal_\C$ of traversals in $\C$ is the category of lawful optics for the action of $\Traversable_\C$ on $\C$ given by evaluation.
+The category $\Traversal_\C$ of traversals in $\C$ is the category of lawful optics for the action of $\Traversable_\C$ on $\C$ given by evaluation. (Yes, the names $\Traversal$ vs\@. $\Traversable$ are confusing.)
 \end{definition}
-
-(Yes, the names $\Traversal$ vs\@. $\Traversable$ are confusing.)
 
 It is known that traversable functors correspond to coalgebras for a particular parameterised comonad. See~\cite{AlgebrasForParameterisedMonads} for the relevant definitions of parameterised monads and algebras.
 
@@ -1671,7 +1669,7 @@ where $UR^*_{X,Y}$ is the parameterised comonad
 \begin{align*}
 UR^*_{X, Y} Z = \Sigma_{n\in \bN} X^n \times \homC(Y^n,Z)
 \end{align*}
-Moreover, this correspondence forms an isomorphism of categories between $\Traversable$ and the Eilenberg-Moore category of coalgebras for $UR^*_{-, -}$, which we denote $\C_T$.
+Moreover, this correspondence forms an isomorphism of categories between $\Traversable$ and the Eilenberg-Moore category of coalgebras for $UR^*_{-, -}$, which we denote $\C_T$. \qed
 \end{proposition}
 
 % Experts will recognise $UR^*_{-, -}$ as the free applicative functor \cite{FreeApplicativeFunctors} on the functor $R_{X,Y} Z = X \times Y \to Z$.
@@ -1779,34 +1777,31 @@ We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting
 \end{proof}
 
 \subsection{Polymorphic Optics}
-Haskell's optics \todo{find an older reference from DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, the lens into the first entry of a tuple has type
-\begin{minted}{haskell}
-first :: Lens (a, b) (a', b) a a'
-\end{minted}
-then:
+Haskell's optics \todo{has this appeared in DB theory?} allow \emph{polymorphic updates}, where the type of the codomain of the lens can be changed by an update, causing a corresponding change in the type of the domain. As an example, we permitted to use a lens into the \mintinline{haskell}{first} entry of a tuple in the following way:
 \begin{minted}{haskell}
 set first (1, 5) "hello" == ("hello", 5)
 \end{minted}
 Note that the type has been changed from \mintinline{haskell}{(Int, Int)} to \mintinline{haskell}{(String, Int)}.
 
-Polymorphic optics can be captured by the coend formalism as follows. Any action of a monoidal category $\M \times \C \to \C$ can be extended to act pointwise on a functor category:
+Polymorphic optics can be captured by the coend formalism as follows. Any action of a monoidal category $\M \times \C \to \C$ can be extended to act objectwise on a functor category:
 \begin{align*}
   \M \times [\D, \C] &\to [\D, \C] \\
   (M, F) &\mapsto  M \cdot (F-)
 \end{align*}
 
-So in the above example, we have the product $\times$ acting pointwise on the functor category $\Set \to \Set$. Our example \texttt{first} is then an optic $F \hto G$, where $F = (-) \times \mathtt{Int}$ and $G$ is the identity functor.
+So in the above example, we have the product $\times$ acting pointwise on the functor category $\Set \to \Set$. Our example \mintinline{haskell}{first} is then an optic $F \hto G$, where $F = (-) \times \mintinline{haskell}{Int}$ and $G$ is the identity functor.
 
 Given such a polymorphic optic in $[\D, \C]$, we can always `monomorphise' to obtain an ordinary optic in $\C$.
 \begin{proposition}
   There is a functor
   \begin{align*}
-    \mathsf{mono} : \D \times \Optic_{[\D, \C]} \to \Optic_\otimes
+    \mathsf{mono} : \D \times \D^\op \times \Optic_{[\D, \C]} \to \Optic_\otimes
   \end{align*}
-  that sends an object $D \in \D$ and optic $\rep{l}{r } : F \hto G$ in $\Optic_{[\D, \C]}$ to the optic $\rep{l_D}{r_D } : FD \hto GD$ in $\Optic_\otimes$. This functor preserves lawfulness.
+  that sends an object $(D, D') \in \D \times \D^\op$ and optic $\rep{l}{r} : (F, F') \hto (G, G')$ in $\Optic_{[\D, \C]}$ to the optic $\rep{l_D}{r_{D'}} : (FD, F'D') \hto (GD, G'D')$ in $\Optic_\M$. For fixed $(D, D) \in \D \times \D^\op$, this functor preserves lawfulness.
 \end{proposition}
 \begin{proof}
-  \todo{todo}
+  On an object $(D, D') \in \D \times \D^\op$, this is essentially the same as Proposition~\ref{prop:change-of-action} but with different functors on each side of the lens: the evaluation-at-$D$ functor $[\D, \C] \to \C$ on the left and evaluation-at-$D'$ on the right.
+  Given a morphism $(f, g) : (D_1, D'_1) \to (D_2, D'_2) \in \D \times \D^\op$ and an object $(F, F') \in \Optic_{[\D, \C]}$, there is an induced lens $\iota(Ff, F'g) : (FD_1, F'D'_1) \hto (FD_2, F'D'_2)$. Bifunctoriality of $\mathsf{mono}$ is ensured by the naturality of $l$ and $r$ in the morphisms of $\Optic_{[\D, \C]}$.
 \end{proof}
 
 \todo{What about the pointwise tensor of an entire functor?}
@@ -1815,18 +1810,25 @@ Given such a polymorphic optic in $[\D, \C]$, we can always `monomorphise' to ob
 
 \todo{todo}
 
-There is also an analogous notion of optics of composites of functors.
+%There is also an analogous notion of optics of composites of functors.
 
 \subsection{Effectful Optics}
 \newcommand{\monact}{\ltimes}
 
-Many proposed definitions of effectful lenses~\cite{ReflectionsOnMonadicLenses} have modified one or both of $\fget$ and $\fput$ to produce results wrapped in a monadic action. There are disadvantages to this approach: it is not obvious what the laws ought to be and there is no clear generalisation to other optic variants. The general definition of optic given in Section~\ref{sec:optics} suggests we instead work with the Kleisli category $\C_T$ of some effectful monad $T : \C \to \C$.
+Many proposed definitions of effectful lenses~\cite{ReflectionsOnMonadicLenses} have modified one or both of $\fget$ and $\fput$ to produce results wrapped in a monadic action. There are disadvantages to this approach: it is not obvious what the laws ought to be and there is no clear generalisation to other optic variants. The general definition of optic given in Section~\ref{sec:optics} suggests we instead work with the Kleisli category $\C_T$ of some monad $(T, \eta, \mu) : \C \to \C$.
 
-\todo{define Kleisli category?} For a morphism $f : X \to Y$ in $\C_T$, we write $\underline{f} : X \to TY$ for its underlying morphism in $\C$.
+\begin{definition}
+The Kleisli category $\C_T$ of a monad $T$ has the same objects as $\C$, with morphisms $X \to Y$ given by morphisms $X \to TY$. Identities are given by the unit of $T$, and the composite of two morphisms $f : X \to Y$ and $g : Y \to Z$ in $\C_T$ is given by
+\begin{align*}
+X \xrightarrow{f} TY \xrightarrow{Tg} TTZ \xrightarrow{\mu_Z} TZ
+\end{align*}
 
-This presents its own set of difficulties. Kleisli categories are only monoidal when the monad in question is \emph{commutative}~\cite{PremonoidalCategories}, which rules out many monads of interest. A premonoidal structure is not sufficient: composition of optics would in that case not be well defined.
+For $f : X \to Y$ in $\C_T$, we write $\underline{f} : X \to TY$ for its underlying morphism in $\C$.
+\end{definition}
 
-But this does not preclude the existence of monoidal actions on $\C_T$. In fact, there is a common monoidal action that has long been used under a different guise:
+Working in a Kleisli category presents its own set of difficulties. The product in $\C$ is a monoidal product in a $\C_T$ only when the monad in question is \emph{commutative}, which rules out many monads of interest. A premonoidal structure~\cite{PremonoidalCategories} is not sufficient: composition of optics would in that case not be well defined.
+
+But this does not preclude the existence of monoidal actions on $\C_T$. In fact, there is a monoidal action that has long been used under a different guise:
 
 \begin{definition}[{\cite{NotionsOfComputationAndMonads}}]
 A \emph{strong monad} $T : \C \to \C$ on a monoidal category $(\C, \otimes, I)$ is a monad that is strong as a functor (Definition~\ref{def:strong-functor}), and such that the strength commutes with the unit and multiplication: 

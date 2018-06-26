@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+\node (S) at (0, 0) {$S \otimes T$};
+\node (S2) at (4, 0) {$S \otimes T$};
+\node (T) [below = 0.7 of S] {$T' \otimes S'$};
+\node (T2) [below = 0.7 of S2] {$T' \otimes S'$};
+
+\draw[->] (S) -- (S2);
+\draw[->] (T) -- (T2);
+
+\node (I) [below right = 1.5 and 1 of T] {$I$};
+\node (I') [below left = 1.5 and 1 of T2] {$I$};
+
+\node[draw,dashed,fit=(I) (I'), inner xsep = 4pt] (box) {};
+\end{scope}
+\end{tikzpicture}

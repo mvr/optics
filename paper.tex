@@ -682,7 +682,7 @@ We assume in this section that $\C$ is a \emph{strict} symmetric monoidal catego
   \end{center}
 \end{definition}
 
-The universal property for $\Optic_\otimes$ given in this section is an argument for this being the ``morally correct'' tensor, although it does seem a little strange. When we later discuss lawful optics, we must use the unswitched tensor to maintain the invariant that a objects are of the form $(X, X)$.
+The universal property for $\Optic_\otimes$ given in this section is an argument for this being the ``morally correct'' tensor, although it does seem a little strange. When we later discuss lawful optics, we are forced to use the unswitched tensor to maintain the invariant that our objects are of the form $(X, X)$.
 
 \begin{proposition}
   $(\Optic_\otimes, \switched, (I, I))$ is a symmetric monoidal category that is monoidally equivalent to $\Optic_\otimes$ with the unswitched tensor.
@@ -725,7 +725,7 @@ Unpacking the definition, $\varepsilon$ being a symmetric monoidal extranatural 
     & I
   \end{tikzcd}\]
 \[
-  \begin{tikzcd}
+  \begin{tikzcd}[column sep = large]
     X \otimes Y \otimes Y^* \otimes X^* \ar[r, "X \otimes \varepsilon_Y \otimes X^*"]  \ar[dr, "\varepsilon_{X \otimes Y}", swap] & X \otimes X^* \ar[d, "\varepsilon_X"] \\
     & I
   \end{tikzcd} \hspace{1cm}
@@ -816,7 +816,7 @@ The definition of teleological category suggests a string diagram calculus simil
   \end{itemize}
 \end{proposition}
 \begin{proof}
-  That morphisms of the form $\iota(f, g)$ constitute a category and that ${(-)}^*$ is a symmetric monoidal involution is clear: we have
+  That morphisms of the form $\iota(f, g)$ constitute a category is clear. The functor ${(-)}^*$ is a symmetric monoidal involution, in fact it is strictly so:
   \begin{align*}
     \left( (S, S') \switched (T, T') \right)^*
     &= \left( S \otimes T, T' \otimes S' \right)^* \\
@@ -825,19 +825,24 @@ The definition of teleological category suggests a string diagram calculus simil
     &= (T, T')^* \switched (S, S')^*
   \end{align*}
 
-  To check extranaturality of $\varepsilon$, suppose we have a dualisable optic $\iota(f, g) : (S, S') \hto (T, T')$, so $f : S \to T$ and $g : T' \to S'$. Extranaturality is witnessed by the equality of the string diagrams:
+  To check extranaturality of $\varepsilon$, suppose we have a dualisable optic $\iota(f, g) : (S, S') \hto (T, T')$, so $f : S \to T$ and $g : T' \to S'$. Luckily here all the switching in the definitions scancels out! Extranaturality is witnessed by the equality of the string diagrams:
   \begin{center}
     \input{diagrams/counit-extranatural-left.tikz}
     \qquad \raisebox{1.5cm}{$=$} \qquad
     \input{diagrams/counit-extranatural-right.tikz}
   \end{center}
-  Symmetry:
+  For symmetry:
   \begin{center}
     \input{diagrams/counit-symmetry-left.tikz}
     \qquad \raisebox{1.5cm}{$=$} \qquad
     \input{diagrams/counit-symmetry-right.tikz}
   \end{center}
-  Monoidality: \todo{there is basically nothing to do in the graphical calculus}
+  And for monoidality there is essentially nothing to do in the graphical calculus. 
+  \begin{center}
+    \input{diagrams/counit-monoidal-left.tikz}
+    \qquad \raisebox{2cm}{$=$} \qquad
+    \input{diagrams/counit-monoidal-right.tikz}
+  \end{center}
 
   Note that the diagrams that are required to commute in the definition of teleological category all terminate with the unit $I$, so in view of Proposition~\ref{prop-costates} we should not be surprised that they correspond to equality of maps in $\C$.
 \end{proof}
@@ -1738,7 +1743,7 @@ Given such a polymorphic optic in $[\D, \C]$, we can always `monomorphise' to ob
 \todo{What about the pointwise tensor of an entire functor?}
 
 \subsection{Effectful Optics}
-\newcommand{\monact}{\ltimes}
+\newcommand{\monact}{\rtimes}
 
 Many proposed definitions of effectful lenses~\cite{ReflectionsOnMonadicLenses} have modified one or both of $\fget$ and $\fput$ to produce results wrapped in a monadic action. There are disadvantages to this approach: it is not obvious what the laws ought to be and there is no clear generalisation to other optic variants. The general definition of optic given in Section~\ref{sec:optics} suggests we instead work with the Kleisli category $\C_T$ of some monad $(T, \eta, \mu) : \C \to \C$.
 
@@ -1776,15 +1781,21 @@ If $T : \C \to \C$ is a strong monad then $\C$ acts on $\C_T$ by $X \cdot Y \map
 The crucial difference between this and a monoidal structure on $\C_T$ is that we only demand $X$ be functorial with respect to \emph{pure functions} in $\C$, whereas $Y$ must be functorial with respect to \emph{computations} in $\C_T$. We will write this action as $X \monact Y$ to highlight the different roles played by $X$ and $Y$. 
 
 \begin{proof}
-Suppose $T$ is a strong monad with strength $\theta_{A, B} : A \otimes T B \to T(A \otimes B)$. For $A \in \C$, we have a functor $A \otimes - : \C_T \to \C_T$. On a morphism $f : X \to Y$ in $\C_T$, we define $A \otimes f : A \otimes X \to A \otimes Y$ to be the composite
+Suppose $T$ is a strong monad with strength $\theta_{A, B} : A \otimes T B \to T(A \otimes B)$. For $A \in \C$, we have a functor $A \otimes - : \C_T \to \C_T$ which on a morphism $f : X \to Y$ in $\C_T$ is defined to be the composite
 \begin{align*}
 A \otimes X \xrightarrow{A \otimes \underline{f}} A \otimes TY \xrightarrow{\theta_{A, Y}} T(A \otimes Y)
 \end{align*}
 Functoriality follows from the requirement that $\theta$ commute with the unit and multiplication of $T$. \todo{Draw this out?}
 
-Our goal is to show that the assignment $A \mapsto A \otimes -$ extends to a monoidal functor $a : \C \to [\C_T, \C_T]$. A morphism $f : A \to B$ in $\C$ induces a natural transformation $A \otimes - \to B \otimes -$ with components $A \otimes X \to T(B \otimes X)$ given by composing $A \otimes X \to B \otimes X$ with the unit of the monad. This transformation is natural by \todo{todo}.
+Our goal is to show that the assignment $A \mapsto A \otimes -$ extends to a functor $a : \C \to [\C_T, \C_T]$. A morphism $f : A \to B$ in $\C$ induces a natural transformation $A \otimes - \to B \otimes -$ with components $A \otimes X \to T(B \otimes X)$ given by composing $A \otimes X \to B \otimes X$ with the unit of the monad. Naturality is easy to check:
+\[\begin{tikzcd}
+A \otimes X \ar[r] \ar[d] & B \otimes X \ar[r] \ar[d] & T(B \otimes X) \ar[d] \\
+A \otimes TY \ar[r] \ar[d] & B \otimes TY \ar[r] \ar[d] & T(B \otimes TY) \ar[d] \\
+T(A \otimes Y) \ar[r] & T(B \otimes Y) \ar[r] & TT(B \otimes Y)
+\end{tikzcd}\]
+The upper left square commutes by functoriality of $\otimes$, lower left by naturality of the strength, the two right squares by naturality of the unit.
 
-Finally, the functor $a$ is monoidal, with the structure maps given by the associativity and unit maps of $\C$. \todo{this uses that the strength commutes with unitors and associativity}
+Finally, this functor $a$ is monoidal, with the structure maps given by the associativity and unit maps of $\C$. \todo{this uses that the strength commutes with unitors and associativity}
 \end{proof}
 
 Suppose $\C$ is a monoidal closed category and $T : \C \to \C$ is a strong monad. We can find a concrete description of the optics for the action $\monact$, using the same method as for linear lenses.

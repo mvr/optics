@@ -1521,145 +1521,65 @@ For any category $\C$, there is a unique action of the terminal category $1$ on 
 
 \subsection{Setters}\label{sec:setters}
 
-\todo{TODO: do this again using power and copower}
-
-To define setters we must recall the notion of a strong functor.
-
-\begin{definition}[\cite{StrongFunctors}]\label{def:strong-functor}
-  Suppose $(\C, \otimes, I)$ is a monoidal category.  A \emph{(left) strong functor} is a functor $F : \C \to \C$ equipped with a natural transformation
-  \begin{align*}
-    \theta_{A,B} : A \otimes F B \to F(A \otimes B)
-  \end{align*}
-  such that the strength commutes with the unitor:
-  \[
-    \begin{tikzcd}
-      I \otimes F A \ar[r, "\theta_{1,A}"] \ar[d, "\cong" left]  & F(I \otimes A) \ar[d, "\cong" right] \\
-      F A \ar[r, equals] & F A
-    \end{tikzcd}
-  \]
-  and with associativity:
-  \[
-    \begin{tikzcd}
-      (A \otimes B) \otimes F C \ar[rr, "\theta_{A \otimes B, C}"] \ar[d, "\alpha_{A,B,FC}" left]  && F((A \otimes B) \otimes C) \ar[d, "F\alpha_{A,B,FC}" right] \\
-      A \otimes (B \otimes F C) \ar[r, "A \otimes \theta_{B,C}" below] & A \otimes F(B \otimes C) \ar[r, "\theta_{A, B\otimes C}" below] & F(A \otimes (B \otimes C))
-    \end{tikzcd}
-  \]
-  A \emph{strong natural transformation} $\tau : (F,\theta) \to (G,\theta')$ is a natural transformation that respects the strength:
-  \[
-    \begin{tikzcd}
-      A \otimes F B \ar[r, "\theta_{A,B}"] \ar[d, "A \otimes \tau_B" left]  & F(A \otimes B) \ar[d, "\tau_{A \otimes B}" right] \\
-      A \otimes G B \ar[r, "\theta'_{A, B}"]& G(A \otimes B)
-    \end{tikzcd}
-  \]
-
-  There is an evident category $\Strong(\C)$ of strong endofunctors and strong natural transformations, and a forgetful functor $U : \Strong(\C) \to [\C, \C]$.
-\end{definition}
-
-In what follows, we will exploit the convenient $\lambda$-calculus syntax for morphisms in a cartesian closed category. \todo{ref} \todo{this sudden change in notation is a bit confusing}
-
-\begin{example}
-  An example, which we will use immediately, is the functor $FX = A \times \homC(B, X)$ in any cartesian closed category $\C$, and with any pair of objects $A$ and $B$. The strength $s_{C,D}$ is given by:
-  \begin{align*}
-    C \times FD = C \times A \times \homC(B, D) &\to A \times \homC(B, C \times D) = F(C \times D)\\
-    (c, a, f) &\mapsto (a, \lambda d. (c, fd))
-  \end{align*}
-\end{example}
-
-\begin{example}
-  \emph{Any} functor $\Set \to \Set$ has a unique strength with respect to the cartesian product, so this concept is invisible for Haskell \texttt{Functor}s. 
-\end{example}
-
-\begin{lemma}
-  Suppose $\C$ is cartesian closed and $F : \C \to \C$ is strong with respect to $\times$. Then for any objects $A, B \in \C$, \[\C(A, FB) \cong \Strong_\C(\times)(A \times \homC(B, -), F)\]
-naturally in $A$ and $F$. In other words, the functor $(A \mapsto A \times \homC(B, -)) : \C \to \Strong_\C$ is left adjoint to the evaluation-at-$B$ functor $-B : \Strong_\C \to \C$.
-\end{lemma}
-\begin{proof}
-  We construct the isomorphism $P : C(A, FB) \cong \Strong_\C(\times)(A \times \homC(B, -), F)$ and its inverse $Q$.
-  Given a $f \in \C(A, FB)$, let $P(f)$ be the natural transformation such that the component at $C$ is the composite
-  \begin{align*}
-    A \times \homC(B, C) \to FB \times \homC(B, C) \to F(B \times \homC(B, C)) \to FC
-  \end{align*}
-  I.e.,
-  \begin{align*}
-    A \times \homC(B, C) &\to FC \\
-    (a, g) &\mapsto F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, f a))
-  \end{align*}
-  % \begin{align*}
-      %       A \times \homC(B, C) \xrightarrow{f \times \id} FB \times \homC(B, C) \xrightarrow{\theta_{\homC(B, C), B}}  F(B \times \homC(B, C)) \xrightarrow{F\epsilon} FC
-      %     \end{align*}
-  where $\theta$ is the strength for $F$.
-  \todo{Check this is a strong natural transformation}
-
-  Conversely, given a strong natural transformation $\eta : A \times \homC(B, -) \Rightarrow F$, the component at $B$ is a function $\eta_B : A \times \homC(B, B) \to FB$; we define $Q(\eta) : A \to FB$ by $Q(\eta)(a) = \eta_B(a, \id_B)$
-
-\todo{remainder of the proof is not very interesting}
-
-      %       $\Psi(\eta) : A \to FB$ to be $A \xrightarrow{A \times \const_{\id_B}} A \times \homC(B, B) \xrightarrow{\eta_B} FB$.
-
-%  Now, verifying these are inverse:
-%  \begin{align*}
-%    P(Q(\eta))_C (a,g)
-%    &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, \Psi(\eta)(a))) \\
-%    &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(g, \eta_B(a, \id_B))) \\
-%    &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, C), B}(\id, \eta_B)(g, (a, \id_B))) \\
-%    &= F(\lambda x. \lambda h. h x)(\eta_{\homC(B, C) \times B} s_{\homC(B, C), B}(g, a, \id_B)) && \text{($\theta$ is a strong transformation)}\\
-%    &= F(\lambda x. \lambda h. h x)(\eta_{\homC(B, C) \times B} (a, \lambda d. (g, \id_B d)) ) && \text{(definition of $s$)}\\
-%    &= F(\lambda x. \lambda h. h x)(\eta_{\homC(B, C) \times B} (a, \lambda d. (g, d)) ) \\
-%    &= \eta_{C}(\lambda (a, f). (a, \lambda b. \mathsf{fst}(f b)\mathsf{snd}(f b)) (a, \lambda d. (g, d)) && \text{(naturality of $\eta$)}\\
-%    &= \eta_{C}(a, \lambda b. g b) \\
-%    &= \eta_{C}(a, g)
-%  \end{align*}
-%  And in the other direction:
-%  \begin{align*}
-%    Q(P(f))(a)
-%    &= P(f)_B(a, \id_B) \\
-%    &= F(\lambda x. \lambda h. h x)(\theta_{\homC(B, B), B}(\id_B, f a))\\
-%    &= F(\lambda x. \lambda h. h x)(F(\lambda b. (\id_B, b)))\theta_{1, B}(f a) && \text{(naturality of $\theta$)}\\
-%    &= F(\lambda b. \id_B b)\theta_{1, B}(f a)\\
-%    &= \theta_{1, B}(f a) && \text{(strength of $\theta$)}\\
-%    &= f a
-%  \end{align*}
-%\todo{Naturality}
-\end{proof}
-
-This is a generalisation of~\cite[Proposition 2.2]{SecondOrderFunctionals}, isolating the properties of $\Set$ that are used. We can finally construct setters:
 
 \begin{definition}
-  Supposed $\C$ is cartesian closed and let $\Strong(\C)$ act on $\C$ by evaluation. The \emph{category of setters} $\Setter_\C$ is the category of lawful optics for this action.
+  The \emph{category of setters} $\Setter_\C$ is the category of lawful optics for the action of $[\C, \C]$ on $\C$ by evaluation.
 \end{definition}
 
-Due to the above lemma, we can eliminate the coend from the definition:
-\begin{align*}
-  \Setter_\C((S, S'), (A, A')) &= \int^{F \in \Strong(\C)} \C(S, FA) \times \C(FA', S') \\
-                               &\cong \int^{F \in \Strong(\C)} \Strong_\C(\times)(S \times \homC(A, -), F)  \times \C(FA', S') \\
-                               &\cong \C(S \times \homC(A, A'), S') \\
-                               &\cong \C(\homC(A, A'), \homC(S,S'))
-\end{align*}
-In the Haskell \lenslib{} library, the map $\homC(A, A) \to \homC(S,S)$ corresponding to a setter is called $\fover$: we think of a setter as allowing us to apply a function $A \to A$ over some parts of $S$.
+To devise the concrete form of a setter, we use the following proposition. This is a generalisation of~\cite[Proposition 2.2]{SecondOrderFunctionals}, and helps to explain why the store comonad is so important.
 
-The laws for setters are a kind of `functoriality':
+\begin{proposition}
+If $\C$ is cotensored over $\Set$ then the evaluation-at-$A$ functor $-A : [\C, \C] \to \C$ has a right adjoint given by $S \mapsto S^{\C(-, A)}$.
+
+If $\C$ is tensored over $\Set$ then $-A : [\C, \C] \to \C$ has a left adjoint given by $S \mapsto \C(A, -) \cdot S$.
+\end{proposition}
+\begin{proof}
+For the first, we have
+\begin{align*}
+\C(FA, S) 
+&\cong \int_X \Set(\C(X, A), \C(FX, S)) \\
+&\cong \int_X \C(FX, S^{\C(X, A)}) \\
+&\cong [\C, \C](F, S^{\C(-, A)})
+\end{align*}
+and for the second,
+\begin{align*}
+\C(S, FA) 
+&\cong \int_X \Set(\C(A, X), \C(S, FX)) \\
+&\cong \int_X \C(\C(A, X) \cdot S, FX) \\
+&\cong [\C, \C](\C(A, -) \cdot S, F)
+\end{align*}
+\end{proof}
+
+We can use either of the above adjunctions to describe setters concretely:
+\begin{align*}
+  \Setter_\C((S, S'), (A, A')) &= \int^{F \in [\C, \C]} \C(S, FA) \times \C(FA', S') \\
+                               &\cong \int^{F \in [\C, \C]} [\C, \C](\C(A, -) \cdot S, F) \times \C(FA', S') \\
+                               &\cong \C(\C(A, A') \cdot S, S') \\
+                               &\cong \Set(\C(A, A'), \C(S, S'))
+\end{align*}
+
+\begin{remark}
+This characterisation of setters is maybe a little odd, in that we have ended up with a function of $\Set$s, rather than a description internal to $\C$. If we modify our definition of $\Setter$ slightly, we can get such an internal characterisation.
+
+Suppose $\C$ is cartesian closed and let $\Strong_\C$ be the category of \emph{strong functors}\cite{StrongFunctors} on $\C$. Then, again, $\Strong_\C$ acts on $\C$ by evaluation. We leave it to the reader to verify there is a natural isomorphism \[\C(A, FB) \cong \Strong_\C(A \times \homC(B, -), F),\] which we can use to describe optics for this action as elements of $\C(\homC(A, A'), \homC(S,S'))$.
+\end{remark}
+
+In the Haskell \lenslib{} library, the map $\C(A, A) \to \C(S,S)$ corresponding to a setter is called $\fover$: we think of a setter as allowing us to apply a function $A \to A$ over some parts of $S$.
+
+The laws for setters are a kind of functoriality:
 
 \begin{proposition}
 A setter $p : S \hto A$ is lawful iff 
 \begin{align*}
-\fover \; \nameof{\id_A} &= \nameof{\id_S} \\
-({-} \circ =)(\fover \times \fover) &= \fover ({-} \circ =)
+\fover(\id_A) &= \id_S \\
+\fover(f)\fover(g)&= \fover(fg)
 \end{align*}
-where  $\circ$ denotes internal composition and $\nameof{\id_X} : 1 \to \homC(X, X)$ denotes the `name of' $\id_X$.
 \end{proposition}
 \begin{proof}
-We have a chain of isomorphisms
-\begin{align*}
-&\int^{M_1, M_2 \in \Strong_\C} \C(S, M_1 A) \times \C(M_1 A, M_2  A) \times \C(M_2 A, S) \\
-&\cong \int^{M_1, M_2 \in \Strong_\C} \Strong_\C(S \times \homC(A, -), M_1) \times \Strong_\C(M_1 A \times \homC(A, -), M_2) \times \C(M_2 A, S) \\
-&\cong \int^{M_2 \in \Strong_\C} \Strong_\C(S \times \homC(A, A) \times \homC(A, -), M_2) \times \C(M_2 A, S) \\
-&\cong \C(S \times \homC(A, A) \times \homC(A, A), S) \\
-&\cong \C(\homC(A, A) \times \homC(A, A), \homC(S,S))
-\end{align*}
 \todo{Worth writing out the rest?}
 \end{proof}
-
-\todo{This previous section might also work just with monoidal closed? I don't see where cartesianness was used.}
+ 
+\todo{This section might also work just with monoidal closed? I don't see where cartesianness was used.}
 
 \subsection{Traversals}
 Let $\C = \Set$. \todo{define applicative/traversable functors}
@@ -2068,21 +1988,6 @@ We lose, of course, the ability to talk about lawful optics. To encode \mintinli
 
 \todo{We actually haven't talked about profunctors yet, where should this go?} There is a corresponding notion of Tambara module for a profunctor between two different categories. A profunctor $P : \C^\op \times \C_\mathsf{codisc}$ essentially ignores its covariant argument; this explains the appearance of a \mintinline{haskell}{RightPhantom} typeclass or equivalent in many profunctor optic libraries. 
 \end{itemize}
-
-
-%\subsection{Indexed Optics}
-%\todo{
-%  This possibly looks like
-%  \begin{align*}
-%    \int^{M \in \M} \C(S, M(IA)) \times \C(M A', S')
-%  \end{align*}
-%  with another monoidal action $I$. The $I$ would need to distribute over $M$ in some way. ``Coindexed'' optics seem to have
-%  \begin{align*}
-%    \int^{M \in \M} \C(S, J(MA)) \times \C(M A', S')
-%  \end{align*}
-%  which is why they pass information `in the other direction' but still transform covariantly.
-%}
-
 
 % \subsection{Equivalence of Optics}
 %
@@ -2536,6 +2441,20 @@ l (Procompose p q) == Procompose (l p) (l q)
 
 \section{Mixed Optics}
 \todo{This hopefully will handle degenerate optics and indexed optics}
+
+
+%\subsection{Indexed Optics}
+%\todo{
+%  This possibly looks like
+%  \begin{align*}
+%    \int^{M \in \M} \C(S, M(IA)) \times \C(M A', S')
+%  \end{align*}
+%  with another monoidal action $I$. The $I$ would need to distribute over $M$ in some way. ``Coindexed'' optics seem to have
+%  \begin{align*}
+%    \int^{M \in \M} \C(S, J(MA)) \times \C(M A', S')
+%  \end{align*}
+%  which is why they pass information `in the other direction' but still transform covariantly.
+%}
 
 \section{Conclusion}
 

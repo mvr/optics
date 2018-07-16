@@ -119,6 +119,7 @@
 \newcommand{\inl}{\mathrm{inl}}
 \newcommand{\inr}{\mathrm{inr}}
 \DeclareMathOperator{\im}{im}
+\newcommand{\act}{\cdot}
 
 \newcommand{\rep}[2]{{\ensuremath \left\langle #1 \mid #2 \right\rangle}}
 \newcommand{\repthree}[3]{{\ensuremath \langle #1 \mid #2 \mid #3 \rangle}}
@@ -1502,7 +1503,7 @@ The founding example, that of lenses, has already been discussed in the previous
   uses the diagonal maps of $\C$ in an essential way.
 \end{remark}
 
-If we ask more of our category $\C$, we can show that a lens $S \hto A$ implies the existence of a complement $\C$ with $S \cong C \times A$. This doesn't appear to follow purely from the concrete lens laws---an argument that a definition of lawfulness based on constant complements is not the correct generalisation.
+If we ask more of our category $\C$, we can show that a lens $S \hto A$ implies the existence of a complement $\C$ with $S \cong C \times A$.  This doesn't appear to follow purely from the concrete lens laws---an argument that a definition of lawfulness based on constant complements is not the correct generalisation. For completeness we include a proof in our notation.
 
 \begin{proposition}[{Generalisation of~\cite[Corollary 13]{AlgebrasAndUpdateStrategies}}]
   Suppose $\C$ has pullbacks and that there is a morphism $x : 1 \to A$. If $p : S \hto A$ is lawful then there exists $C \in \C$ and mutual inverses $l : S \to C \times A$ and $r : C \times A \to S$ so that $p = \rep{l}{r}$.
@@ -1621,7 +1622,7 @@ For any category $\C$, there is a unique action of the terminal category $1$ on 
 \begin{proof}
   \begin{align*}
     \Optic_1((S, S'), (A, A')) &= \int^{M \in 1} \C(S, MA) \times \C(MA', S') \\
-                               &\cong \C(S, \star \cdot A) \times \C(\star \cdot A', S') \\
+                               &\cong \C(S, \star \act A) \times \C(\star \act A', S') \\
                                &\cong \C(S, A) \times \C(A', S')
   \end{align*}
   where $\star$ denotes the object of $1$. Composition in $\Optic_1((S, S'), (A, A'))$ does indeed correspond to composition in $\C \times \C^\op$.
@@ -1638,31 +1639,61 @@ $\Twoptic_\M(S, A)$ specialises in this case to just
 
 \subsection{Coalgebraic Optics}\label{sec:coalgebraic}
 
-There is a common pattern in some of the examples to follow: the evaluation-at-$A$ functor $-A : \M \to \C$ has a right adjoint, say $R_A : \C \to \M$.
+There is a common pattern in many of the examples to follow: for every object $A \in \C$, the evaluation-at-$A$ functor $-A : \M \to \C$ has a right adjoint, say $R_A : \C \to \M$. To fix notation, let \[\overrightarrow{(-)} : \C(F \act A, S) \to \M(F, R_{A} S) : \overleftarrow{(-)}\] denote the homset bijection, so the unit and counit are:
+  \begin{align*}
+  	\eta_F &: F \to R_A (F \act A) \\
+    \eta_F &:= \overrightarrow{\id_{F \act A}} \\
+    \varepsilon_{S} &: (R_A S) \cdot A \to S \\
+    \varepsilon_{S} &:= \overleftarrow{\id_{R_{A} S}}
+  \end{align*}
+
+\begin{remark}
+It is shown in~\cite[Section 6]{ANoteOnActions} that, at least in the case $\M$ is right closed, to give such an action is equivalent to giving a ``copowered $\M$-category $\C$''. \todo{Pointed out to me years ago when I emailed Ross Street, but I didn't understand what he was saying}
+\end{remark}
 
 In this case we can always eliminate the coend and find a concrete description of an optic:
 \begin{align*}
-&\int^{F \in \M} \C(S, F\cdot A) \times \C(F\cdot A', S') \\
-&\cong \int^{F \in \M} \C(S, F \cdot A) \times \M(F, R_{A'} S') \\
-&\cong \C(S,  (R_{A'} S') \cdot A)
+&\int^{F \in \M} \C(S, F\act A) \times \C(F\act A', S') \\
+&\cong \int^{F \in \M} \C(S, F \act A) \times \M(F, R_{A'} S') \\
+&\cong \C(S,  (R_{A'} S') \act A)
 \end{align*}
+A concrete optic is therefore a map $\funzip : S \to (R_{A'} S') \act A$. The above isomorphism sends $\funzip$ to the element $\rep{\funzip}{\varepsilon_{S'}}$. In the other direction, given $\rep{l}{r}$ we have $\funzip = (\overrightarrow{r} \otimes A)l$.
 
 \begin{theorem}\label{thm:optics-are-coalgebras}
-An concrete optic $p : S \to  (R_{A} S) \cdot A$ is lawful iff it is a coalgebra for the comonad $X \mapsto (R_{A} X) \cdot A$.
+An concrete optic $\funzip : S \to  (R_{A} S) \act A$ is lawful iff it is a coalgebra for the comonad $X \mapsto (R_{A} X) \act A$.
 \end{theorem}
 \begin{proof}
-\todo{todo!}
+By adjointness and Yoneda reduction we have an isomorphism $\Phi : \Twoptic_\M(S, A) \to \C(S, R_A (R_A S \act A) \act A)$ given by
+\begin{align*}
+&\Twoptic_\M(S, A) \\
+&= \int^{M_1, M_2 \in \M} \C(S, M_1 \act A) \times \C(M_1 \act A, M_2 \act A) \times \C(M_2 \act A, S) \\
+&\cong \int^{M_1, M_2 \in \M} \C(S, M_1 \act A) \times \M(M_1, R_A (M_2 \act A)) \times \M(M_2, R_A S) \\
+&\cong \int^{M_1, M_2 \in \M} \C(S, M_1 \act A) \times \M(M_1, R_A (M_2 \act A)) \times \M(M_2, R_A S) \\
+&\cong \int^{M_1 \in \M} \C(S, M_1 \act A) \times \M(M_1, R_A (R_A S \act A)) \\
+&\cong \C(S, R_A (R_A S \act A) \act A)
+\end{align*}
+  which evaluated on an element $\repthree{l}{c}{r}$ is given by
+  \begin{align*}
+    \Phi(\repthree{l}{c}{r}) &= (\overrightarrow{(\overrightarrow{r} \act A)c} \act A)l
+  \end{align*}
+
+So now interpreting the optic laws, find
+\[\outside(\rep{\funzip}{\varepsilon_{S} }) = \varepsilon_{S} \; \funzip = \id_S \] is exactly the coalgebra unit law, and equality of
+  \begin{align*}
+    \Phi(\once(\rep{\funzip}{\varepsilon_S}))
+    &= \Phi(\repthree{\funzip}{\id_{(R_{A} S) \act A}}{\varepsilon_S }) \\
+    &= (\overrightarrow{(\overrightarrow{\varepsilon_S} \act A)\id_{(R_{A} S) \act A}} \act A)\funzip \\
+    &= (\overrightarrow{(\id_{R_A S} \act A)} \act A)\funzip \\
+    &= (\overrightarrow{\id_{R_A S \act A}} \act A)\funzip \\
+    &= (\eta_{R_A S} \act A) \funzip \\
+    \Phi(\twice(\rep{\funzip}{\varepsilon_S }))
+    &= \Phi(\repthree{\funzip}{\funzip \; \varepsilon_S}{\varepsilon_S }) \\
+    &= (\overrightarrow{(\overrightarrow{\varepsilon_S} \act A)(\funzip \; \varepsilon_S)} \act A)\funzip \\
+    &= (\overrightarrow{(\funzip \; \varepsilon_S)} \act A)\funzip \\
+    &= (R_A (\funzip) \act A)\funzip
+  \end{align*}
+is exactly the coalgebra multiplication law.
 \end{proof}
-
-\begin{remark}
-This theorem is a generalisation of \cite[Section 3.2]{RelatingAlgebraicAndCoalgebraic} for lenses.
-\end{remark}
-
-%Ross Street:
-%More usually - . b has a right adjoint. This is the same as saying that the M-actegory
-%C is an M-category (hom enriched in M) which is tensored. So we have
-%
-%M(m, \hat{C}(b,a)) \cong C(m.b , a)
 
 \subsection{Setters}\label{sec:setters}
 
@@ -1751,13 +1782,14 @@ This characterisation of setters is maybe a little odd, in that we have ended up
 %  \]
 %
 \end{definition}
-Then, again, $\Strong_\C$ acts on $\C$ by evaluation. We leave it to the reader to verify there is a natural isomorphism \[\C(S, FA) \cong \Strong_\C(\homC(A, -) \times S, F),\] which we can use to describe optics for this action as elements of $\C(\homC(A, A'), \homC(S,S'))$. The use of strong functors here is due to the correspondence between tensorial strengths and ``$\C$-enrichments'' on a functor.
+Then, again, $\Strong_\C$ acts on $\C$ by evaluation. We leave it to the reader to verify there is a natural isomorphism \[\C(S, FA) \cong \Strong_\C(\homC(A, -) \times S, F),\] which we can use to describe optics for this action as elements of $\C(\homC(A, A'), \homC(S,S'))$. 
+%The use of strong functors here is due to the correspondence between tensorial strengths and ``$\C$-enrichments'' on a functor.
 \end{remark}
 
 %\todo{This section might also work just with monoidal closed? I don't see where cartesianness was used.}
 
 \subsection{Traversals}
-In this section we work in the case $\C = \Set$. Traversals allow us to traverse through a data structure, accumulating applicative (or monadic) actions as we go. We begin by reviewing the defnitions of applicative and traversable functors~\cite{AnInvestigationOfTheLawsOfTraversals}.
+In this section we work in the case $\C = \Set$. Traversals allow us to traverse through a data structure, accumulating applicative actions as we go. We begin by reviewing the defnitions of applicative and traversable functors~\cite{AnInvestigationOfTheLawsOfTraversals}.
 
 \begin{definition}
 An \emph{applicative functor} $F : \C \to \C$ is a lax monoidal functor with a strength compatible with the monoidal structure, in the sense that
@@ -1767,7 +1799,7 @@ A \otimes FB \otimes FC \ar[r, "{\theta_{A, B} \otimes FC}"] \ar[d, swap, "{A \o
 A \otimes F(B \otimes C) \ar[r, swap, "{\theta_{A, B \otimes C}}"] & F(A \otimes B \otimes C)
 \end{tikzcd}
 \]
-commutes. An \emph{applicative natural transformation} is one that is both monoidal and strong. Applicative functors and natural transformations form a monoidal category $\App$ under functor composition.
+commutes. An \emph{applicative natural transformation} is one that is both monoidal and strong. Applicative functors and natural transformations form a monoidal category $\App$ with the tensor given by functor composition.
 \end{definition}
 
 \begin{definition}
@@ -1836,9 +1868,7 @@ But this is exactly the adjunction we were trying to show.
 
 We can then use the coalgebraic pattern from earlier to reach the same concrete description of traversals as found in~\cite{ProfunctorOptics}.
 \begin{align*}
-\Optic_\Traversable((S, S'), (A, A')) &= \int^{F \in \Traversable} \Set(S, F A) \times \Set(F A', S') \\
-&\cong \int^{F \in \Traversable} \Set(S, F A) \times \Traversable(F, \Sigma_n {(-)}^n \times \Set(A'^n,S')) \\
-&\cong \Set(S, \Sigma_n A^n \times \Set(A'^n,S'))
+\Optic_\Traversable((S, S'), (A, A')) &\cong \Set(S, \Sigma_n A^n \times \Set(A'^n,S'))
 \end{align*}
 
 The concrete laws for this representation are the coalgebra laws. These laws, however, are not the ones usually presented for traversals. Instead, versions of the profunctor laws are used, see Section~\ref{sec:profunctor-optics}.
@@ -1851,9 +1881,9 @@ In~\cite[Section 2.3]{ProfunctorOptics}, it is further claimed that a traversal 
 %A careful analysis would be needed to describe traversals in some other category, in particular, the description of $UR^*$ does not make sense if $\C$ is not locally cartesian closed.
 %\end{remark}
 
-\begin{remark}
-Traversable functors can be described as a particular class of polynomial functors known as finitary containers. It may be possible to generalise this to other classes of polynomial functors.
-\end{remark}
+%\begin{remark}
+%Traversable functors can be described as a particular class of polynomial functors known as finitary containers. It may be possible to generalise this to other classes of polynomial functors.
+%\end{remark}
 
 \subsection{Polymorphic Optics}
 Haskell's optics allow \emph{polymorphic updates}, where the type of the codomain of the lens may be changed by an update, causing a corresponding change in the type of the domain. As an example, we permitted to use a lens into the \mintinline{haskell}{first} entry of a tuple in the following way:
@@ -1865,7 +1895,7 @@ This has changed the type from \mintinline{haskell}{(Int, Int)} to \mintinline{h
 Polymorphic optics can be captured by the coend formalism as follows. Any action of a monoidal category $\M \times \C \to \C$ can be extended to act object-wise on a functor category:
 \begin{align*}
   \M \times [\D, \C] &\to [\D, \C] \\
-  (M, F) &\mapsto  M \cdot (F-)
+  (M, F) &\mapsto  M \act (F-)
 \end{align*}
 
 So in the above example, we have the product $\times$ acting pointwise on the functor category $\Set \to \Set$. Our example \mintinline{haskell}{first} is then an optic $F \hto G$, where $F = (-) \times \mintinline{haskell}{Int}$ and $G$ is the identity functor.
@@ -1894,20 +1924,13 @@ Given such a polymorphic optic in $[\D, \C]$, we can always `monomorphise' to ob
 \newcommand{\ev}{\mathsf{ev}}
 \newcommand{\coev}{\mathsf{coev}}
 
-If $\C$ is closed monoidal, but not necessarily cartesian, we can use the tensor-hom adjunction to eliminate the coend:
-
+If $\C$ is closed monoidal but not necessarily cartesian, we can still define the category of \emph{linear lenses} to be $\Optic_\otimes$. The internal hom provides a right adjoint to the evaluation-at-$A$ functor, so we have immediately
 \begin{align*}
-  \Optic_\otimes((S, S'), (A, A')) &= \int^{M \in \C} \C(S, M \otimes A) \times \C(M \otimes A', S') \\
-                                   &\cong \int^{M \in \C} \C(S, M \otimes A) \times \C(M, \homC(A',S')) \\
-                                   &\cong \C(S, \homC(A',S') \otimes A)
+  \Optic_\otimes((S, S'), (A, A')) &\cong \C(S, \homC(A',S') \otimes A)
 \end{align*}
-where $\homC(A', S')$ denotes the internal hom. If $\C$ is cartesian, this is of course isomorphic to the pair of maps discussed earlier.
+where $\homC(A', S')$ denotes the internal hom. If $\C$ is cartesian, this is of course isomorphic to the set of $(\fget, \fput)$ functions discussed earlier.
 
-A concrete linear lens is therefore a map $\funzip : S \to \homC(A',S') \otimes A$. The above isomorphism sends $\funzip$ to the element $\rep{\funzip}{\ev_{A', S'}}$, where $\ev_{A', S'} : \homC(A',S') \otimes A' \to S'$ is the evaluation map. In the other direction, given $\rep{l}{r}$ we have $\funzip = (\tilde r \otimes A)l$ where $\tilde r : M \to \homC(A', S')$ denotes the transpose of $r$.
-
-We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting as we lack projections, but using the same techniques as for cartesian lenses above we can devise some new ones:
-
-\todo{These are just the coalgebra laws (hopefully)}
+We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting as we lack projections, but specialising the coalgebra laws gives us:
 
 \begin{proposition}\label{prop:concrete-linear-lawful}
   A linear lens $p : S \hto A$ is lawful iff the following two concrete laws for $\funzip$ hold:
@@ -1916,44 +1939,12 @@ We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting
     (\coev_{\homC(A, S), A} \otimes A)\funzip &= ((\funzip \circ -) \otimes A)\funzip && \textsc{(ZipZip)}
   \end{align*}
   where \[ \funzip \circ - : \homC(A, S) \to \homC(A, \homC(A, S) \otimes A) \] denotes internal composition and \[\coev_{\homC(A, S), A} : \homC(A, S) \to \homC(A, \homC(A, S) \otimes A)\] is coevaluation.
-  \todo{I obviously need better names for the laws}
+  \todo{I obviously need better names for the laws} \qed
 \end{proposition}
-\begin{proof}
-  Let \[\overrightarrow{(-)} : \C(A \otimes B, C) \to \C(A, \homC(B, C)) : \overleftarrow{(-)}\] denote the homset bijection, so 
-  \begin{align*}
-    \coev_{A, B} &:= \overrightarrow{\id_{A \otimes B}} \\
-    \ev_{A, B} &:= \overleftarrow{\id_{\homC(A, B)}}
-  \end{align*}
 
-  We have an isomorphism:
-  \begin{align*}
-  \Twoptic_\otimes(S, A)
-    &= \int^{M_1, M_2 \in \C} \C(S, M_1 \otimes A) \times \C(M_1 \otimes A, M_2 \otimes A) \times \C(M_2 \otimes A, S) \\
-    &\cong \int^{M_1, M_2 \in \C} \C(S, M_1 \otimes A) \times \C(M_1, \homC(A, M_2 \otimes A)) \times \C(M_2, \homC(A, S)) \\
-    &\cong \int^{M_1 \in \C} \C(S, M_1 \otimes A) \times \C(M_1, \homC(A, \homC(A, S) \otimes A)) \\
-    &\cong \C(S, \homC(A, \homC(A, S) \otimes A) \otimes A)
-  \end{align*}
-  which evaluated on an element $\repthree{l}{c}{r}$ is given by
-  \begin{align*}
-    \Phi(\repthree{l}{c}{r}) &= (\overrightarrow{(\overrightarrow{r} \otimes A)c} \otimes A)l
-  \end{align*}
-  Now suppose we are given an optic $p$ whose corresponding element of $\conc_\otimes(S, A)$ is $\funzip$. Then \[\outside(\rep{\funzip}{\ev_{A, S} }) = \ev_{A, S} \; \funzip,\] giving the first law.
-
-  Now we evaluate $\Phi(\once(p))$ and $\Phi(\twice(p))$.
-  \begin{align*}
-    \Phi(\once(\rep{\funzip}{\ev_{A, S}}))
-    &= \Phi(\repthree{\funzip}{\id_{\homC(A,S) \otimes A}}{\ev_{A, S} }) \\
-    &= (\overrightarrow{(\overrightarrow{\ev_{A, S}} \otimes A)\id_{\homC(A,S) \otimes A}} \otimes A)\funzip \\
-    &= (\overrightarrow{(\id_{\homC(A, S)} \otimes A)} \otimes A)\funzip \\
-    &= (\coev_{\homC(A, S), A} \otimes A)\funzip \\
-    \Phi(\twice(\rep{\funzip}{\ev_{A, S} }))
-    &= \Phi(\repthree{\funzip}{\funzip \; \ev_{A, S}}{\ev_{A, S} }) \\
-    &= (\overrightarrow{(\overrightarrow{\ev_{A, S}} \otimes A)(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
-    &= (\overrightarrow{(\funzip \; \ev_{A, S})} \otimes A)\funzip \\
-    &= ((\funzip \circ -) \otimes A)\funzip
-  \end{align*}
-  So indeed the optic is lawful iff the two concrete laws hold.
-\end{proof}
+\begin{remark}
+We have essentially rederived the result given in \cite[Section 3.2]{RelatingAlgebraicAndCoalgebraic} for ordinary lenses, but we note that cartesianness was not required.
+\end{remark}
 
 \subsection{Effectful Optics}
 \newcommand{\monact}{\rtimes}
@@ -1988,7 +1979,7 @@ A \emph{strong monad} $T : \C \to \C$ on a monoidal category $(\C, \otimes, I)$ 
 \end{definition}
 
 \begin{proposition}
-If $T : \C \to \C$ is a strong monad then $\C$ acts on $\C_T$ by $X \cdot Y := X \otimes Y$.
+If $T : \C \to \C$ is a strong monad then $\C$ acts on $\C_T$ by $X \act Y := X \otimes Y$.
 \end{proposition}
 
 The crucial difference between this and a monoidal structure on $\C_T$ is that we only demand $X$ be functorial with respect to \emph{pure functions} in $\C$, whereas $Y$ must be functorial with respect to \emph{computations} in $\C_T$. We will write this action as $X \monact Y$ to highlight the different roles played by $X$ and $Y$.
@@ -2200,10 +2191,10 @@ Finally, we can also encode \mintinline{haskell}{Fold}s, which in $\Set$ corresp
 The dedicated reader may enjoy deriving the concrete representation and laws for the following optic varieties:
 
 \begin{itemize}
-\item \emph{``Achromatic'' Lenses}~\cite[Section 5.2]{ProfunctorOpticsThesis} are lenses that also admit an operation $\fcreate : A \to S$. These are optics for the action of $\C$ on itself by $M \cdot A = (M \sqcup 1) \times A$, or equivalently, of the category of pointed objects of $\C$ on $\C$ by cartesian product. Concrete achromatic lenses $S \hto A$ are elements of the set \[\C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S').\]
+\item \emph{``Achromatic'' Lenses}~\cite[Section 5.2]{ProfunctorOpticsThesis} are lenses that also admit an operation $\fcreate : A \to S$. These are optics for the action of $\C$ on itself by $M \act A = (M \sqcup 1) \times A$, or equivalently, of the category of pointed objects of $\C$ on $\C$ by cartesian product. Concrete achromatic lenses $S \hto A$ are elements of the set \[\C(S, \homC(A', S') \sqcup 1) \times \C(S, A) \times \C(A', S').\]
 %\begin{align*}
 %  \Optic((S, S'), (A, A'))
-%  &= \int^{M \in \C} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
+%  &= \int^{M \in \C} \C(S, M \act A) \times \C(M \act A', S') \\
 %  &= \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \sqcup 1) \times A', S') \\
 %  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C((M \times A') \sqcup A', S') \\
 %  &\cong \int^{M \in \C} \C(S, (M \sqcup 1) \times A) \times \C(M \times A', S') \times \C(A', S') \\
@@ -2215,27 +2206,27 @@ The dedicated reader may enjoy deriving the concrete representation and laws for
 \begin{align*}
   (P', Q') \otimes (P, Q) &= (P' \sqcup (Q' \times P) , Q' \times Q)
 \end{align*}
-The category $\mathsf{Aff}$ acts on $\C$ by $(P, Q) \cdot A = P \sqcup (Q \times A)$, in fact, $\mathsf{Aff}$ is cooked up exactly as the closure of the actions $- \times A$ and $- \sqcup A$ under composition. A concrete affine traversal is an element of \[\C(S, S' \sqcup (\homC(A', S') \times A)).\]
+The category $\mathsf{Aff}$ acts on $\C$ by $(P, Q) \act A = P \sqcup (Q \times A)$, in fact, $\mathsf{Aff}$ is cooked up exactly as the closure of the actions $- \times A$ and $- \sqcup A$ under composition. A concrete affine traversal is an element of \[\C(S, S' \sqcup (\homC(A', S') \times A)).\]
 
 Affine traversals are described in the folklore as pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. Such a pair does determine an affine traversal, but gives more information than is necessary: the right-hand map need not be defined at all $S$.
 
 %\begin{align*}
-%  (P', Q') \cdot (P, Q) \cdot A
-%  &= (P', Q') \cdot  (P \sqcup (Q \times A)) \\
+%  (P', Q') \act (P, Q) \act A
+%  &= (P', Q') \act  (P \sqcup (Q \times A)) \\
 %  &= P' \sqcup (Q' \times (P \sqcup (Q \times A))) \\
 %  &\cong P' \sqcup (Q' \times P) \sqcup (Q' \times Q \times A) \\
-%  &= (P' \sqcup (Q' \times P) , Q' \times Q) \cdot A \\
-%  &= ((P', Q') \otimes (P, Q)) \cdot A
+%  &= (P' \sqcup (Q' \times P) , Q' \times Q) \act A \\
+%  &= ((P', Q') \otimes (P, Q)) \act A
 %\end{align*}
 %\begin{remark}
-%  It is important here that the morphisms in $\mathsf{Aff}$ are only those that arise from pairs of morphisms $P \to P'$ and $Q \to Q'$, although in principle there may be other natural transformations between the corresponding functors $(P, Q) \cdot -$ and $(P', Q') \cdot -$.
+%  It is important here that the morphisms in $\mathsf{Aff}$ are only those that arise from pairs of morphisms $P \to P'$ and $Q \to Q'$, although in principle there may be other natural transformations between the corresponding functors $(P, Q) \act -$ and $(P', Q') \act -$.
 %\end{remark}
 %\todo{This feels similar to taking some sort of `compositum' of the two actions $\times$ and $\sqcup$, both embed in this category. Marco suggests taking the pushout of the projections into the pullback, calculated in the 2-cat of monoidal categories.}
 %Now the set of optics $(S, S') \hto (A, A')$ is:
 %\begin{align*}
 %  \Optic_{\mathsf{Aff}}((S, S'), (A, A'))
-%  &= \int^{M \in \mathsf{Aff}} \C(S, M \cdot A) \times \C(M \cdot A', S') \\
-%  &\cong \int^{P,Q \in \C} \C(S, (P,Q) \cdot A) \times \C((P,Q) \cdot A', S') \\
+%  &= \int^{M \in \mathsf{Aff}} \C(S, M \act A) \times \C(M \act A', S') \\
+%  &\cong \int^{P,Q \in \C} \C(S, (P,Q) \act A) \times \C((P,Q) \act A', S') \\
 %  &= \int^{P,Q \in \C} \C(S, P \sqcup (Q \times A)) \times \C(P \sqcup (Q \times A'), S') \\
 %  &\cong \int^{P,Q \in \C} \C(S, P \sqcup (Q \times A)) \times \C(P,S') \times \C(Q \times A', S') \\
 %  &\cong \int^{Q \in \C} \C(S, S' \sqcup (Q \times A)) \times \C(Q \times A', S') \\
@@ -2243,7 +2234,7 @@ Affine traversals are described in the folklore as pairs of maps $\C(S, A \sqcup
 %  &\cong \C(S, S' \sqcup (\homC(A', S') \times A))
 %\end{align*}
 
-\item \emph{Adjunction Lenses}: For a category with finite products $\C$ and a monoidal adjunction $F \dashv U$, with $F : \C \to \D$ and $U : \D \to \C$. If $U$ is strong monoidal then $\D$ acts on $\C$ by $UD \cdot A := D \times A$; as an example consider the free-forgetful adjunction between sets and monoids. Concrete optics for this action are given pairs in
+\item \emph{Adjunction Lenses}: For a category with finite products $\C$ and a monoidal adjunction $F \dashv U$, with $F : \C \to \D$ and $U : \D \to \C$. If $U$ is strong monoidal then $\D$ acts on $\C$ by $UD \act A := D \times A$; as an example consider the free-forgetful adjunction between sets and monoids. Concrete optics for this action are given pairs in
 \[ \C(S, A) \times \C(UFS \times A', S') \]
 \todo{This example is a bit dumb, delete?}
 \end{itemize}
@@ -2724,7 +2715,7 @@ The most interesting example is \emph{indexed traversals}, which, for example, a
 We first need to define indexed traversals. Unfortunately this has many moving parts!
 
 \begin{proposition}
-The assignment $F \cdot X \mapsto F \Set(I, X)$ is a lax monoidal action of $\App$ on $\Set$.
+The assignment $F \act X \mapsto F \Set(I, X)$ is a lax monoidal action of $\App$ on $\Set$.
 \end{proposition}
 Call this the $I$-indexed action of $\App$ on $\Set$.
 
@@ -2737,7 +2728,7 @@ The category of \emph{indexed traversable functors} $\IdxTraversable$ has as obj
 \end{definition}
 
 \begin{proposition}
-$\IdxTraversable$ acts on $\C \times \C$ by $(T, I) \cdot (A, R) \mapsto (TA, \homC(I, R))$ and on $\C$ simply by $(T, I) \cdot A \mapsto TA$.
+$\IdxTraversable$ acts on $\C \times \C$ by $(T, I) \act (A, R) \mapsto (TA, \homC(I, R))$ and on $\C$ simply by $(T, I) \act A \mapsto TA$.
 \end{proposition}
 
 The idea for this action comes from \cite{IndexedOpticsPost}.

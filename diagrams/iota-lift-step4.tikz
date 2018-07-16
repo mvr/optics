@@ -1,0 +1,32 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+\node[vert] (alpha) at (0, 0) {$\alpha_S$};
+\node[vert] (alphai) at (9, 0) {$\alpha_{S'}^{-1}$};
+
+\node (S) [left of=alpha] {$GS$};
+\node[vert] (l) [right = 1.2 of alpha] {$Gl$};
+\node[vert] (phi) [right = 1.4 of l] {$\psi_{M,A}$};
+\node (A) [below right = 1 and 1.5 of phi] {$GA$};
+\node (S') [right of=alphai] {$GS'$};
+\node[vert] (r) [left = 1.2 of alphai] {$Gr$};
+\node[vert] (phii) [left = 1.4 of r] {$\psi^{-1}_{M, A'}$};
+\node (A') [below left = 1 and 1.5 of phii] {$GA'$};
+
+\draw[->] (S) -- (alpha);
+\draw[->] (alpha) -- (l);
+\draw[->] (l) -- (phi);
+\draw[->] (phi) to[out=south east,in=west] (A);
+
+\draw[<-] (S') -- (alphai);
+\draw[<-] (alphai) -- (r);
+\draw[<-] (r) -- (phii);
+\draw[<-] (phii) to[out=south west,in=east] (A');
+
+\draw[->] (phi) to[out=north east, in=west] ++(1,1)
+ to ($(phii) + (-1, 1)$)
+ to[out=east, in=north west] (phii)
+;
+
+\node[draw,dashed,fit=(A) (A'), inner xsep = 8pt] (box) {};
+\end{scope}
+\end{tikzpicture}

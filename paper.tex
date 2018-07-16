@@ -265,7 +265,7 @@ For a functor $F : \C^\op \times \C \times \D^\op \times \D \to \E$, there are c
 
 \section{Optics}\label{sec:optics}
 
-We begin by defining the category of optics in a symmetric monoidal category $\C$. This category was first defined in~\cite[Section 6]{Doubles} as the `double' of a monoidal category. There it was used for an entirely different purpose---to investigate the relationship between Tambara modules and the `center' of a monoidal category. Our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses, and restricting our attention to the unenriched setting.
+We begin by defining the category of optics in a symmetric monoidal category $\C$. This category was first defined in~\cite[Section 6]{Doubles} as the `double' of a monoidal category. There it was used for a completely different purpose---to investigate the relationship between Tambara modules and the `center' of a monoidal category. Our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses, and restricting our attention to the unenriched setting.
 
 Our definition of optic has as domain and codomain \emph{pairs} of objects of $\C$. This generality is important for the applications to game theory; for ordinary lenses we restrict our attention to pairs with the same object in both entries.
 
@@ -417,7 +417,7 @@ Using the isomorphism in both directions, we leave it to the reader to verify th
 The remainder of this section comprises some useful observations that were not made in~\cite{Doubles}.
 
 \begin{proposition}
-  There is a functor $\iota : \C \times \C^\op \to \Optic_\otimes$, which is given on objects by $\iota(S, S') = (S, S')$ and for a morphism $(f, g) : (S, S') \to (A, A')$ by $\iota(f, g) = \rep{\lambda_A^{-1} f}{g \lambda_{A'}}$.
+  There is a functor $\iota : \C \times \C^\op \to \Optic_\otimes$, which on objects is given by $\iota(S, S') = (S, S')$ and on a morphism $(f, g) : (S, S') \to (A, A')$ by $\iota(f, g) = \rep{\lambda_A^{-1} f}{g \lambda_{A'}}$.
 \end{proposition}
 \begin{proof}
   Graphically, this is:
@@ -525,6 +525,71 @@ The remainder of this section comprises some useful observations that were not m
 %   \todo{There is some cheating going on here, composition actually adds an extra $\alpha$, but that wouldn't get in the way.}
 % \end{proof}
 
+\begin{proposition}\label{prop:change-of-action-monoidal}
+  A monoidal functor $F : \C \to \D$ induces a functor $\Optic(F) : \Optic_\C \to \Optic_\D$. On objects this is $\Optic(F)(S, S') = (FS, FS')$, and on a morphism $\rep{l}{r} : (S, S') \to (A, A')$, is
+  \begin{align*}
+    \Optic(F)(\rep{l}{r}) := \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}}
+  \end{align*}
+  where $\phi_{M,A} : FM \otimes FA \to F(M \otimes A)$ is the structure map of the monoidal functor. Graphically:
+  \begin{center}
+    \input{diagrams/induced-by-functor.tikz}
+  \end{center}
+\end{proposition}
+\begin{proof}
+
+  This preserves identities:
+  \begin{align*}
+  \Optic(F)(\id_{(S, S')})
+  &= \Optic(F)(\rep{\lambda^{-1}_S}{\lambda_{S'}}) \\
+  &= \rep{\phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}} \\
+  &= \rep{(\phi^{-1} \otimes S) \phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}(\phi \otimes S) } \\
+  &= \rep{(\phi^{-1} \otimes S) \phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}(\phi \otimes S) } \\
+  &= \rep{\lambda^{-1}_{FS}}{\lambda_{FS'}} \\
+  &= \id_{(FS, FS')}
+  \end{align*}
+  And given two optics $\rep{l}{r} : (S, S') \hto (A, A')$ and $\rep{l'}{r'} : (R, R') \hto (S, S')$ with residuals $M$ and $M'$, it preserves composition:
+\begin{align*}
+&\Optic(F)(\rep{l}{r} \circ \rep{l'}{r'})  \\
+&= \Optic(F)(\rep{(M' \otimes l)l'}{r'(M' \otimes r)}) \\
+&= \rep{\phi^{-1}_{M' \otimes M,A} F((M' \otimes l)l')}{F(r'(M' \otimes r)) \phi_{M' \otimes M,A'}} \\
+&= \rep{\phi^{-1}_{M' \otimes M,A} F(M' \otimes l)(Fl')}{(Fr') F(M' \otimes r) \phi_{M' \otimes M,A'}} \\
+&= \rep{(\phi^{-1}_{M', M} \otimes A)\phi^{-1}_{M' \otimes M,A} F(M' \otimes l)(Fl')}{(Fr') F(M' \otimes r) \phi_{M' \otimes M,A'}(\phi_{M', M} \otimes A)} \\
+&= \rep{(FM' \otimes \phi^{-1}_{M,A})\phi^{-1}_{M',M \otimes A}(F(M' \otimes l)) (Fl')}{(Fr') (F(M' \otimes r)) \phi_{M',M \otimes A'}  (FM' \otimes \phi_{M,A'})} \\
+&= \rep{(FM' \otimes \phi^{-1}_{M,A})(FM' \otimes Fl)\phi^{-1}_{M',S} (Fl')}{(Fr') \phi_{M',S'} (FM' \otimes Fr) (FM' \otimes \phi_{M,A'})} \\
+&= \rep{(FM' \otimes \phi^{-1}_{M,A} (Fl))(\phi^{-1}_{M',S} (Fl'))}{((Fr') \phi_{M',S'})(FM' \otimes (Fr) \phi_{M,A'})} \\
+&= \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}} \circ \rep{\phi^{-1}_{M',S} (Fl')}{(Fr') \phi_{M',S'}} \\
+&= \Optic(F)(\rep{l}{r}) \circ \Optic(F)(\rep{l'}{r'})
+\end{align*}
+The critical move is adding the isomorphism $(\phi_{M', M} \otimes A)$ to both sides of the coend, so that the hexagon axiom for $F$ can be applied.
+\end{proof}
+
+\begin{proposition}
+$\iota : \C \times \C^\op \to \Optic_\otimes$ ``lifts natural isomorphisms'', in the following sense. Given monoidal functors $F, G : \C \to \D$ and a monoidal natural isomorphism $\alpha : F \Rightarrow G$, there is an induced natural isomorphism $\Optic(\alpha) : \Optic(F) \Rightarrow \Optic(G)$ with components:
+\begin{align*}
+\Optic(\alpha)_{(S, S')} &: (FS, FS') \to (GS, GS') \\
+\Optic(\alpha)_{(S, S')} &:= \iota(\alpha_{S}, \alpha^{-1}_{S'})
+\end{align*}
+\end{proposition}
+\begin{proof}
+Suppose $\phi$ and $\psi$ are the structure maps for $F$ and $G$ respectively. We just have to show naturality, i.e. that for $p : (S, S') \hto (A, A')$ in $\D$, the equation \[\Optic(\alpha)_{(A, A')} \circ \Optic(F)(p) = \Optic(G)(p) \circ \Optic(\alpha)_{(S, S')}\] holds. On the left we have:
+  \begin{center}
+    \input{diagrams/iota-lift-step1.tikz}
+  \end{center}
+  Use the coend relation to place an $\alpha$ on either side:
+  \begin{center}
+    \input{diagrams/iota-lift-step2.tikz}
+  \end{center}
+  And then monoidality of $\alpha$ to commute it past $\phi$.
+  \begin{center}
+    \input{diagrams/iota-lift-step3.tikz}
+  \end{center}
+  Finally, $\alpha$ pushes through $F l$ and $F r$ by naturality.
+  \begin{center}
+    \input{diagrams/iota-lift-step4.tikz}
+  \end{center}
+  This is the diagram for $\Optic(G)(p) \circ \Optic(\alpha)_{(S, S')}$.
+\end{proof}
+
 \begin{theorem}
   $\Optic_\otimes$ is symmetric monoidal, where $(S, S') \otimes (T, T') = (S \otimes T, S' \otimes T')$, the unit object is $(I, I)$, and the action on a pair of morphisms $\rep{l}{r} : (S, S') \hto (A, A')$ and $\rep{l'}{r'} : (T, T') \hto (B, B')$ is given by:
   \begin{center}
@@ -553,7 +618,7 @@ The remainder of this section comprises some useful observations that were not m
   \begin{center}
     \input{diagrams/tensor-functorial-right.tikz}
   \end{center}
-  These two diagrams are equivalent: We can use the naturality of the symmetry morphism to push $l_2$ and $r_2$ past the crossing to be next to $l_1$ and $r_1$ respectively. This creates two extra twists that can be cancelled in the center of the diagram (implicitly using the coend relation).
+  These two diagrams are equivalent: We can use the naturality of the symmetry morphism to push $l_2$ and $r_2$ past the crossing to be next to $l_1$ and $r_1$ respectively. This creates two extra twists that can be cancelled in the center of the diagram (via the coend relation).
 
   %%%% Note: The following is the above argument written equationally:
   % For future convenience, note that
@@ -595,24 +660,24 @@ The remainder of this section comprises some useful observations that were not m
     s_{(S, S'), (T, T')} &:= \iota(s_{S, T}, s_{T', S'})
   \end{align*}
 
-  Note that because $\iota(S, S') = (S, S')$, required equations for $\iota$ to be a monoidal functor hold by definition (although we don't yet know that $\Optic_\otimes$ is monoidal). The pentagon and triangle equations then hold in $\Optic_\otimes$, as they are the image of the same diagrams in $\C \times \C^\op$ under $\iota$. The only remaining thing to verify is that these structure maps are natural in $\Optic_\otimes$.
+  Note that because $\iota(S, S') = (S, S')$, required equations for $\iota$ to be a monoidal functor hold by definition (although we don't yet know that $\Optic_\otimes$ is monoidal). The pentagon and triangle equations then hold in $\Optic_\otimes$, as they are the image of the same diagrams in $\C \times \C^\op$ under $\iota$. The only remaining thing to verify is that these structure maps are natural in $\Optic_\otimes$, but this follows from the previous proposition.
 
-  Let us check that $\alpha_{(R, R'), (S, S'), (T, T')}$ is natural in $(R, R')$. Suppose $\rep{l}{r} : (Q, Q') \hto (R, R')$ is an optic with residual $M$.
-  \begin{align*}
-    &\alpha_{(R, R'), (S, S'), (T, T')} \circ (f \otimes (S, S')) \otimes (T, T') \\
-    &= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1})  \circ (\rep{l}{r} \otimes (S, S')) \otimes (T, T') \\
-    &= \rep{\lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T}}{\alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'}}  \circ \rep{(l \otimes S) \otimes T}{(r \otimes S') \otimes T'} \\
-    &= \rep{(M \otimes \lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T})((l \otimes S) \otimes T)}{((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'} )} \\
-    &=\rep{(M \otimes \alpha_{R,S,T})((l \otimes S) \otimes T)}{((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} )} \\
-    &= \rep{(l \otimes (S \otimes T))\alpha_{Q,S,T}}{\alpha_{Q',S',T'}^{-1}(r \otimes (S' \otimes T'))} \\
-    &= \rep{(I \otimes l \otimes (S \otimes T)) \lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}}{(I \times r \otimes (S' \otimes T')) \alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')}} \\
-    &= \rep{l \otimes (S \otimes T)}{r \otimes (S' \otimes T')} \circ \rep{\lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}}{\alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')} } \\
-    &= \rep{l}{r} \otimes ((S, S') \otimes (T, T')) \circ \iota(\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}) \\
-    &= f \otimes ((S, S') \otimes (T, T')) \circ \alpha_{(Q, Q'), (S, S'), (T, T')}
-  \end{align*}
-
-Naturality in the other variables is similar, as is the naturality of the unitors.
-  \todo{convert this to a string diagram?}
+%  Let us check that $\alpha_{(R, R'), (S, S'), (T, T')}$ is natural in $(R, R')$. Suppose $\rep{l}{r} : (Q, Q') \hto (R, R')$ is an optic with residual $M$.
+%  \begin{align*}
+%    &\alpha_{(R, R'), (S, S'), (T, T')} \circ (f \otimes (S, S')) \otimes (T, T') \\
+%    &= \iota(\alpha_{R,S,T}, \alpha_{R',S',T'}^{-1})  \circ (\rep{l}{r} \otimes (S, S')) \otimes (T, T') \\
+%    &= \rep{\lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T}}{\alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'}}  \circ \rep{(l \otimes S) \otimes T}{(r \otimes S') \otimes T'} \\
+%    &= \rep{(M \otimes \lambda_{R \otimes (S \otimes T)}\alpha_{R,S,T})((l \otimes S) \otimes T)}{((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} \lambda^{-1}_{(R' \otimes S') \otimes T'} )} \\
+%    &=\rep{(M \otimes \alpha_{R,S,T})((l \otimes S) \otimes T)}{((r \otimes S') \otimes T') (M \otimes \alpha_{R',S',T'}^{-1} )} \\
+%    &= \rep{(l \otimes (S \otimes T))\alpha_{Q,S,T}}{\alpha_{Q',S',T'}^{-1}(r \otimes (S' \otimes T'))} \\
+%    &= \rep{(I \otimes l \otimes (S \otimes T)) \lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}}{(I \otimes r \otimes (S' \otimes T')) \alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')}} \\
+%    &= \rep{l \otimes (S \otimes T)}{r \otimes (S' \otimes T')} \circ \rep{\lambda_{Q \otimes (S \otimes T)}\alpha_{Q,S,T}}{\alpha_{Q',S',T'}^{-1} \lambda^{-1}_{Q' \otimes (S' \otimes T')} } \\
+%    &= \rep{l}{r} \otimes ((S, S') \otimes (T, T')) \circ \iota(\alpha_{Q,S,T}, \alpha_{Q',S',T'}^{-1}) \\
+%    &= f \otimes ((S, S') \otimes (T, T')) \circ \alpha_{(Q, Q'), (S, S'), (T, T')}
+%  \end{align*}
+%
+%Naturality in the other variables is similar, as is the naturality of the unitors.
+%  \todo{convert this to a string diagram?}
 \end{proof}
 
 \begin{remark}
@@ -633,6 +698,27 @@ Naturality in the other variables is similar, as is the naturality of the unitor
   This is clear, as the structure morphisms in $\Optic_\otimes$ are exactly the structure morphisms in $\C \times \C^\op$ under $\iota$.
 \end{proof}
 
+\begin{proposition}\label{prop:change-of-action-monoidal}
+  For monoidal $F : \C \to \D$, the induced $\Optic(F) : \Optic_\C \to \Optic_\D$ is also monoidal.
+\end{proposition}
+\begin{proof}
+The structure morphisms for monoidality are given by lifting the structure morphisms for $F$:
+\begin{align*}
+\phi_{(S, S'), (T, T')} &:= \iota(\phi_{S, T}, \phi_{S', T'}) &&: F(S, S') \otimes F(T, T') \hto F((S, S') \otimes (T, T')) \\
+\phi &:= \iota(\phi, \phi) &&: (I, I) \hto F(I, I)
+\end{align*}
+The axioms follow by lifting the axioms for $F$. More difficult is verifying naturality: \todo{todo!}
+\end{proof}
+
+To summarise:
+
+\begin{proposition}\label{prop:optic-functor}
+  Collectively this operation defines a 2-functor \[\Optic : \SymmMonCat \to \SymmMonCat.\] \qed
+\end{proposition}
+\todo{Haven't actually checked natural transformations}
+\todo{Also we run into the large coend issue again, it's not defined on every symm mon cat.}
+
+
 % \begin{proposition}
 %   Any isomorphism $p : (S, S') \hto (A, A')$ in $\Optic_\otimes$ is of the form $\iota(f, g)$ for two isomorphisms $S \to A$ and $A' \to S'$ in $\C$.
 % \end{proposition}
@@ -640,7 +726,7 @@ Naturality in the other variables is similar, as is the naturality of the unitor
 %   \todo{This might not actually be true..}
 % \end{proof}
 
-There is some further useful structure in $\Optic_\otimes$.
+Finally, there is a little we can say about maps out of and in to the monoidal unit. Such maps are typically called states and costates.
 \begin{proposition}\label{prop:costates}
   The set of costates $(S, S') \hto (I, I)$ is isomorphic to $\C(S, S')$.
 \end{proposition}
@@ -676,54 +762,6 @@ Or, again omitting the unitors:
   \end{align*}
   Because the interior of this coend is mute in the contravariant position, the coend is equal to the colimit of the functor $\C(I, - \otimes A) : \C \to \Set$. But $\C$ has a terminal object, so $\int^{M \in \C} \C(I, M \otimes A) \cong \C(I, I \otimes A) \cong \C(I, A)$.
 \end{proof}
-
-\begin{proposition}\label{prop:change-of-action-monoidal}
-  A monoidal functor $F : \C \to \D$ induces a functor $\Optic(F) : \Optic_\C \to \Optic_\D$.
-\end{proposition}
-\begin{proof}
-  On objects this is simply $\Optic(F)(S, S') = (FS, FS')$. On a morphism $\rep{l}{r} : (S, S') \to (A, A')$, we define
-  \begin{align*}
-    \Optic(F)(\rep{l}{r}) := \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}}
-  \end{align*}
-  where $\phi_{M,A} : FM \otimes FA \to F(M \otimes A)$ is the structure map of the monoidal functor.
-  This preserves identities:
-  \begin{align*}
-  \Optic(F)(\id_{(S, S')})
-  &= \Optic(F)(\rep{\lambda^{-1}_S}{\lambda_{S'}}) \\
-  &= \rep{\phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}} \\
-  &= \rep{(\phi^{-1} \otimes S) \phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}(\phi \otimes S) } \\
-  &= \rep{(\phi^{-1} \otimes S) \phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}(\phi \otimes S) } \\
-  &= \rep{\lambda^{-1}_{FS}}{\lambda_{FS'}} \\
-  &= \id_{(FS, FS')}
-  \end{align*}
-  And given two optics $\rep{l}{r} : (S, S') \hto (A, A')$ and $\rep{l'}{r'} : (R, R') \hto (S, S')$ with residuals $M$ and $M'$, it preserves composition:
-\begin{align*}
-&\Optic(F)(\rep{l}{r} \circ \rep{l'}{r'})  \\
-&= \Optic(F)(\rep{(M' \otimes l)l'}{r'(M' \otimes r)}) \\
-&= \rep{\phi^{-1}_{M' \otimes M,A} F((M' \otimes l)l')}{F(r'(M' \otimes r)) \phi_{M' \otimes M,A'}} \\
-&= \rep{\phi^{-1}_{M' \otimes M,A} F(M' \otimes l)(Fl')}{(Fr') F(M' \otimes r) \phi_{M' \otimes M,A'}} \\
-&= \rep{(\phi^{-1}_{M', M} \otimes A)\phi^{-1}_{M' \otimes M,A} F(M' \otimes l)(Fl')}{(Fr') F(M' \otimes r) \phi_{M' \otimes M,A'}(\phi_{M', M} \otimes A)} \\
-&= \rep{(FM' \otimes \phi^{-1}_{M,A})\phi^{-1}_{M',M \otimes A}(F(M' \otimes l)) (Fl')}{(Fr') (F(M' \otimes r)) \phi_{M',M \otimes A'}  (FM' \otimes \phi_{M,A'})} \\
-&= \rep{(FM' \otimes \phi^{-1}_{M,A})(FM' \otimes Fl)\phi^{-1}_{M',S} (Fl')}{(Fr') \phi_{M',S'} (FM' \otimes Fr) (FM' \otimes \phi_{M,A'})} \\
-&= \rep{(FM' \otimes \phi^{-1}_{M,A} (Fl))(\phi^{-1}_{M',S} (Fl'))}{((Fr') \phi_{M',S'})(FM' \otimes (Fr) \phi_{M,A'})} \\
-&= \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}} \circ \rep{\phi^{-1}_{M',S} (Fl')}{(Fr') \phi_{M',S'}} \\
-&= \Optic(F)(\rep{l}{r}) \circ \Optic(F)(\rep{l'}{r'})
-\end{align*}
-The critical move is adding the isomorphism $(\phi_{M', M} \otimes A)$ to both sides of the coend, so that the hexagon axiom for $F$ can be applied.
-
-The structure morphisms for monoidality are given by lifting the structure morphisms for $F$:
-\begin{align*}
-\phi_{(S, S'), (T, T')} &:= \iota(\phi_{S, T}, \phi_{S', T'}) &&: F(S, S') \otimes F(T, T') \hto F((S, S') \otimes (T, T')) \\
-\phi &:= \iota(\phi, \phi) &&: (I, I) \hto F(I, I)
-\end{align*}
-The axioms follow by lifting the axioms for $F$. More difficult is verifying naturality: \todo{todo!}
-\end{proof}
-
-\begin{proposition}\label{prop:optic-functor}
-  Collectively this operation defines a 2-functor \[\Optic : \SymmMonCat \to \SymmMonCat.\] \qed
-\end{proposition}
-\todo{Haven't actually checked natural transformations}
-\todo{Also we run into the large coend issue again, it's not defined on every symm mon cat.}
 
 \subsection{Teleological Categories}\label{sec:teleological-categories}
 \todo{I think there are strictness issues in this section, but the idea is correct}
@@ -1620,6 +1658,12 @@ An concrete optic $p : S \to  (R_{A} S) \cdot A$ is lawful iff it is a coalgebra
 This theorem is a generalisation of \cite[Section 3.2]{RelatingAlgebraicAndCoalgebraic} for lenses.
 \end{remark}
 
+%Ross Street:
+%More usually - . b has a right adjoint. This is the same as saying that the M-actegory
+%C is an M-category (hom enriched in M) which is tensored. So we have
+%
+%M(m, \hat{C}(b,a)) \cong C(m.b , a)
+
 \subsection{Setters}\label{sec:setters}
 
 \begin{definition}
@@ -1862,6 +1906,8 @@ where $\homC(A', S')$ denotes the internal hom. If $\C$ is cartesian, this is of
 A concrete linear lens is therefore a map $\funzip : S \to \homC(A',S') \otimes A$. The above isomorphism sends $\funzip$ to the element $\rep{\funzip}{\ev_{A', S'}}$, where $\ev_{A', S'} : \homC(A',S') \otimes A' \to S'$ is the evaluation map. In the other direction, given $\rep{l}{r}$ we have $\funzip = (\tilde r \otimes A)l$ where $\tilde r : M \to \homC(A', S')$ denotes the transpose of $r$.
 
 We cannot possibly use the three $\fput$/$\fget$ style lens laws in this setting as we lack projections, but using the same techniques as for cartesian lenses above we can devise some new ones:
+
+\todo{These are just the coalgebra laws (hopefully)}
 
 \begin{proposition}\label{prop:concrete-linear-lawful}
   A linear lens $p : S \hto A$ is lawful iff the following two concrete laws for $\funzip$ hold:
@@ -2169,9 +2215,9 @@ The dedicated reader may enjoy deriving the concrete representation and laws for
 \begin{align*}
   (P', Q') \otimes (P, Q) &= (P' \sqcup (Q' \times P) , Q' \times Q)
 \end{align*}
-The category $\mathsf{Aff}$ acts on $\C$ by $(P, Q) \cdot A = P \sqcup (Q \times A)$, in fact, $\mathsf{Aff}$ is cooked up exactly as the closure of the actions $- \times A$ and $- \sqcup A$ under composition. A concrete representation of the optics for this action is \[\C(S, S' \sqcup (\homC(A', S') \times A)).\]
+The category $\mathsf{Aff}$ acts on $\C$ by $(P, Q) \cdot A = P \sqcup (Q \times A)$, in fact, $\mathsf{Aff}$ is cooked up exactly as the closure of the actions $- \times A$ and $- \sqcup A$ under composition. A concrete affine traversal is an element of \[\C(S, S' \sqcup (\homC(A', S') \times A)).\]
 
-Affine traversals are described in the folklore as pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. Such a pair does determine an affine traversal, but in fact gives more information than is necessary: the right-hand map need not be defined at all $S$.
+Affine traversals are described in the folklore as pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. Such a pair does determine an affine traversal, but gives more information than is necessary: the right-hand map need not be defined at all $S$.
 
 %\begin{align*}
 %  (P', Q') \cdot (P, Q) \cdot A
@@ -2734,7 +2780,7 @@ Furthermore, a c-lens lawful iff it is a coalgebra for the comonad of the adjunc
 It is not clear whether there is an action on $\Cat$ that generates this description as its concrete optics. The location for an $A'$ to appear is missing! We remain optimistic:
 
 \begin{conjecture}
-c-lenses are lawful optics for some action on $\Cat$.
+c-lenses are the lawful optics for some action on $\Cat$.
 \end{conjecture}
 
 \subsection{Functor and Monad Transformer Lenses} 

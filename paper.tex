@@ -105,6 +105,8 @@
 \newcommand{\Getter}{\mathbf{Getter}}
 \newcommand{\Review}{\mathbf{Review}}
 \newcommand{\Fold}{\mathbf{Fold}}
+\newcommand{\IdxLens}{\mathbf{IdxLens}}
+\newcommand{\IdxTraversal}{\mathbf{IdxTraversal}}
 
 \newcommand{\switched}{\mathbin{\tilde{\otimes}}}
 
@@ -121,6 +123,12 @@
 \DeclareMathOperator{\im}{im}
 \newcommand{\act}{\cdot}
 \newcommand{\codisc}{\mathsf{codisc}}
+\DeclareMathOperator*{\colim}{\mathrm{colim}}
+
+\newcommand*\circled[1]{\tikz[baseline={([yshift=-0.65ex]current bounding box.center)}]{
+   \node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+\newcommand{\actL}{{\circled{\tiny$\mathsf{L}$}}}
+\newcommand{\actR}{{\circled{\tiny$\mathsf{R}$}}}
 
 \newcommand{\rep}[2]{{\ensuremath \left\langle #1 \mid #2 \right\rangle}}
 \newcommand{\repthree}[3]{{\ensuremath \langle #1 \mid #2 \mid #3 \rangle}}
@@ -191,19 +199,55 @@
 
 \section{Introduction}
 
-In its most concrete form, a \emph{lens} from $S$ to $A$ is a pair of maps $\fget : S \to A$ and $\fput : S \times A \to S$. From a software engineering standpoint, such a lens allows us to ``zoom in'' on $S$ to focus on a small part $A$, manipulate $A$ in some way, then ``zoom out'' and have our changes reflected in $S$.
+In its most concrete form, a \emph{lens}~\cite{CombinatorsForBidirectionalTreeTransformations} from a set $S$ to a set $A$ is a pair of maps ${\fget : S \to A}$ and ${\fput : S \times A \to S}$. From an engineering standpoint, such a lens allows us to ``zoom in'' on $S$ to focus on a small part $A$, manipulate $A$ in some way, then ``zoom out'' and have our changes reflected in $S$.
 
-Often we want our lens to obey the following laws:
-\begin{itemize}
-\item ``$\fput\fget$'': $\fget \; \fput = \pi_2$ as maps $S \times A \to A$, so that any update to $A$ should be represented faithfully in $S$;
-\item ``$\fget\fput$'': $\fput [\id_S, \fget] = \id_S$ as maps $S \to S$, so that if $A$ is not changed then $S$ should not change; and,
-\item ``$\fput\fput$'': $\fput (\fput \times A) = \fput \, \pi_{1, 3}$ as maps $S \times A \times A \to S$, so any update to $A$ completely overwrites previous updates.
-\end{itemize}
-We will call such lenses \emph{lawful}. (The names of the laws make more sense when the equations are written with composition in diagrammatic order!) Lenses form a category with a subcategory of lawful lenses.
+So that our lenses better conform to this intuitive idea of ``zooming in'', we often want them satisfy some conditions known as the \emph{lens laws}:
+\begin{center}
+\begin{minipage}[b]{0.33333\textwidth}
+\begin{center}
+\[ 
+\begin{tikzcd}
+S \times A \ar[rr, "\fput"] \ar[dr, "\pi_2", swap] && S \ar[dl, "\fget"] \\
+& A
+\end{tikzcd}
+\]
+\hspace{0.8cm}$\fput\fget$
+\end{center}
+\end{minipage}%
+\begin{minipage}[b]{0.33333\textwidth}
+\begin{center}
+\[ 
+\begin{tikzcd}
+S \ar[rr, "{[\id_S, \fget]}"] \ar[dr, "\id_S", swap] && S \times A \ar[dl, "\fput"] \\
+& A
+\end{tikzcd}
+\]
+\hspace{-0.8cm}$\fget\fput$
+\end{center}
+\end{minipage}%
+\begin{minipage}[b]{0.33333\textwidth}
+\begin{center}
+\[ 
+\begin{tikzcd}
+S \times A \times A \ar[r, "\fput \times A"] \ar[d, "\pi_{1, 3}", swap] & S \times A\ar[d, "\fput"] \\
+S \times A \ar[r, "\fput", swap] & A
+\end{tikzcd}
+\]
+\quad$\fput\fput$
+\end{center}
+\end{minipage}%
+\end{center}
+The $\fput\fget$ law states that any update to $A$ is represented faithfully in $S$. The $\fget\fput$ law states that if $A$ is not changed then neither is $S$; and finally, the $\fput\fput$ law states that any update to $A$ completely overwrites previous updates.
 
+%Lenses form a category, with the composition of lenses $T \hto S$ and $S \hto A$ as indicated:
+%\begin{align*}
+%\fget &: T \xrightarrow{\fget_1} S \xrightarrow{\fget_2} A \\
+%\fput &: T \times A \xrightarrow{[\id_T, \fget_1, \id_A]} T \times S \times A \xrightarrow{T \times \fput_2} T \times S \xrightarrow{\fput_1} T
+%\end{align*}
+%This composition preserves lawfulness.
 %\todo{reference a whole bunch of bx and database stuff}
 
-Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals, and more, collectively called \emph{optics}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} in a sufficiently general way to encompass almost all the optic variants in use in the wild, using lenses as a running example. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see that these generic definitions specialise correctly to the other basic varieties of optic, including giving the correct laws.
+Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals, and more, collectively called \emph{optics}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} in a sufficiently general way to encompass almost all the optic variants in use in the wild, using lenses as a running example. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see that these generic definitions specialise correctly to the other basic varieties of optic, including giving the correct laws. We include Section~\ref{sec:mixed-optics} a more speculative discussion of ``mixed optics'', which include indexed and coindexed lenses and traversals.
 
 The widely used Haskell \lenslib{} library contains implementations of all these optic variants: see~\cite{LensLibrary}. There, optics are written in a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given in Section~\ref{sec:optics}. As this note was being written, Bartosz Milewski~\cite{ProfunctorOpticsPost} independently described the relationship between some forms of optic and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we extend this to more of the optic hierarchy and translate the laws into the profunctor setting.
 
@@ -265,11 +309,15 @@ For a functor $F : \C^\op \times \C \times \D^\op \times \D \to \E$, there are c
 \qed
 \end{theorem}
 
+\begin{lemma}[Mute coends]
+Consider a functor $F : \C \to \E$ as a functor $\C^\op \times \C \to \E$ that ignores its contravariant argument. Then \[ \int^C F(C) \cong  \colim F. \] \qed
+\end{lemma}
+
 \section{Optics}\label{sec:optics}
 
-We begin by defining the category of optics in a symmetric monoidal category $\C$. This category was first defined in~\cite[Section 6]{Doubles} as the `double' of a monoidal category. There it was used for a completely different purpose---to investigate the relationship between Tambara modules and the `center' of a monoidal category. Our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses, and restricting our attention to the unenriched setting.
+We begin by defining the category of optics for a symmetric monoidal category $\C$. This category was first defined in~\cite[Section 6]{Doubles} as the `double' of a monoidal category. There it was used for a completely different purpose---to investigate the relationship between Tambara modules and the `center' of a monoidal category. Our definition is identical, other than flipping the direction of the morphisms to match the existing work on lenses, and restricting our attention to the unenriched setting.
 
-Our definition of optic has as domain and codomain \emph{pairs} of objects of $\C$. This generality is important for the applications to game theory; for ordinary lenses we restrict our attention to pairs with the same object in both entries.
+Our definition of optic has as domain and codomain \emph{pairs} of objects of $\C$, one of which behaves covariantly and the other contravariantly. For example, our lenses will be pairs of maps $\fget : S \to A$ and $\fput : S \times A' \to S'$. This generality is important for the applications to game theory, and in fact helps in calculations by making the covariant and contravariant positions more difficult to confuse. Readers more familiar with lenses should ignore the primes.
 
 \begin{remark}
   In this section we work with a fixed symmetric monoidal category $(\C, \otimes, I)$, with associator $\alpha$ and unitors $\lambda$ and $\rho$. To avoid getting lost in the notation we will use the standard cheat of omitting associativity morphisms and trust that the dedicated reader could insert them everywhere they are needed.
@@ -282,13 +330,13 @@ Our definition of optic has as domain and codomain \emph{pairs} of objects of $\
   \end{align*}
 \end{definition}
 
-Because this coend takes place in $\Set$, we can use Lemma~\ref{lemma:calculate-coend} to describe $\Optic_\otimes((S, S'), (A, A'))$ explicitly. It is the set of pairs $(l, r)$, where $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, quotiented by the relation
+Because this coend takes place in $\Set$, we can use Lemma~\ref{lemma:calculate-coend} to describe $\Optic_\otimes((S, S'), (A, A'))$ explicitly. It is the set of pairs $(l, r)$, where $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, quotiented by the equivalence relation generated by relations of the form
 \begin{align*}
   ((f \otimes A) l, r) \sim (l, r (f \otimes A'))
 \end{align*}
 for any $l : S \to M \otimes A$, $r : N \otimes A' \to S'$ and $f : M \to N$.
 
-For a pair of maps $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, we write $\rep{l}{r} : (S, S') \hto (A, A')$ for their image in $\Optic_\otimes((S, S'), (A, A'))$, and say that $M$ is the residual for this representative. Optics will always be written with a crossed arrow $\hto$ to distinguish them from morphisms of $\C$.
+For a pair of maps $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, we write $\rep{l}{r} : (S, S') \hto (A, A')$ for their image in $\Optic_\otimes((S, S'), (A, A'))$, and say that the object $M$ is the residual for this representative. Optics will always be written with a crossed arrow $\hto$ to distinguish them from morphisms of $\C$.
 
 \begin{example}
   For any three objects $M, A, A' \in \C$, there is the \emph{tautological} optic \[t_{M,A} : (M \otimes A, M \otimes A') \hto (A, A')\] given by $\rep{\id_{M \otimes A}}{\id_{M \otimes A'}}$.
@@ -301,13 +349,13 @@ For a pair of maps $l : S \to M \otimes A$ and $r : M \otimes A' \to S'$, we wri
   \begin{center}
     \input{diagrams/generic-optic.tikz}
   \end{center}
-  reading left to right, so the left half of the diagram represents $l$ and the right half $r$. The relation imposed by the coend equates the following two diagrams:
+  reading left to right, so the left half of the diagram represents $l$ and the right half $r$. The relation imposed by the coend can be graphically expressed as:
   \begin{center}
     \input{diagrams/coend-relation-left.tikz}
     \qquad
     \input{diagrams/coend-relation-right.tikz}
   \end{center}
-  We will therefore omit the vertical cut point between $l$ and $r$ in most subsequent diagrams; any choice yields a representative of same optic.
+  We will therefore omit the vertical cut between $l$ and $r$ in most subsequent diagrams; any choice yields a representative of same optic.
 \end{remark}
 
 \begin{remark}
@@ -323,11 +371,19 @@ Diagrammatically, this is the equality
   \end{center}
 \end{remark}
 
+Two optics can be composed as follows. The easiest interpretation is graphical: composition of optics corresponds to substituting the first optic for the hole of the second:
+\begin{center}
+  \input{diagrams/generic-optic-noline.tikz}
+  \quad\raisebox{1.5cm}{$\circ$}\qquad
+  \input{diagrams/generic-optic2-noline.tikz} \\
+  \raisebox{1.5cm}{$:=$}\qquad
+  \input{diagrams/optic-composition.tikz}
+\end{center}
 
-Two optics can be composed as follows: \todo{I give possibly too much detail here.} We wish to construct a map
+More formally, we wish to construct a map
 \begin{align*}
-  &\left(\int^{M \in \C} \C(S, M \otimes A) \times \C(M \otimes A', S')\right) \times \left(\int^{M \in \C} \C(R, M \otimes S) \times \C(M \otimes S', R')\right) \\ &
-                                                                                                                                                                       \quad \to \int^{M \in \C} \C(R, M \otimes A) \times \C(M \otimes A', R').
+  &\left(\int^{M \in \C} \C(S, M \otimes A) \times \C(M \otimes A', S')\right) \times \left(\int^{N \in \C} \C(R, N \otimes S) \times \C(N \otimes S', R')\right) \\ 
+  &\quad \to \int^{M \in \C} \C(R, M \otimes A) \times \C(M \otimes A', R').
 \end{align*}
 The product in $\Set$ preserves colimits, so in particular coends. Using this fact and the Fubini theorem for coends, the domain is isomorphic to
 \begin{align*}
@@ -345,16 +401,7 @@ natural in $M$ and $N$. For these we use the composites
   \to \,& \C(R, N \otimes  M \otimes A) \times \C(N \otimes M \otimes A', R') && \text{(composition in $\C$)} \\
   \to \,&\int^{M \in \M} \C(R, M \otimes A) \times \C(M \otimes A', R') && \text{($\copr_{N \otimes M}$)}
 \end{align*}
-In other words, let $\rep{l'}{r'} : (R, R') \hto (S, S')$ and $\rep{l}{r} : (S, S') \hto (A, A')$ with $M$ the residual for $\rep{l'}{r'}$. The composite is then: $\rep{l}{r} \circ \rep{l'}{r'} = \rep{(M \otimes l)l'}{r'(M \otimes r)}$.
-
-Graphically, this is substituting the first optic for the hole of the second:
-\begin{center}
-  \input{diagrams/generic-optic-noline.tikz}
-  \quad\raisebox{1.5cm}{$\circ$}\qquad
-  \input{diagrams/generic-optic2-noline.tikz} \\
-  \raisebox{1.5cm}{$:=$}\qquad
-  \input{diagrams/optic-composition.tikz}
-\end{center}
+Written equationally, suppose $\rep{l'}{r'} : (R, R') \hto (S, S')$ and $\rep{l}{r} : (S, S') \hto (A, A')$ are optics with $M$ the residual for $\rep{l'}{r'}$. The composite $(R, R') \hto (A, A')$ is then: \[\rep{l}{r} \circ \rep{l'}{r'} := \rep{(M \otimes l)l'}{r'(M \otimes r)}.\]
 
 The identity optic $(S, S') \hto (S, S')$ is given by $\rep{\lambda^{-1}_S}{\lambda_{S'}}$, where $\lambda_S : I \otimes S \to S$ is the left unitor for $S$:
 \begin{center}
@@ -413,7 +460,7 @@ If $\C$ is a category with finite products, then $\Lens = \Optic_\times$ is exac
 \end{align*}
 Let $\conc_\times((S, S'), (A, A'))$ denote this set of concrete lenses. Explicitly the isomorphism states that, given an optic $\rep{l}{r} : (S, S') \hto (A, A')$, the corresponding concrete lens is the pair $(\fget, \fput)$, where $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $(\fget, \fput)$, the corresponding optic has representative $\rep{[\id_S, \fget]}{\fput}$.
 
-Using the isomorphism in both directions, we leave it to the reader to verify that composition in $\Optic_\times$ corresponds to ordinary composition of concrete lenses. (Of course, there is only one possible way such a collection of morphisms could be sensibly composed!)
+Using the isomorphism in both directions, we leave it to the reader to verify that composition in $\Optic_\times$ corresponds to ordinary composition of concrete lenses. (Of course, there is only one sensible way to compose such a collection of morphisms!)
 \end{remark}
 
 The remainder of this section comprises some useful observations that were not made in~\cite{Doubles}.
@@ -1147,6 +1194,8 @@ To capture more of the optic variants available in the Haskell \lenslib{} librar
 
 \begin{definition}
   Let $\C$ be a category and $(\M, \otimes, I)$ a monoidal category. An \emph{action of $\M$ on $\C$} is a monoidal functor $a : \M \to [\C, \C]$. For two objects $M \in \M$ and $A \in \C$, the action $a(M)(A)$ is abbreviated $M \act A$ or $MA$. The tensor product in $\M$ will also be written as juxtaposition, so $(NM)A \cong N(MA)$.
+  
+An action is \emph{lax} if $a$ is instead a lax monoidal functor.
 \end{definition}
 
 Given such an action, we define
@@ -1648,13 +1697,17 @@ $\Twoptic_\M(S, A)$ specialises in this case to just
 \subsection{Coalgebraic Optics}\label{sec:coalgebraic}
 
 There is a common pattern in many of the examples to follow: for every object $A \in \C$, the evaluation-at-$A$ functor $- \act A : \M \to \C$ has a right adjoint, say $R_A : \C \to \M$. To fix notation, let \[\overrightarrow{(-)} : \C(F \act A, S) \to \M(F, R_{A} S) : \overleftarrow{(-)}\] denote the homset bijection, so the unit and counit are:
-  \begin{align*}
+    \begin{equation*}
+    \begin{aligned}[t]
   	\eta_F &: F \to R_A (F \act A) \\
-    \eta_F &:= \overrightarrow{\id_{F \act A}} \\
+    \eta_F &:= \overrightarrow{\id_{F \act A}}
+    \end{aligned}
+    \qquad\qquad\qquad
+    \begin{aligned}[t]
     \varepsilon_{S} &: (R_A S) \cdot A \to S \\
     \varepsilon_{S} &:= \overleftarrow{\id_{R_{A} S}}
-  \end{align*}
-
+    \end{aligned}
+\end{equation*}
 \begin{remark}
 It is shown in~\cite[Section 6]{ANoteOnActions} that, at least in the case $\M$ is right closed, to give such an action is equivalent to giving a ``copowered $\M$-category $\C$''. \todo{Pointed out to me years ago when I emailed Ross Street, but I didn't understand what he was saying}
 \end{remark}
@@ -2176,7 +2229,7 @@ The dedicated reader may enjoy deriving the concrete representation and laws for
 \begin{align*}
   (P', Q') \otimes (P, Q) &= (P' \sqcup (Q' \times P) , Q' \times Q)
 \end{align*}
-The category $\mathsf{Aff}$ acts on $\C$ by $(P, Q) \act A = P \sqcup (Q \times A)$, in fact, $\mathsf{Aff}$ is cooked up exactly as the closure of the actions $- \times A$ and $- \sqcup A$ under composition. A concrete affine traversal is an element of \[\C(S, S' \sqcup (\homC(A', S') \times A)).\]
+The category $\mathsf{Aff}$ acts on $\C$ by $(P, Q) \act A = P \sqcup (Q \times A)$, in fact, $\mathsf{Aff}$ is cooked up to act on $\C$ exactly by the closure of the actions $- \times A$ and $- \sqcup A$ under composition. A concrete affine traversal is an element of \[\C(S, S' \sqcup (\homC(A', S') \times A)).\]
 
 Affine traversals are described in the folklore as pairs of maps $\C(S, A \sqcup S') \times \C(S\times A', S')$. Such a pair does determine an affine traversal, but gives more information than is necessary: the right-hand map need not be defined at all $S$.
 
@@ -2312,35 +2365,35 @@ Affine traversals are described in the folklore as pairs of maps $\C(S, A \sqcup
 
 \section{Mixed Optics}\label{sec:mixed-optics}
 
-We can generalise the definition of $\Optic$ so that the two halves lie in different categories, allowing us to capture a few more optic variants found in the wild. Suppose $\C_1$ and $\C_2$ are categories that are each acted on by a common monoidal category $\M$.
+\todo{This bit is very much in progress, skip to Section~\ref{sec:profunctor-optics}}
+
+We can generalise the definition of $\Optic$ so that the two halves lie in different categories, allowing us to capture a few more optic variants found in the wild. Suppose $\C_L$ and $\C_L$ are categories that are each acted on by a common monoidal category $\M$. Write these actions as $\actL$ and $\actR$ respectively.
 
 \begin{definition}
-  Given two objects of $\C_1 \times \C_2^\op$, say $(S, S')$ and $(A, A')$, an \emph{optic} $p : (S, S') \hto (A, A')$ is an element of the set
+  Given two objects of $\C_L \times \C_R^\op$, say $(S, S')$ and $(A, A')$, an \emph{optic} $p : (S, S') \hto (A, A')$ is an element of the set
   \begin{align*}
-    \Optic_\otimes((S, S'), (A, A')) := \int^{M \in \M} \C_1(S, M \act A) \times \C_2(M \act A', S')
+    \Optic_{\actL, \actR}((S, S'), (A, A')) := \int^{M \in \M} \C_L(S, M \actL A) \times \C_R(M \actR A', S')
   \end{align*}
 \end{definition}
 
 Several results from Section~\ref{sec:optics} continue to hold:
 \begin{proposition}\label{prop:mixed-optic-is-cat}
-  The above data form a category $\Optic_{\M, \C_1, \C_2}$. \todo{notation?} \qed
+  $\Optic_{\actL, \actR}$ is a category. \qed
 \end{proposition}
 \begin{proposition}
-  There is a functor $\iota : \C_1 \times \C_2^\op \to \Optic_{\M, \C_1, \C_2}$, which on objects is given by $\iota(S, S') = (S, S')$ and on a morphism $(f, g) : (S, S') \to (A, A')$ by \[\iota(f, g) = \rep{(\lambda^{\C_1}_A)^{-1} f}{g \lambda^{\C_2}_{A'}},\] where $\lambda^{\C_1}_A : A \to IA$ in $\C_1$ and $\lambda^{\C_2}_{A'} : A' \to IA'$ in $\C_2$. \qed
+  There is a functor $\iota : \C_L \times \C_R^\op \to \Optic_{\actL, \actR}$, which on objects is given by $\iota(S, S') = (S, S')$ and on a morphism $(f, g) : (S, S') \to (A, A')$ by \[\iota(f, g) = \rep{(\lambda^{\C_L}_A)^{-1} f}{g \lambda^{\C_R}_{A'}},\] where $\lambda^{\C_L}_A : A \to IA$ in $\C_L$ and $\lambda^{\C_R}_{A'} : A' \to IA'$ in $\C_R$. \qed
 \end{proposition}
 \begin{proposition}\label{prop:mixed-change-of-action}
-  Given two morphisms of actions $F_1 : (\M, \C_1) \to (\N, \D_1)$ and $F_2 : (\M, \C_2) \to (\N, \D_2)$, there is an induced functor $\Optic(F_1, F_2) : \Optic_{\M, \C_1, \C_2} \to \Optic_{\N, \D_1, \D_2}$. \qed
+  Given two morphisms of actions $F_L : (\M, \C_L) \to (\N, \D_L)$ and $F_R : (\M, \C_R) \to (\N, \D_R)$, there is an induced functor $\Optic(F_L, F_R) : \Optic_{\actL_1, \actR_1} \to \Optic_{\actL_2, \actR_2}$. \qed
 \end{proposition}
 
-The notion of lawfulness used earlier breaks down in this setting, as the definition of $\Twoptic(S, A)$ only makes sense when $\C_1 = \C_2$. The following definition gives a reasonable approximation.
+The notion of lawfulness used earlier breaks down in this setting, as the definition of $\Twoptic(S, A)$ only makes sense when $\C_L = \C_R$. The following definition gives a reasonable approximation.
 
 \begin{definition}
-If $F_1 : (\M, \C_1) \to (\N, \D)$ and $F_2 : (\M, \C_2) \to (\N, \D)$, a mixed optic $p : (S, S) \hto (A, A)$ in $\Optic_{\M, \C_1, \C_2}$ is \emph{lawful relative to $(F_1, F_2)$} if its image under $\Optic(F_1, F_2)$ is lawful.
+If $F_L : (\M, \C_L) \to (\N, \D)$ and $F_R : (\M, \C_R) \to (\N, \D)$, a mixed optic $p : (S, S) \hto (A, A)$ in $\Optic_{\actL, \actR}$ is \emph{lawful relative to $(F_L, F_R)$} if its image under $\Optic(F_L, F_R)$ in $\Optic_\N$ is lawful.
 \end{definition}
 
-\subsection{Examples}
-
-\subsubsection{Degenerate Optics}
+\subsection{Degenerate Optics}
 
 The \mintinline{haskell}{Getter}s and \mintinline{haskell}{Review}s of the Haskell lens library corresponds simply to a morphisms $S \to A$ and $A' \to S'$ respectively. These are examples of mixed optics as follows.
 
@@ -2353,7 +2406,9 @@ Now for a category with finite products $\C$, define $\Getter$ to be the categor
 &\cong \C(S, 1 \times A) \\
 &\cong \C(S, A)
 \end{align*}
-This works for $\Review := \Optic_{\sqcup, \C_\codisc, \C}$ in the same way. There are induced functors $\Optic(\id_\C, i) : \Lens \to \Getter$ and $\Optic(i, \id_\C) : \Prism \to \Review$.
+The only sensible notion of lawfulness for $\Getter$s is lawfulness relative to $(i, \id_{\C_\codisc})$, but all optics in $\Optic_{\C_\codisc}$ are trivially lawful.
+
+One defines $\Review := \Optic_{\sqcup, \C_\codisc, \C}$ in the same way. There are induced functors $\Optic(\id_\C, i) : \Lens \to \Getter$ and $\Optic(i, \id_\C) : \Prism \to \Review$.
 
 \begin{remark}
 If we we are working linearly, we should not expect $\Optic_{\otimes, \C, \C_\codisc}$ to be described so neatly; the above isomorphism relies on the unit of the monoidal structure being terminal.
@@ -2367,25 +2422,69 @@ Finally, we can also encode the category of \mintinline{haskell}{Fold}s which in
 \end{align*}
 There is an induced functor $\Optic(\id_C, i) : \Traversal \to \Fold$.
 
-\subsubsection{Indexed Optics}
-As well as giving a principled home to degenerate optics, the notion of mixed optics also allows us to describe \emph{indexed optics} categorically. The most interesting example of an indexed optic variant is the \emph{indexed traversal}, which, for example, allows access to the indices of the entries of a list as it is being traversed.
+\subsection{Indexed Lenses}
+As well as giving a principled home to degenerate optics, the notion of mixed optics also allows us to describe \emph{indexed optics} categorically. The most interesting example of an indexed optic variant is the \emph{indexed traversal}, which, for example, allows one to know the index of an entry of a list as one is traversing it. As a warmup, however, let us look at \emph{indexed lenses}, which provide access to an index alongside a target, but do not allow updates to the index.
 
-We first need to define indexed traversable functors. Unfortunately this has many moving parts!
+Suppose $\C$ is cartesian closed, and has an initial object. \todo{check which of these we need} We define two actions of $\C \times \C$, the first on $\C$ and the second on $\C \times \C$:
+\begin{align*}
+(M, R) \actL (A, I) &:= M \times R \times A \\
+(M, R) \actR (A, I) &:= (M \times A, R \times I)
+\end{align*}
+\todo{I could call this the ``indexed product action'' but the term indexed product is already taken of course}
+
+%\begin{definition}
+%The category of \emph{indexed lenses} $\IdxLens$ in $\C$ is the category of mixed optics with $\C \times \C^\op$ acting on the left, and the ordinary product action on the right.
+%\end{definition}
+
+%Then:
+%\begin{align*}
+%  &\int^{(M, R) \in \C \times \C^\op} (\C \times \C)((S, J), (M, R) \cdot (A, I)) \times \C(M \times A', S') \\
+%  &\cong \int^{M \in \C, R \in \C^\op} (\C \times \C)((S, J), (M \times A \times I, \homC(R, I))) \times \C(M \times A', S') \\
+%  &\cong \int^{M \in \C, R \in \C^\op} \C(S, M \times A \times I) \times \C(J, \homC(R, I)) \times \C(M \times A', S') \\
+%  &\cong \int^{R \in \C^\op} \C(S, A \times I) \times \C(J \times R, I) \times \C(S \times A', S') \\
+%  &\cong \C(S, A \times I) \times \C(J \times 0, I) \times \C(S \times A', S') \\
+%  &\cong \C(S, A \times I) \times \C(S \times A', S')
+%\end{align*}
+
+\begin{align*}
+  &\int^{(M, R) \in \C \times \C} \C(S, (M, R) \actL A) \times (\C \times \C)((M, R) \cdot (A', I'), (S', J')) \\
+  &\cong \int^{(M, R) \in \C \times \C} \C(S, M \times R \times A) \times \C(M \times A', S') \times \C(R \times I', J') \\
+  &\cong  \C(S, A) \times \C(S \times A', S') \times \C(S \times I', J')
+\end{align*}
+
+\todo{talk about polymorphism to manage the indices}
+
+\todo{do the rest of this}
+
+\subsection{Indexed Traversals}
+
+Returning to indexed traversals, we first need to define indexed traversable functors. Unfortunately this has many moving parts! For simplicity we will restrict our attention to $\C = \Set$, although the results here may be applicable more generally.
 
 \begin{proposition}
-The assignment $F \act X \mapsto F \Set(I, X)$ is a lax monoidal action of $\App$ on $\Set$, called the \emph{$I$-indexed action of $\App$ on $\Set$}.
+The assignment $F \act X \mapsto \Set(R, FX)$ is a lax action of $\App$ on $\Set$, called the \emph{$R$-indexed action of $\App$ on $\Set$}.
 \end{proposition}
+\begin{proof}
+The structure map for the lax action is given by the composite
+\begin{align*}
+F \act (G \act X) &= \Set(R, F\Set(R, GX)) \\
+&\to \Set(R, \Set(FR, FGX)) \\
+&\to \Set(R \times FR, FGX) \\
+&\to \Set(R \times R, FGX) \\
+&\to \Set(R, FGX) = (FG) \act X
+\end{align*}
+\todo{more}
+\end{proof}
 
 \begin{definition}
-A \emph{traversable functor indexed by $I$} is a functor $T : \Set \to \Set$ equipped with a distributive law $\delta_F : T(\Set(I, F-)) \to FT$ for $T$ between the $I$-indexed action of $\App$ on $\Set$ and the action of $\App$ on $\Set$ by evaluation.
+A \emph{traversable functor indexed by $R$} is a functor $T : \Set \to \Set$ equipped with a distributive law $\delta_F : T(\Set(R, F-)) \to FT$ for $T$ between the $R$-indexed action of $\App$ on $\Set$ and the (unindexed) action of $\App$ on $\Set$ by evaluation.
 \end{definition}
 
 \begin{definition}
-The category of \emph{indexed traversable functors} $\IdxTraversable$ has as objects pairs $(T, I)$, where $I \in \Set$ and $T : \Set \to \Set$ is a traversable functor indexed by $I$. A morphism $(T, I) \to (T', I')$ is a natural transformation $\alpha : T \to T'$ and morphism (note the direction!) $i : I' \to I$, such that $\alpha$ commutes with the distributive laws on both traversable functors, using $i$ to mediate between the index objects.
+The category of \emph{indexed traversable functors} $\IdxTraversable$ has as objects pairs $(T, R)$, where $R \in \Set$ and $T : \Set \to \Set$ is a traversable functor indexed by $R$. A morphism $(T, R) \to (T', R')$ is a natural transformation $\alpha : T \to T'$ and morphism (note the direction!) $r : R' \to R$, such that $\alpha$ commutes with the distributive laws on both traversable functors, using $r$ to mediate between the index objects. \todo{draw this out}
 \end{definition}
 
 \begin{proposition}
-$\IdxTraversable$ acts on $\C \times \C$ by $(T, I) \act (A, R) \mapsto (TA, \homC(I, R))$ and on $\C$ simply by $(T, I) \act A \mapsto TA$.
+$\IdxTraversable$ acts on $\C \times \C$ by $(T, R) \act (A, I) \mapsto (TA, \homC(R, I))$ and on $\C$ simply by $(T, R) \act A \mapsto TA$.
 \end{proposition}
 
 The idea for this action comes from \cite{IndexedOpticsPost}.
@@ -2394,7 +2493,7 @@ The idea for this action comes from \cite{IndexedOpticsPost}.
 The category of indexed traversals corresponds to the category of mixed optics with the action of $\IdxTraversable$ on $\C \times \C$ on the left and $\C$ on the right.
 \end{conjecture}
 
-The obstacle to a good theory of mixed optics is finding the right notion of lawfulness. Specifically, profunctors $\C_1 \hto \C_2$ don't compose, so we cannot sensibly talk about comonoid objects in $\Prof(\C_1, \C_2)$. Here, techniques from \cite{MonadsNeedNotBeEndofunctors} may assist in providing a monoidal structure on $\Prof(\C_1, \C_2)$.
+\subsection{Coindexed Optics}
 
 \section{Profunctor Optics}\label{sec:profunctor-optics}
 The Haskell \lenslib{} library implements optics using what is known as the \emph{profunctor encoding}. Lenses are defined as follows:
@@ -2451,10 +2550,6 @@ This category is monoidal with respect to $\odot$ as given above with monoidal u
 
 \begin{remark}
   In the code, the \mintinline{haskell}{Strong} typeclass corresponds to supplying the structure map $\alpha$ for a profunctor \texttt{p}. Parametricity guarantees a form of (di)naturality for $M$, $A$ and $B$, but as with any definition in Haskell, the equations required of a Tambara module must be checked by hand.
-\end{remark}
-
-\begin{remark} \todo{use this?}
-We do not explore this further in the current note, but there is a notion of Tambara module structure for profunctors between two different categories. This allows us to re-derive the profunctor encoding for degenerate optics. For example, in the case of \mintinline{haskell}{Getter}s, a profunctor $P : \C^\op \times \C_\mathsf{codisc}$ essentially ignores its covariant argument. This is captured exactly by the `\mintinline{haskell}{RightPhantom}' typeclass or its equivalent in profunctor optic libraries.
 \end{remark}
 
 There is an evident forgetful functor $U : \Tamb(\M) \to \Prof(\C, \C)$ that is strong monoidal. This forgetful functor has both a left and right adjoint; important for us is the left adjoint:
@@ -2749,6 +2844,10 @@ l (Procompose p q) == Procompose (l p) (l q)
 %
 % \end{proof}
 
+\subsection{Mixed Optics}
+\todo{todo?}
+There is a notion of Tambara module structure for profunctors between two different categories. This allows us to re-derive the profunctor encoding for degenerate optics. For example, in the case of \mintinline{haskell}{Getter}s, a profunctor $P : \C^\op \times \C_\mathsf{codisc}$ essentially ignores its covariant argument. This is captured exactly by the `\mintinline{haskell}{RightPhantom}' typeclass or its equivalent in profunctor optic libraries.
+
 \subsection{The van Laarhoven Encoding}
 
 Some optic variants can be encoded in a profunctor-like style without requiring the full complexity of profunctors. Chronologically this development came before profunctor optics, and was invented by Twan van Laarhoven~\cite{VanLaarhovenPost}.
@@ -2838,6 +2937,8 @@ via the isomorphisms
 Composition of learners can be defined analogously to composition for optics. This perspective explains the slight fussing around required in dealing with equivalence classes of learners, and suggests a generalisation to other monoidal settings.
 
 \section{Conclusion}
+
+\todo{Consider deleting all `remark' blocks and trying to integrate the comments with the prose}
 
 \todo{Figure out the right section numbering style}
 

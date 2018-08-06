@@ -1,9 +1,9 @@
 \begin{tikzpicture}
 \begin{scope}[on grid]
 \node (S) at (0, 0) {$S$};
-\node (S') at (4, 0) {$S'$};
-\node (T) [below = 1 of S] {$T$};
-\node (T') [below = 1 of S'] {$T'$};
+\node (S') at (4, 0) {$T$};
+\node (T) [below = 1 of S] {$T'$};
+\node (T') [below = 1 of S'] {$S'$};
 \node[vert] (f) [right = 1 of S] {$f$};
 \node[vert] (g) [right = 1 of T] {$g$};
 

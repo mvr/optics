@@ -447,7 +447,7 @@ that have residuals $M$, $N$ and $P$ respectively. As in the definition of compo
   In both cases we have used the naturality of $\lambda$ followed by the coend relation to move $\lambda^{-1}_M$ to the right-hand side, where it may be cancelled with $\lambda_M$.
 \end{proof}
 
-  Note that the homsets of $\Optic_\otimes$ are given by a coend indexed by a possibly large category. If $\C$ is small then the coends always exist, but if not, their existence is not guaranteed by the cocompleteness of $\Set$. In this case we should be careful to only discuss $\Optic$ categories where we know that the coends exist by some other means, e.g., by exhibiting an isomorphism of $\Optic_\C((S, S'), (A, A'))$ with a set. For all of the examples we give later, we provide such a isomorphism.
+  Note that the homsets of $\Optic_\otimes$ are given by a coend indexed by a possibly large category. If $\C$ is small then the coends always exist, but if not, their existence is not guaranteed by the cocompleteness of $\Set$. In this case we should be careful to only discuss $\Optic$ categories where we know that the coends exist by some other means, e.g., by exhibiting an isomorphism of $\Optic_\C((S, S'), (A, A'))$ with a set. For all of the examples we give later we provide such a isomorphism.
 
 \begin{remark}
 If $\C$ is a category with finite products, then $\Lens = \Optic_\times$ is exactly the category of lenses described in the introduction, so long as we restrict to optics of shape $(S, S) \hto (A, A)$. We see that optics correspond to pairs of $\fget$ and $\fput$ functions via the following isomorphisms:
@@ -457,7 +457,8 @@ If $\C$ is a category with finite products, then $\Lens = \Optic_\times$ is exac
   &\cong \int^{M \in \C} \C(S, M) \times \C(S, A) \times \C(M \times A', S') && \text{(universal property of product)} \\
   &\cong \C(S, A) \times \C(S \times A', S') && \text{(Yoneda reduction)}
 \end{align*}
-Let $\conc_\times((S, S'), (A, A'))$ denote this set of concrete lenses. Explicitly the isomorphism states that, given an optic $\rep{l}{r} : (S, S') \hto (A, A')$, the corresponding concrete lens is the pair $(\fget, \fput)$, where $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $(\fget, \fput)$, the corresponding optic has representative $\rep{[\id_S, \fget]}{\fput}$.
+%Let $\conc_\times((S, S'), (A, A'))$ denote this set of concrete lenses. 
+Explicitly the isomorphism states that, given an optic $\rep{l}{r} : (S, S') \hto (A, A')$, the corresponding concrete lens is the pair $(\fget, \fput)$, where $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $(\fget, \fput)$, the corresponding optic has representative $\rep{[\id_S, \fget]}{\fput}$.
 
 Using the isomorphism in both directions, we leave it to the reader to verify that composition in $\Optic_\times$ corresponds to ordinary composition of concrete lenses. (Of course, there is only one sensible way to compose such a collection of morphisms!)
 \end{remark}
@@ -505,12 +506,12 @@ There are some other easy-to-construct optics; specifically, optics out of  and 
     &\cong \int^{M \in \C} \C(S, M) \times \C(M, S') \\
     &\cong \C(S, S')
   \end{align*}
-  by Yoneda reduction.
+  by Yoneda reduction, so a state $\rep{l}{r} : (S, S') \hto (I, I)$ corresponds to the morphism $rl : S \to S'$, and a morphism $f : S \to S'$ corresponds to the state $\rep{\rho_S^{-1}}{f \rho_S} : (S, S') \hto (I, I)$
 \end{proof}
 
 %\todo{Is there a relationship between $\Optic_\otimes/(I, I)$ and $[2, \C]$?}
 
-In particular, for any $S \in \C$, the identity $\id_S$ yields an optic $c_S = \rep{\rho_S^{-1}}{\rho_S} : (S, S) \hto (I, I)$, that we will call the \emph{connector}:
+In particular, for any $S \in \C$, the identity $\id_S$ yields an optic $c_S = \rep{\rho_S^{-1}}{\rho_S} : (S, S) \hto (I, I)$ that we call the \emph{connector}:
 %\begin{center}
 %  \input{diagrams/connector-full.tikz}
 %\end{center}
@@ -519,7 +520,7 @@ In particular, for any $S \in \C$, the identity $\id_S$ yields an optic $c_S = \
   \input{diagrams/connector.tikz}
 \end{center}
 
-\begin{proposition}
+\begin{proposition}\label{prop:states}
   Suppose the monoidal unit $I$ of $\C$ is terminal. Then the set of states $(I, I) \hto (A, A')$ is isomorphic to $\C(I, A)$.
 \end{proposition}
 \begin{proof}
@@ -530,6 +531,8 @@ In particular, for any $S \in \C$, the identity $\id_S$ yields an optic $c_S = \
     &\cong \int^{M \in \C} \C(I, M \otimes A).
   \end{align*}
   as $I$ is terminal. The interior of this coend is mute in the contravariant position, so the coend is equal to the colimit of the functor $\C(I, - \otimes A) : \C \to \Set$. But $\C$ has terminal object $I$, so \[\int^{M \in \C} \C(I, M \otimes A) \cong \C(I, I \otimes A) \cong \C(I, A).\]
+  
+  Explicitly, a state $f : I \to A$ in $\C$ corresponds to the optic $\rep{\lambda_A^{-1} f}{!_{I \times A'}} : (I, I) \hto (A, A')$, where $!_{I \times A'} : I \times A' \to I$ is the unique map.
 \end{proof}
 
 The remainder of this section comprises a proof of the following fact:
@@ -980,13 +983,13 @@ This definition of teleological category differs from the original given in~\cit
   \end{tikzcd}
   \]
 
-  A \emph{teleological natural transformation} $\alpha : F \Rightarrow G$ is a monoidal natural transformation whose components are all dualisable and that is additionally compatible with the dualisation:
-  \[
-  \begin{tikzcd}
-    {(FX)}^* \ar[r, "\cong"]  \ar[d, "(\alpha_X)^*", swap] & F(X^*) \ar[d, "\alpha_{X^*}"] \\
-    {(GX)}^* \ar[r, "\cong", swap] & G(X^*)
-  \end{tikzcd}
-  \]
+%  A \emph{teleological natural transformation} $\alpha : F \Rightarrow G$ is a monoidal natural transformation whose components are all dualisable and that is additionally compatible with the dualisation:
+%  \[
+%  \begin{tikzcd}
+%    {(FX)}^* \ar[r, "\cong"]  \ar[d, "(\alpha_X)^*", swap] & F(X^*) \ar[d, "\alpha_{X^*}"] \\
+%    {(GX)}^* \ar[r, "\cong", swap] & G(X^*)
+%  \end{tikzcd}
+%  \]
 \end{definition}
 
 Together we have $\Tele$, the sub-2-category of $\SymmMonCat$ given by teleological categories, teleological functors and teleological natural transformations. There are evident strict 2-functors $U : \Tele \to \SymmMonCat$ and ${(-)}_d : \Tele \to \SymmMonCat$, that take a teleological category to its underlying symmetric monoidal category and subcategory of dualisable morphisms respectively.
@@ -1407,19 +1410,33 @@ We will see that in all the other common examples of optics, this also gives the
   We conclude that composition preserves lawfulness, so $\Lawful_\M$ is indeed a subcategory of $\Optic_\M$.
 \end{proof}
 
+We can check when our basic examples of optics are lawful.
+
 \begin{proposition}
-  If $f : S \to A$ and $g : A \to S$ are mutual inverses, then $\iota(f, g) : S \hto A$ is a lawful optic, so $\iota$ restricts to a functor $\mathrm{Core}(\C) \to \Lawful_\M$.
+If $p = \rep{l}{r} : S \hto A$ is an optic such that $l$ and $r$ are mutual inverses, then $p$ is lawful.
 \end{proposition}
 \begin{proof}
 The conditions are easy to check:
 \begin{align*}
-\outside(\iota(f, g)) &= \outside(\rep{\lambda_A^{-1} f}{g \lambda_{A}}) = g \lambda_{A} \lambda_A^{-1} f = g f = \id_S \\
-\twice(\iota(f, g))
-&= \repthree{\lambda_A^{-1} f}{\lambda_A^{-1} f g \lambda_{A}}{g \lambda_{A}} \\
-&= \repthree{\lambda_A^{-1} f}{\lambda_A^{-1} \lambda_{A}}{g \lambda_{A}} \\
-&= \repthree{\lambda_A^{-1} f}{\id_{IA}}{g \lambda_{A}} \\
-&= \once(\iota(f, g))
+\outside(\rep{l}{r}) &= r l = \id_S \\
+\twice(\rep{l}{r})
+&= \repthree{l}{lr}{r} \\
+&= \repthree{l}{\id_{MA}}{r} \\
+&= \once(\rep{l}{r})
 \end{align*}
+\end{proof}
+
+\begin{corollary}\label{cor:iota-lawful}
+  If $f : S \to A$ and $g : A \to S$ are mutual inverses, then $\iota(f, g) : S \hto A$ is a lawful optic, so $\iota$ restricts to a functor $\iota : \mathrm{Core}(\C) \to \Lawful_\M$. \qed
+\end{corollary}
+
+\begin{proposition}
+A costate $p : (S, S) \hto (I, I)$ corresponding to a morphism $f : S \to S$ via Proposition~\ref{prop:costates} is lawful iff $f = \id_S$.
+\end{proposition}
+\begin{proof}
+The first law states that $\outside(p) = \id_S$, so if $p$ is lawful we have
+\[  \id_S = \outside(\rep{\rho_S^{-1}}{f \rho_S}) =  f \rho_S\rho_S^{-1} = f \]
+On the other hand, if $f  = \id_S$ then $\rep{\rho_S^{-1}}{\rho_S}$ is lawful because its components are mutual inverses.
 \end{proof}
 
 \begin{proposition}
@@ -1427,7 +1444,7 @@ The conditions are easy to check:
 \end{proposition}
 This would of course make no sense with the switched tensor, as the tensor of two objects would no longer be of the form $(X, X)$.
 \begin{proof}
-Due to the previous proposition, the structure maps of $\Optic_\M$ are all lawful. We just have to check that $\otimes : \Optic_\M \times \Optic_\M \to \Optic_\M$ restricts to a functor on $\Lawful_\M$. Given lawful optics $\rep{l}{r} : S \hto A$ and $\rep{l'}{r'} : T \hto B$ with residuals $N$ and $M$, the first law is easy to check.
+Due to Corollary~\ref{cor:iota-lawful}, the structure maps of $\Optic_\M$ are all lawful. We just have to check that $\otimes : \Optic_\M \times \Optic_\M \to \Optic_\M$ restricts to a functor on $\Lawful_\M$. Given lawful optics $\rep{l}{r} : S \hto A$ and $\rep{l'}{r'} : T \hto B$ with residuals $N$ and $M$, the first law is easy to check.
 \begin{align*}
 \outside(\rep{l}{r} \otimes \rep{l'}{r'})
 &= \outside(\rep{(l \otimes l');(M \otimes s_{A,N} \otimes B)}{(M \otimes s_{A,N} \otimes B');(r \otimes r')}) \\

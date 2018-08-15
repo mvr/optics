@@ -1,0 +1,54 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+
+\node[vert] (l) at (0, 0) {$l$};
+\node[vert] (r) at (6, 0) {$r$};
+
+\node[vert] (f) at ($(r) + (-1,1)$) {$f$};
+
+\node (S) [left of=l] {$S$};
+\node (A) [below right = 2 and 2 of l] {$A$};
+\node (S') [right of=r] {$S'$};
+\node (A') [below left = 2 and 3 of r] {$A'$};
+
+\draw[->] (S) -- (l);
+\draw[->] (l) 
+to[out=south east,in=west] ($(l) + (1,-1)$)
+to[out=east,in=west] (A);
+
+\draw[<-] (S') -- (r);
+\draw[<-] (r) 
+to[out=south west,in=east] ($(r) + (-1,-1)$)
+to[out=west,in=east] (A');
+
+\draw[->] (l) 
+  to[out=north east, in=west] ($(l) + (1,1)$)
+  to[out=east, in=west] (f);
+\draw[->] (f) to[out=east, in=north west] (r);
+
+\node[vert] (l') at (0, -3) {$l'$};
+\node[vert] (r') at (6, -3) {$r'$};
+
+\node[vert] (g) at ($(r') + (-1,1)$) {$g$};
+
+\node (T) [left of=l'] {$T$};
+\node (B) [below right = 1 and 2 of l'] {$B$};
+\node (T') [right of=r'] {$T'$};
+\node (B') [below left = 1 and 3 of r'] {$B'$};
+
+\draw[->] (T) -- (l');
+\draw[->] (l') to[out=south east,in=west] (B);
+
+\draw[<-] (T') -- (r');
+\draw[<-] (r') to[out=south west,in=east] (B');
+
+\draw[->] (l') 
+  to[out=north east, in=west] ($(l') + (2,2)$)
+  to[out=east, in = west] ($(g) + (-1,1)$)
+  to[out=east, in = north west] (g);
+\draw[->] (g) to[out=east, in=north west] (r');
+
+\node[draw,dashed,fit=(A) (A') (B) (B'), inner xsep = 8pt] (box) {};
+
+\end{scope}
+\end{tikzpicture}

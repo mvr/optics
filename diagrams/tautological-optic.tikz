@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\begin{scope}[on grid]
+\node (M) at (0, 1) {$M$};
+\node (M2) at (4, 1) {$M$};
+\node (A) at (0, 0) {$A$};
+\node (A2) at (1.5, 0) {$A$};
+\node (A') at (2.5, 0) {$A'$};
+\node (A'2) at (4, 0) {$A'$};
+
+\draw[->] (M) -- (M2);
+\draw[->] (A) -- (A2);
+\draw[->] (A') -- (A'2);
+
+\node[draw,dashed,fit=(A2) (A'), inner xsep = 8pt] (box) {};
+\end{scope}
+\end{tikzpicture}

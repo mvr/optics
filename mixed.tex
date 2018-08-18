@@ -1,0 +1,345 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage{microtype}
+\usepackage{authblk}
+% \usepackage[utf8]{inputenc}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\let\amssquare\square
+\usepackage{mathtools}
+% \usepackage{stmaryrd}
+% \usepackage{tensor}
+\usepackage[mathscr]{eucal}
+\usepackage{url}
+% \usepackage{marvosym}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+%\usepackage{geometry}
+\usepackage{minted}
+\usepackage{cite}
+\usepackage{multicol}
+\usepackage{tocloft}
+\usepackage{enumerate}
+ 
+\usepackage{tikz-cd}
+\usetikzlibrary{positioning}
+\usetikzlibrary{fit}
+\usetikzlibrary{cd}
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.markings}
+\tikzset{ed/.style={auto,inner sep=2pt,font=\scriptsize}} %edges
+\tikzset{>=stealth'}
+\tikzset{vert/.style={draw,circle, minimum size=6mm, inner sep=0pt, fill=white}}
+\tikzset{vertbig/.style={draw,circle, minimum size=8mm, inner sep=0pt, fill=white}}
+\tikzset{->-/.style={decoration={
+      markings,
+      mark=at position #1 with {\arrow{>}}},postaction={decorate}}}
+
+\usepackage[hidelinks]{hyperref} % Should be imported LAST
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[subsection]
+% \newtheorem{axiom}[theorem]{Axiom}
+\newtheorem*{theoremstar}{Theorem}
+% \newtheorem{fact}[theorem]{Fact}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+% \newtheorem{convention}[theorem]{Convention}
+% \newtheorem{construction}[theorem]{Construction}
+\newtheorem{example}[theorem]{Example}
+% \newtheorem{examples}[theorem]{Examples}
+% \newtheorem{notation}[theorem]{Notation}
+\newtheorem{remark}[theorem]{Remark}
+% \newtheorem{idea}[theorem]{Idea}
+% \newtheorem{question}[theorem]{Question}
+
+\newcommand{\C}{\mathscr{C}}
+\newcommand{\homC}{\underline{\C}}
+\newcommand{\D}{\mathscr{D}}
+\newcommand{\E}{\mathscr{E}}
+\newcommand{\M}{\mathscr{M}}
+\newcommand{\N}{\mathscr{N}}
+\newcommand{\T}{\mathscr{T}}
+\renewcommand{\S}{\mathscr{S}}
+
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+
+\newcommand{\lenslib}{\texttt{lens}}
+
+\newcommand{\Pastro}{\Phi}
+% \newcommand{\Pastro}{\mathrm{Pastro}}
+\newcommand{\Double}{\mathcal{D}}
+
+% Categories
+\newcommand{\Set}{\mathbf{Set}}
+\newcommand{\Cat}{\mathbf{Cat}}
+%\newcommand{\Hask}{\mathbf{Hask}}
+\newcommand{\Prof}{\mathbf{Prof}}
+\newcommand{\Core}{\mathbf{Core}}
+\newcommand{\MonCat}{\mathbf{MonCat}}
+\newcommand{\LaxMonCat}{\mathbf{LaxMonCat}}
+\newcommand{\SymmMonCat}{\mathbf{SymmMonCat}}
+\newcommand{\StrictSymmMonCat}{\mathbf{StrictSymmMonCat}}
+
+\newcommand{\Tele}{\mathbf{Tele}}
+\newcommand{\StrictTele}{\mathbf{StrictTele}}
+\newcommand{\Tamb}{\mathbf{Tamb}}
+
+\newcommand{\Endo}{\mathbf{Endo}}
+\newcommand{\Strong}{\mathbf{Strong}}
+\newcommand{\Point}{\mathbf{Point}}
+\newcommand{\CoPoint}{\mathbf{CoPoint}}
+\newcommand{\App}{\mathbf{App}}
+\newcommand{\Traversable}{\mathbf{Traversable}}
+\newcommand{\IdxTraversable}{\mathbf{IdxTraversable}}
+
+\newcommand{\Act}{\mathbf{Act}}
+\newcommand{\Optic}{\mathbf{Optic}}
+\newcommand{\Twoptic}{\mathbf{Optic}^2}
+\newcommand{\Lawful}{\mathbf{Lawful}}
+%\newcommand{\SemiOptic}{\mathbf{SemiOptic}}
+\newcommand{\Lens}{\mathbf{Lens}}
+\newcommand{\Prism}{\mathbf{Prism}}
+\newcommand{\Setter}{\mathbf{Setter}}
+\newcommand{\Traversal}{\mathbf{Traversal}}
+\newcommand{\Getter}{\mathbf{Getter}}
+\newcommand{\Review}{\mathbf{Review}}
+\newcommand{\Fold}{\mathbf{Fold}}
+\newcommand{\IdxLens}{\mathbf{IdxLens}}
+\newcommand{\IdxTraversal}{\mathbf{IdxTraversal}}
+
+\newcommand{\switched}{\mathbin{\tilde{\otimes}}}
+
+\newcommand{\conc}{\mathbb{C}}
+\newcommand{\conctwice}{\mathbb{C}^2}
+
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\const}{\mathrm{const}}
+\DeclareMathOperator{\ob}{ob}
+\DeclareMathOperator{\copr}{copr}
+\newcommand{\inl}{\mathrm{inl}}
+\newcommand{\inr}{\mathrm{inr}}
+\DeclareMathOperator{\im}{im}
+\newcommand{\act}{\cdot}
+\newcommand{\codisc}{\mathsf{codisc}}
+\DeclareMathOperator*{\colim}{\mathrm{colim}}
+\newcommand{\teletimes}{\mathbin{\boxtimes}}
+\newcommand{\defeq}{\mathrel{\vcentcolon=}}
+
+\newcommand*\circled[1]{\tikz[baseline={([yshift=-0.65ex]current bounding box.center)}]{
+   \node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+\newcommand{\actL}{{\circled{\tiny$\mathsf{L}$}}}
+\newcommand{\actR}{{\circled{\tiny$\mathsf{R}$}}}
+
+\newcommand{\rep}[2]{{\ensuremath \left\langle #1 \mid #2 \right\rangle}}
+\newcommand{\repthree}[3]{{\ensuremath \langle #1 \mid #2 \mid #3 \rangle}}
+\newcommand{\repfour}[4]{{\ensuremath \langle #1 \mid #2 \mid #3 \mid #4 \rangle}}
+
+\newcommand{\fget}{\textsc{Get}}
+\newcommand{\fput}{\textsc{Put}}
+\newcommand{\fmodify}{\textsc{Modify}}
+\newcommand{\freview}{\textsc{Review}}
+\newcommand{\fcreate}{\textsc{Create}}
+\newcommand{\fmatching}{\textsc{Matching}}
+\newcommand{\funzip}{\textsc{Unzip}}
+\newcommand{\fover}{\textsc{Over}}
+\newcommand{\findex}{\textsc{Index}}
+
+\newcommand{\mget}{\textsc{MGet}}
+\newcommand{\mput}{\textsc{MPut}}
+\newcommand{\munzip}{\textsc{Munzip}}
+
+\newcommand{\inside}{\mathsf{inside}}
+\newcommand{\outside}{\mathsf{outside}}
+\newcommand{\once}{\mathsf{once}}
+\newcommand{\twice}{\mathsf{twice}}
+
+% Special arrows
+%\newcommand{\isoto}{\xrightarrow{\cong}}
+\newcommand{\hto}{\ensuremath{\,\mathaccent\shortmid\rightarrow\,}}
+
+\makeatletter
+\providecommand{\leftsquigarrow}{%
+  \mathrel{\mathpalette\reflect@squig\relax}%
+}
+\newcommand{\reflect@squig}[2]{%
+  \reflectbox{$\m@th#1\rightsquigarrow$}%
+}
+\makeatother
+
+% Draft helpers
+\newcommand{\todo}[1]{\textcolor{red}{\small #1}}
+
+\title{Mixed Optics}
+\author{Mitchell Riley}
+\affil{Wesleyan University \\ \texttt{mvriley@wesleyan.edu}}
+\begin{document}
+\maketitle
+
+\section{Mixed Optics}\label{sec:mixed-optics}
+
+We can generalise the definition of $\Optic$ so that the two halves lie in different categories, allowing us to capture a few more optic variants found in the wild. Suppose $\C_L$ and $\C_R$ are categories that are acted on by a common monoidal category $\M$. Write these actions as $\actL : \M \to [\C_L, \C_L]$ and $\actR : \M \to [\C_R, \C_R]$ respectively.
+
+\begin{definition}
+  Given two objects of $\C_L \times \C_R^\op$, say $(S, S')$ and $(A, A')$, an \emph{optic} $p : (S, S') \hto (A, A')$ is an element of the set
+  \begin{align*}
+    \Optic_{\actL, \actR}((S, S'), (A, A')) := \int^{M \in \M} \C_L(S, M \actL A) \times \C_R(M \actR A', S')
+  \end{align*}
+\end{definition}
+
+Several results from Section~\ref{sec:optics} have analogues in this setting.
+\begin{proposition}\label{prop:mixed-optic-is-cat}
+  $\Optic_{\actL, \actR}$ forms a category. \qed
+\end{proposition}
+\begin{proposition}
+  There is a functor $\iota : \C_L \times \C_R^\op \to \Optic_{\actL, \actR}$, which on objects is given by $\iota(S, S') = (S, S')$ and on a morphism $(f, g) : (S, S') \to (A, A')$ by \[\iota(f, g) = \rep{{(\lambda^{\C_L}_A)}^{-1} f}{g \lambda^{\C_R}_{A'}},\] where $\lambda^{\C_L}_A : A \to IA$ in $\C_L$ and $\lambda^{\C_R}_{A'} : A' \to IA'$ in $\C_R$. \qed
+\end{proposition}
+\begin{proposition}\label{prop:mixed-change-of-action}
+  Given two morphisms of actions $F_L : (\M, \C_L) \to (\N, \D_L)$ and $F_R : (\M, \C_R) \to (\N, \D_R)$, there is an induced functor $\Optic(F_L, F_R) : \Optic_{\actL_1, \actR_1} \to \Optic_{\actL_2, \actR_2}$. \qed
+\end{proposition}
+
+The notion of lawfulness used earlier breaks down in this setting, as the definition of $\Twoptic(S, A)$ only makes sense when $\C_L = \C_R$. The following definition gives a reasonable approximation.
+
+\begin{definition}
+If $F_L : (\M, \C_L) \to (\N, \D)$ and $F_R : (\M, \C_R) \to (\N, \D)$ are morphisms of actions, a mixed optic $p : (S, S) \hto (A, A)$ in $\Optic_{\actL, \actR}$ is \emph{lawful relative to $(F_L, F_R)$} if its image under $\Optic(F_L, F_R)$ in $\Optic_\N$ is lawful.
+\end{definition}
+
+\subsection{Degenerate Optics}
+ 
+The \mintinline{haskell}{Getter}s and \mintinline{haskell}{Review}s of the Haskell lens library corresponds simply to a morphisms $S \to A$ and $A' \to S'$ respectively. These are in fact examples of mixed optics.
+
+Recall that for any category $\C$, there is a category $\C_\codisc$ with the same objects, but where every homset is the singleton set. For any action of $\M$ on $\C$ there is a corresponding action of $\M$ on $\C_\codisc$ that has the same action on objects. There is a morphism of actions $i : (\M, \C) \to (\M, \C_\codisc)$.
+
+For a category with finite products $\C$, define $\Getter$ to be the category of mixed optics where $\C$ acts on $\C$ via $\times$ on the left, and on $\C_\codisc$ also by $\times$. This category is indeed equivalent to $\C$:
+\begin{align*}
+\Getter((S, S'), (A, A')) 
+&\defeq \int^{M \in \M} \C(S, M \times A) \times \C_\codisc(M \times A', S')\\
+&\cong \int^{M \in \M} \C(S, M \times A) \\
+&\cong \C(S, 1 \times A) \\
+&\cong \C(S, A)
+\end{align*}
+The only sensible notion of lawfulness for $\Getter$s is lawfulness relative to $(i, \id_{\C_\codisc})$, but all optics in $\Optic_{\C_\codisc}$ are trivially lawful.
+
+\begin{remark}
+If we we are working linearly, we should not expect $\Optic_{\otimes, \otimes_\codisc}$ to be described so neatly; the above isomorphism relies on the unit of the monoidal structure being terminal.
+\end{remark}
+
+One defines $\Review := \Optic_{\sqcup, \sqcup_\codisc}$ analogously. There are induced functors $\Optic(\id_\C, i) : \Lens \to \Getter$ and $\Optic(i, \id_\C) : \Prism \to \Review$.
+
+Finally, we can also encode the category of \mintinline{haskell}{Fold}s. In $\Set$, a fold $S \hto A$ corresponds to a function $S \to \mathrm{List}\,A$. Define 
+\begin{align*}
+\Fold := \Optic_{\Traversable, \C, \C_\codisc}
+\end{align*}
+The key is that the $\mathrm{List}$ functor is the terminal $\Traversable$ functor. We therefore have isomorphisms
+\begin{align*}
+&\int^{M \in \Traversable} \Set(S, MA) \times \Set_\codisc(MA', S') \\
+&\cong \int^{M \in \Traversable} \Set(S, MA) \\
+&\cong \Set(S, \mathrm{List}\,A)
+\end{align*}
+There is an induced functor $\Optic(\id_C, i) : \Traversal \to \Fold$.
+
+\subsection{Indexed Lenses}
+As well as giving a principled home to degenerate optics, the notion of mixed optics also allows us to describe \emph{indexed optics} categorically. The most interesting example of an indexed optic variant is the \emph{indexed traversal}, which, for example, allows one to know the index of an entry of a list as one is traversing it. As a warmup, however, let us look at \emph{indexed lenses}, which provide access to an index alongside a target, but do not allow updates to the index.
+
+Implementing indexed optics by `passing through' the indices is based on ideas from~\cite{IndexedOpticsPost}.
+
+Suppose $\C$ is cartesian closed. We define two actions of $\C$, the first on $\C$ and the second on $\C \times \C^\op$:
+\begin{align*}
+M \actL A  &:= M \times A\\
+M \actR (A, I) &:= (M \times A, \homC(M, I))
+\end{align*}
+
+\begin{definition}
+The category of \emph{indexed lenses} $\IdxLens$ in $\C$ is the category of mixed optics $\Optic_{\actL, \actR}$ with the actions as given above.
+\end{definition}
+Describing concrete indexed lenses is straightforward:
+\begin{align*}
+  &\Optic_{\actL, \actR}((S, (S', J')), (A, (A', I'))) \\
+  &= \int^{M \in \C} \C(S, M \actL A) \times (\C \times \C^\op)(M \actR (A', I'), (S', J')) \\
+  &\cong \int^{M \in \C} \C(S, M \times A) \times (\C \times \C^\op)((M \times A', \homC(M, I')), (S', J')) \\
+  &\cong \int^{M \in \C} \C(S, M \times A) \times \C(M \times A', S') \times \C^\op(\homC(M, I'), J') \\
+  &\cong \int^{M \in \C} \C(S, M \times A) \times \C(M \times A', S') \times \C(J', \homC(M, I')) \\
+  &\cong \int^{M \in \C} \C(S, M) \times \C(S, A) \times \C(M \times A', S') \times \C(M \times J', I') \\
+  &\cong \C(S, A) \times \C(S \times A', S') \times \C(S \times J', I')
+\end{align*}
+Let us call this third, new map $\findex : S \times J' \to I'$.
+
+The presence of $J'$ above allows us to chain together indexed lenses and have the the resulting lens remember both indices that appeared. Specifically, in practice our indexed lenses are of shape
+\[ 
+(S, (S, J)) \hto (A, (A, I \times J))
+\]
+and natural in $J$, so we can choose a specific instantiation of $J$ as necessary to make the indexed lenses composable. \todo{more detail?}
+
+There is a morphism of actions $U : (\actR, \C \times \C^\op) \to (\times, \C)$ that simply projects to the first component. An indexed lens is lawful relative to $(\id_\C, U)$ if the underlying lens is lawful. This \emph{doesn't}, however, guarantee some properties we might expect of a lawful lens. For example, we might prefer that $\fput$ does not change the index. It is unclear whether such a law fits in this framework.
+
+\begin{remark}
+There appears to be some flexibility in what actions we use to define indexed lenses. To have the indices behave covariantly rather than contravariantly, we could have $\C$ act on $\C$ and $\C \times \C$ as follows:
+\begin{align*}
+M \actL A &:= M \times A \\
+M \actR (A, I) &:= (M \times A, M \times I)
+\end{align*}
+which gives concrete optics in the form
+\begin{align*}
+\C(S, A) \times \C(S \times A', S') \times \C(S \times I', J').
+\end{align*}
+We chose the previous, slightly more contorted actions so that indexed lenses are more clearly related to indexed traversals, which we define presently.
+%We calculate:
+%\begin{align*}
+%  &\Optic_{\actL, \actR}((S, (S', J')), (A, (A', I'))) \\
+%  &\cong \int^{(M, R) \in \C \times \C} \C(S, (M, R) \actL A) \times (\C \times \C)((M, R) \actR (A', I'), (S', J')) \\
+%  &\cong \int^{(M, R) \in \C \times \C} \C(S, M \times R \times A) \times \C(M \times A', S') \times \C(R \times I', J') \\
+%  &\cong  \C(S, A) \times \C(S \times A', S') \times \C(S \times I', J')
+%\end{align*}
+\end{remark}
+
+\subsection{Indexed Traversals}
+
+Returning to indexed traversals, we first need to define indexed traversable functors. Unfortunately this has many moving parts! For simplicity we will restrict our attention to $\C = \Set$, although it may be possible to apply the results more generally.
+
+\begin{proposition}
+The assignment $F \act X \mapsto \Set(R, FX)$ extends to a lax action of $\App$ on $\Set$, called the \emph{$R$-indexed action of $\App$ on $\Set$}.
+\end{proposition}
+\begin{proof}
+The structure map for the lax action is given by the composite
+\begin{align*}
+F \act (G \act X) &= \Set(R, F\Set(R, GX)) \\
+&\to \Set(R, \Set(FR, FGX)) \\
+&\to \Set(R \times FR, FGX) \\
+&\to \Set(R \times R, FGX) \\
+&\to \Set(R, FGX) = (FG) \act X
+\end{align*}
+\todo{more}
+\end{proof}
+
+\begin{definition}
+A \emph{traversable functor indexed by $R$} is a functor $T : \Set \to \Set$ equipped with a distributive law $\delta_F : T(\Set(R, F-)) \to FT$ for $T$ between the $R$-indexed action of $\App$ on $\Set$ and the (unindexed) action of $\App$ on $\Set$ by evaluation.
+\end{definition}
+
+\begin{definition}
+The category of \emph{indexed traversable functors} $\IdxTraversable$ has as objects pairs $(T, R)$, where $R \in \Set$ and $T : \Set \to \Set$ is a traversable functor indexed by $R$. A morphism $(T, R) \to (T', R')$ is a natural transformation $\alpha : T \Rightarrow T'$ and morphism (note the direction!) $r : R' \to R$, such that $\alpha$ commutes with the distributive laws on both traversable functors, using $r$ to mediate between the index objects. \todo{draw this out}
+\end{definition}
+
+\begin{proposition}
+$\IdxTraversable$ acts on $\C \times \C$ by $(T, R) \act (A, I) \mapsto (TA, \homC(R, I))$ and on $\C$ simply by $(T, R) \act A \mapsto TA$.
+\end{proposition}
+
+\begin{conjecture}
+The category of indexed traversals corresponds to the category of mixed optics with the action of $\IdxTraversable$ on $\C \times \C$ on the left and $\C$ on the right.
+\end{conjecture}
+
+
+\subsection{Implementation}
+\todo{todo?}
+There is a notion of Tambara module structure for profunctors between two different categories. This allows us to re-derive the profunctor encoding for degenerate optics. For example, in the case of \mintinline{haskell}{Getter}s, a profunctor $P : \C^\op \times \C_\mathsf{codisc}$ essentially ignores its covariant argument. This is captured exactly by the `\mintinline{haskell}{RightPhantom}' typeclass or its equivalent in profunctor optic libraries.
+
+\bibliographystyle{alpha}
+\bibliography{optics.bib}
+\end{document}

@@ -184,6 +184,10 @@
 \begin{document}
 \maketitle
 
+\begin{abstract}
+Bidirectional data accessors such as lenses, prisms and traversals are all instances of the same general `optic' construction. We give a careful account of this construction and show that it extends to a functor from the category of symmetric monoidal categories to itself. We also show that this construction enjoys a universal property: it freely adds counit morphisms to a symmetric monoidal category. Missing in the folklore is a general definition of `lawfulness' that applies directly to any optic category. We provide such a definition and show that it is equivalent to the folklore profunctor optic laws.
+\end{abstract}
+
 \setcounter{tocdepth}{1}
 \setlength\cftparskip{-8pt}
 \microtypesetup{protrusion=false}
@@ -239,7 +243,7 @@ Lenses form a category, with the composition of two lenses $(\fget_1, \fput_1) :
 \end{align*}
 If the two input lenses are lawful then the composite is as well, so we find there is a subcategory of lawful lenses.
 
-Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals and more. These are collectively called \emph{optics} and have been best explored in the widely uesd Haskell \lenslib{} library: see~\cite{LensLibrary}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved, similar to the pair $(\fget, \fput)$ above and the lens laws. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} in a sufficiently general way to encompass almost all the optic variants in use in the wild, using lenses as a running example. The category of lenses is precisely the result of this construction when applied to a category with finite products. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see that these generic definitions specialise correctly to the other basic varieties of optic, including the laws. % We include in Section~\ref{sec:mixed-optics} a more speculative discussion of ``mixed optics'', which include indexed and coindexed lenses and traversals.
+Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals and more. These are collectively called \emph{optics} and have been best explored in the widely uesd Haskell \lenslib{} library: see~\cite{LensLibrary}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved, similar to the pair $(\fget, \fput)$ above and the lens laws. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} for a symmetric monoidal category in a sufficiently general way to encompass almost all the optic variants in use in the wild, using lenses as a running example. The category of lenses is precisely the result of this construction when applied to a symmetric monoidal category where the tensor is given by binary product. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see that these generic definitions specialise correctly to the other basic varieties of optic, including the laws. % We include in Section~\ref{sec:mixed-optics} a more speculative discussion of ``mixed optics'', which include indexed and coindexed lenses and traversals.
 
 In the Haskell \lenslib{} library, optics are written in a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given in Section~\ref{sec:optics}. As this was being written, Milewski~\cite{ProfunctorOpticsPost} and Boisseau and Gibbons~\cite{YouNeeda} independently described the isomorphism between optics and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we review this isomorphism and verify that the folklore profunctor optic laws are equivalent to lawfulness as defined here.
 
@@ -979,7 +983,7 @@ This also holds for monoidal categories that are not necessarily strict, if unit
 %    &= (FA \otimes \varepsilon_{FN} \otimes (FA')^*)(F(s_{N,A}l) \otimes (F(r(f \otimes A')s_{A',N}))^* ) \\
 %    &= K\rep{ l}{r (f \otimes A')}
 %  \end{align*}
-There are now several things to check.
+It remains to show that $K$ so defined is indeed a strict teleological functor. There are several things to check:
 \begin{itemize}
 \item Well-definedness: Suppose we have two optics related by the coend relation:
   \begin{align*}

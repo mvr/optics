@@ -15,7 +15,7 @@
 % \usepackage{marvosym}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 %\usepackage{geometry}
-\usepackage{minted}
+\usepackage[frozencache]{minted}
 \usepackage{cite}
 \usepackage{multicol}
 \usepackage{tocloft}
@@ -178,7 +178,7 @@
 % Draft helpers
 \newcommand{\todo}[1]{\textcolor{red}{\small #1}}
 
-\title{Categories of Optics (Draft)}
+\title{Categories of Optics}
 \author{Mitchell Riley}
 \affil{Wesleyan University \\ \texttt{mvriley@wesleyan.edu}}
 \begin{document}
@@ -239,21 +239,21 @@ Lenses form a category, with the composition of two lenses $(\fget_1, \fput_1) :
 \end{align*}
 If the two input lenses are lawful then the composite is as well, so we find there is a subcategory of lawful lenses.
 
-Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals and more. These are collectively called \emph{optics} and have been best explored in the widely uesd Haskell \lenslib{} library: see~\cite{LensLibrary}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} in a sufficiently general way to encompass almost all the optic variants in use in the wild, using lenses as a running example. The category of lenses is precisely the result of this construction when applied to a category with finite products. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see that these generic definitions specialise correctly to the other basic varieties of optic, including the laws. % We include in Section~\ref{sec:mixed-optics} a more speculative discussion of ``mixed optics'', which include indexed and coindexed lenses and traversals.
+Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals and more. These are collectively called \emph{optics} and have been best explored in the widely uesd Haskell \lenslib{} library: see~\cite{LensLibrary}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved, similar to the pair $(\fget, \fput)$ above and the lens laws. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} in a sufficiently general way to encompass almost all the optic variants in use in the wild, using lenses as a running example. The category of lenses is precisely the result of this construction when applied to a category with finite products. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see that these generic definitions specialise correctly to the other basic varieties of optic, including the laws. % We include in Section~\ref{sec:mixed-optics} a more speculative discussion of ``mixed optics'', which include indexed and coindexed lenses and traversals.
 
-In the Haskell \lenslib{} library, optics are written in a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given in Section~\ref{sec:optics}. As this was being written, Bartosz Milewski~\cite{ProfunctorOpticsPost} independently described the isomorphism between optics and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we review this equivalence and verify that the folklore profunctor optic laws are equivalent to lawfulness as defined here.
+In the Haskell \lenslib{} library, optics are written in a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given in Section~\ref{sec:optics}. As this was being written, Milewski~\cite{ProfunctorOpticsPost} and Boisseau and Gibbons~\cite{YouNeeda} independently described the isomorphism between optics and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we review this isomorphism and verify that the folklore profunctor optic laws are equivalent to lawfulness as defined here.
 
-More recently, concrete lenses have found use in compositional game theory~\cite{CompositionalGameTheory}. The $\fget$ function is thought of as mapping observations on the state of play to choices of what move to make. The $\fput$ function computes the utility of the moves that the players make. There is interest in generalising this to a probabilistic setting, but it is not clear what the right replacement for concrete lenses is.
+More recently, concrete lenses have found use in compositional game theory~\cite{CompositionalGameTheory}. The $\fget$ function is thought of as mapping observations on the state of play to choices of what move to make. The $\fput$ function computes the utility of the moves that the players make. There is interest in generalising this to a probabilistic setting, but it is not yet clear what the right replacement for concrete lenses is.
 
-Much of what is known about optics is folklore, and careful verification of some of their categorical properties has been lacking. The aim of the present paper is to fill this gap, with the hope that a better understanding of the general structure of these categories will make it easier to generalise to new and exotic settings. This is particularly important with the advent of linear types in Haskell, enabling a new branch of the lens family tree, and also with the new applications to game theory.
+Much of what is known about optics is folklore, and careful verification of some of their categorical properties has been lacking, especially when working in categories other than $\Set$ (or $\Set$-like categories such as $\mathbf{Hask}$). The aim of the present paper is to fill this gap, with the hope that a better understanding of the general structure of these categories will make it easier to generalise to new and exotic settings. This is particularly important with the advent of linear types in Haskell, enabling a new branch of the lens family tree, and also with the new applications to game theory.
 
 \subsection{Contributions}
   \begin{itemize}
-  \item An careful account of the folkloric optic construction in an arbitrary symmetric monoidal category $\C$, summarised compactly as giving a functor $\Optic : \SymmMonCat \to \SymmMonCat$ (Section~\ref{sec:optics}),
-  \item A characterisation of the $\Optic$ construction as freely adding counits to a set of `dualisable morphisms' (Section~\ref{sec:teleological-categories}),
-  \item A definition of lawfulness for a general optic category that specialises in the correct way to known cases and allows us to easily derive concrete laws for new kids of optic (Section~\ref{sec:lawful-optics}),
+  \item A careful account of the folklore optic construction in an arbitrary symmetric monoidal category $\C$, which we show extends to a functor $\Optic : \SymmMonCat \to \SymmMonCat$ (Section~\ref{sec:optics}),
+  \item A universal property of the $\Optic$ construction as freely adding counits to a category of `dualisable morphisms' (Section~\ref{sec:teleological-categories}),
+  \item A definition of lawfulness for a general optic category that specialises in the correct way to known cases and allows us to derive concrete laws for new kinds of optic (Section~\ref{sec:lawful-optics}),
   \item Commentary on the optic variants used most frequently in the wild (Section~\ref{sec:examples}),
-  \item A proof that lawfulness as defined here is equivalent to the folklore profunctor lens laws. (Section~\ref{sec:profunctor-optics})
+  \item A proof that lawfulness as defined here is equivalent to the folklore profunctor optic laws (Section~\ref{sec:profunctor-optics}).
   \end{itemize}
 
 \subsection{(Co)ends and Yoneda Reduction}
@@ -500,8 +500,6 @@ There are some other easy-to-construct optics; specifically, optics out of  and 
   by Yoneda reduction, so a state $\rep{l}{r} : (S, S') \hto (I, I)$ corresponds to the morphism $rl : S \to S'$, and a morphism $f : S \to S'$ corresponds to the state $\rep{\rho_S^{-1}}{f \rho_S} : (S, S') \hto (I, I)$
 \end{proof}
 
-%\todo{Is there a relationship between $\Optic_\C/(I, I)$ and $[2, \C]$?}
-
 In particular, for any $S \in \C$, the identity $\id_S$ yields an optic $c_S = \rep{\rho_S^{-1}}{\rho_S} : (S, S) \hto (I, I)$ that we call the \emph{connector}:
 %\begin{center}
 %  \input{diagrams/connector-full.tikz}
@@ -558,38 +556,6 @@ In particular, for any $S \in \C$, the identity $\id_S$ yields an optic $c_S = \
     \input{diagrams/tensor-functorial-right.tikz}
   \end{center}
   These two diagrams are equivalent: we can use the naturality of the symmetry morphism to push $l_2$ and $r_2$ past the crossing to be next to $l_1$ and $r_1$ respectively. This creates two extra twists that can be cancelled in the center of the diagram.
-
-  %%%% Note: The following is the above argument written equationally:
-  % For future convenience, note that
-  % \begin{align*}
-  %   \langle l, r \rangle \otimes (T, T') &= \langle (M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T') \rangle \\
-  %   &= \langle (\lambda^{-1}_M \otimes A \otimes T)(M \otimes s_{A,I} \otimes T)(l \otimes \lambda_T), (r \otimes \lambda^{-1}_{T'})(M \otimes s_{A',I}\otimes T')(\lambda_M \otimes A' \otimes T') \rangle \\
-  %   &= \langle l \otimes T, r \otimes T' \rangle
-  % \end{align*}
-  % Now we check functoriality. Suppose we have:
-  % \begin{align*}
-  %   \langle l_1, r_1 \rangle : (S_1, S_1') &\hto (S_2, S_2') \\
-  %   \langle l_2, r_2 \rangle : (S_2, S_2') &\hto (S_3, S_3') \\
-  %   \langle p_1, q_1 \rangle : (T_1, T_1') &\hto (T_2, T_2') \\
-  %   \langle p_2, q_2 \rangle : (T_2, T_2') &\hto (T_3, T_3')
-  % \end{align*}
-  % with residuals $M_1, M_2, N_1, N_2$ respectively. Then: \todo {(This is a mess. String diagram?)}
-  % \begin{align*}
-  %   &(\langle l_2, r_2 \rangle \otimes \langle p_2, q_2 \rangle) \circ (\langle l_1, r_1 \rangle \otimes \langle p_1, q_1 \rangle) \\
-  %   = \; &\langle (M_2 \otimes s_{S_3,N_2} \otimes T_3)(l_2 \otimes p_2), (r_2 \otimes q_2)(M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-  %   &\circ \langle (M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), (r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2') \rangle \\
-  %   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes N_1 \otimes l_2 \otimes p_2)(M_1 \otimes s_{S_2,N_1} \otimes T_2)(l_1 \otimes p_1), \\
-  %   &\;(r_1 \otimes q_1)(M_1 \otimes s_{S_2',N_1} \otimes T_2')(M_1 \otimes N_1 \otimes r_2 \otimes q_2)(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-  %   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)(M_1 \otimes  l_2 \otimes N_1 \otimes p_2)(l_1 \otimes p_1), \\
-  %   &\;(r_1 \otimes q_1)(M_1 \otimes r_2 \otimes N_1 \otimes q_2)(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-  %   = \; & \langle (M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3,N_2} \otimes T_3)(M_1 \otimes s_{(M_2 \otimes S_3),N_1} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1), \\
-  %   &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes s_{(M_2 \otimes S_3'),N_1} \otimes T_3')(M_1 \otimes N_1 \otimes M_2 \otimes s_{S_3',N_2} \otimes T_3') \rangle \\
-  %   = \; & \text{\todo{(Add a $s_{M_2, N_1}$ to either side of the coend, then appeal to coherence)}} \\
-  %   = \; &\langle (M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S_3} \otimes T_3)((M_1 \otimes l_2)l_1\otimes (N_1 \otimes p_2)p_1) ,  \\
-  %   &\;(r_1(M_1 \otimes r_2) \otimes q_1(N_1 \otimes q_2))(M_1 \otimes M_2 \otimes s_{(N_1 \otimes N_2),S'_3} \otimes T'_3) \rangle \\
-  %   = \; &\langle (M_1 \otimes l_2)l_1, r_1(M_1 \otimes r_2) \rangle \otimes \langle (N_1 \otimes p_2)p_1, q_1(N_1 \otimes q_2) \rangle \\
-  %   = \; &(\langle l_2, r_2 \rangle  \circ \langle l_1, r_1 \rangle) \otimes (\langle p_2, q_2 \rangle \circ \langle p_1, q_1 \rangle)
-  % \end{align*}
 
   The structure morphisms are all lifted from the structure morphisms in $\C \times \C^\op$:
   \begin{align*}
@@ -797,8 +763,8 @@ We now define the structure on a symmetric monoidal category universally provide
 \begin{definition}[Compare {\cite[Definition 5.1]{CoherenceForLenses}}]
   A \emph{teleological category is} a symmetric monoidal category $(\T, \teletimes, I)$, equipped with:
   \begin{itemize}
-  \item A symmetric monoidal subcategory $\T_d$ of \emph{dualisable morphisms} containing all the objects of $\T$, with an involutive symmetric monoidal functor ${(-)}^* : \T_d \to \T_d^\op$, where---not finding a standard symbol for such a thing---we mean $\T_d^\op$ to be the category with both the direction of the arrows \emph{and} the order of the tensor flipped: ${(A \otimes B)}^* \cong B^* \otimes A^*$. Note that there is therefore also a canonical isomorphism $\phi : I \cong I^*$
-  \item A symmetric monoidal extranatural family of morphisms $\varepsilon_X : X \otimes X^* \to I$, called \emph{counits}, natural with respect to the dualisable morphisms.
+  \item A symmetric monoidal subcategory $\T_d$ of \emph{dualisable morphisms} containing all the objects of $\T$, with an involutive symmetric monoidal functor ${(-)}^* : \T_d \to \T_d^\op$, where---not finding a standard symbol for such a thing---we mean $\T_d^\op$ to be the category with both the direction of the arrows \emph{and} the order of the tensor flipped: ${(A \teletimes B)}^* \cong B^* \teletimes A^*$. Note that there is therefore also a canonical isomorphism $\phi : I \cong I^*$
+  \item A symmetric monoidal extranatural family of morphisms $\varepsilon_X : X \teletimes X^* \to I$, called \emph{counits}, natural with respect to the dualisable morphisms.
   \end{itemize}
 \end{definition}
 Unpacking the definition, $\varepsilon$ being a symmetric monoidal extranatural transformation amounts to the following diagrams in $\T$ commuting:
@@ -852,10 +818,10 @@ where $f : X \to Y$ is dualisable.
 Note that because $\T_d$ is symmetric monoidal and has the same collection of objects as $\T$, the symmetric monoidal structure morphisms of $\T$ must be contained in $\T_d$ and so are dualisable.
 
 \begin{example}
-  Any compact closed category is a teleological category, where every morphism is dualisable and the unit morphisms have been forgotten.
-\end{example}
-\begin{example}
-  Any symmetric monoidal category with terminal monoidal unit is trivially teleological, setting the dualisable morphisms to be all isomorphisms.
+  ~\begin{enumerate}[(1)]
+  \item Any compact closed category is a teleological category, where every morphism is dualisable and the unit morphisms have been forgotten.
+  \item Any symmetric monoidal category with terminal monoidal unit is trivially teleological, setting the dualisable morphisms to be all isomorphisms.
+  \end{enumerate}
 \end{example}
 
 This definition of teleological category differs from the original given in~\cite{CoherenceForLenses}, in that the duality switches the order of the tensor product. We do this so that compact closed categories are teleological, but the bookkeeping does admittedly become more confusing.
@@ -874,7 +840,7 @@ This definition of teleological category differs from the original given in~\cit
   \]
 \end{definition}
 
-Together we have $\Tele$, the subcategory of $\SymmMonCat$ given by teleological categories and teleological functors. There are evident functors 
+Together we have $\Tele$, the category of teleological categories and teleological functors. There are evident functors 
 \begin{align*}
 U &: \Tele \to \SymmMonCat \\
 {(-)}_d &: \Tele \to \SymmMonCat 
@@ -1550,7 +1516,7 @@ If we ask more of our category $\C$, we can show that a lens $S \hto A$ implies 
                                 &= [j\fput (i \times A), \pi_2] && \\
                                 &= [jij\fput (i \times A), \pi_2] && \\
                                 &= [j\fput [\id_S,x !_S] \fput (i \times A), \pi_2] && \\
-                                &= [j\fput [\id_S, x !_S] \pi_1 (i \times A), \pi_2] && \text{(by $\fput\fput$)}\\ %  \todo{todo: detail}
+                                &= [j\fput [\id_S, x !_S] \pi_1 (i \times A), \pi_2] && \text{(by $\fput\fput$)}\\   
                                 &= [jij \pi_1 (i \times A), \pi_2] && \\
                                 &= [jiji \pi_1, \pi_2] && \\
                                 &= [\pi_1, \pi_2] && \\
@@ -1573,7 +1539,7 @@ For example, the ``change counter'' lens $\bN \times A \hto A$ from~\cite{AClear
   \end{align*}
   This example is typical of (merely) well-behaved lenses: there is metadata stored alongside the target of a lens that mutates as the lens is used.
 
-Lenses that satisfy the first two laws correspond to pairs $\rep{l}{r}$ such that $rl = \id_S$ and $\pi_2lr = \pi_2$. This condition seems unavoidably tied to the product structure on $\C$; there is no obvious way generalise this to other optics variants.
+Lenses that satisfy only the two laws correspond to pairs $\rep{l}{r}$ such that $rl = \id_S$ and $\pi_2lr = \pi_2$. This condition seems unavoidably tied to the product structure on $\C$; there is no obvious way generalise this to other optics variants.
 \end{remark}
 
 %\begin{example}
@@ -1835,7 +1801,7 @@ in $[\C, \C]$ commute.
 \end{definition}
 
 \begin{definition}
-The category $\Traversal$ of traversals is the category of lawful optics for the action of $\Traversable$ on $\Set$ given by evaluation. (Yes, the names $\Traversal$/$\Traversable$ are confusing!)
+The category $\Traversal$ of traversals is the category of optics for the action of $\Traversable$ on $\Set$ given by evaluation. (Yes, the names $\Traversal$/$\Traversable$ are confusing!)
 \end{definition}
 
 %\todo{The rest of this section should probably be rewritten to use the free applicative functor instead of the confusing parameterised comonad business}
@@ -2545,7 +2511,7 @@ type Lens s s' a a' = forall p. Strong p => p a a' -> p s s'
 \end{minted}
 where we use parametricity in \mintinline{haskell}{p} as a proxy for naturality. A profunctor lens 
 \begin{minted}{haskell}
-l : forall p. Strong p => p a a -> p s s}
+l :: forall p. Strong p => p a a -> p s s
 \end{minted}
 is lawful if it is monoidal as a natural transformation. In code this is:
 \begin{minted}{haskell}
@@ -2574,9 +2540,9 @@ type Lens s a      = forall f. Functor f     => (a -> f a) -> (s -> f s)
 type Traversal s a = forall f. Applicative f => (a -> f a) -> (s -> f s)
 type Setter s a    = forall f. Settable f    => (a -> f a) -> (s -> f s)
 \end{minted}
-What allows such a description to work for these optic variants is that the Tambara module that characterises them, $\Pastro_\M E_A$, can be written in the form \mintinline{haskell}{a -> f a} with \mintinline{haskell}{f} an instance of the corresponding typeclass. Specifically, these are the optics that admit a coalgebraic description; the ones for which the evaluation-at-$A$ functor has a right adjoint.
+What allows such a description to work for these optic variants is that the Tambara module that characterises them, $\Pastro_\M E_A$, can be written in the form $\C(-, \mintinline{haskell}{f}=)$ for some \mintinline{haskell}{f} that is an instance of the corresponding typeclass. This is possible in particular for the optic variants that admit a coalgebraic description; the ones for which the evaluation-at-$A$ functor has a right adjoint.
 
-No expressive power is lost by restricting an optic to operate only on functions of shape \mintinline{haskell}{a -> f a}, as the entire concrete description of the optic can be extracted from its value on that particular Tambara module. The same is not true for other optic variants, and indeed in the Haskell \lenslib{} library, \mintinline{haskell}{Prism}s and \mintinline{haskell}{Review}s use the profunctor encoding.
+No expressive power is lost by defining an optic to operate only on functions of the shape \mintinline{haskell}{a -> f a'}, as the entire concrete description of the optic can be extracted from its value on that particular Tambara module. The same is not true for other optic variants, and indeed in the Haskell \lenslib{} library, \mintinline{haskell}{Prism}s and \mintinline{haskell}{Review}s use the profunctor encoding.
 
 A consequence is that the laws typically given for $\Traversal$s actually only need to be checked for the applicative functor we earlier called $UR^*$. In Haskell this functor is implemented as \mintinline{haskell}{FunList}~\cite{FunListPost} or \mintinline{haskell}{Bazaar}~\cite{LensLibrary}.
 
@@ -2616,7 +2582,7 @@ We can rewrite this in a form that gives hope for a correspondence with some opt
 
 %\todo{I don't know if this is known:}
 \begin{theorem}
-The data of a c-lens $S \hto A$ corresponds to a functor \[ S \to \int \Cat ((- / A), S) \] where $(-/A)$ denotes the slice category and $\int$ denotes (confusingly!) the Grothendieck construction.
+The data of a c-lens $S \hto A$ corresponds to a functor \[ S \to \int [(- / A), S] \] where $(-/A)$ denotes the slice category and $\int$ denotes (confusingly!) the Grothendieck construction.
 
 Furthermore, a c-lens lawful iff it is a coalgebra for the comonad of the adjunction
 \[

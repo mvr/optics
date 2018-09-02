@@ -33,6 +33,7 @@ tags
 # *.eps
 *.pdf
 /_minted-paper/
+/_minted-optics/
 /auto/
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):

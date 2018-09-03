@@ -15,7 +15,7 @@
 % \usepackage{marvosym}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 %\usepackage{geometry}
-\usepackage[frozencache]{minted}
+\usepackage{minted}
 \usepackage{cite}
 \usepackage{multicol}
 \usepackage{tocloft}
@@ -425,7 +425,7 @@ that have residuals $M$, $N$ and $P$ respectively. We must choose these represen
 
   For the unit laws, suppose we have $\rep{l}{r} : (S, S') \hto (A, A')$ with representative $M$. We calculate:
   \begin{align*}
-    \id_{A, A'} \circ \rep{l}{r}
+    \id_{A, A'} \circ \rep{l}{r} \\
     &= \rep{\lambda^{-1}_A}{\lambda_{A'}} \circ \rep{l}{r} \\
     &= \rep{(M \otimes \lambda^{-1}_A) l}{r (M \otimes  \lambda_{A'})} \\
     &= \rep{(\rho^{-1}_M \otimes  A) l}{r (\rho_M \otimes A')} \\
@@ -443,8 +443,11 @@ that have residuals $M$, $N$ and $P$ respectively. We must choose these represen
 
   Note that the homsets of $\Optic_\C$ are given by a coend indexed by a possibly large category. If $\C$ is small then the coends always exist, but if not, their existence is not guaranteed by the cocompleteness of $\Set$. In this case we should be careful to only discuss optic categories where we know that the coends exist by some other means, e.g., by exhibiting an isomorphism of $\Optic_\C((S, S'), (A, A'))$ with a set. For all of the examples we give later we provide such a isomorphism.
 
-\begin{remark}
-If $\C$ is a category with finite products, then $\Lens \defeq \Optic_\C$ is the category of lenses described in the introduction, so long as we restrict to optics of shape $(S, S) \hto (A, A)$. We see that optics correspond to pairs of $\fget$ and $\fput$ functions via the following isomorphisms:
+\begin{proposition}
+If $\C$ is a category with finite products, then $\Lens \defeq \Optic_\C$ is the category of lenses described in the introduction, so long as we restrict to optics of shape $(S, S) \hto (A, A)$. 
+\end{proposition}
+\begin{proof}
+We see that optics correspond to pairs of $\fget$ and $\fput$ functions via the following isomorphisms:
 \begin{align*}
   \Lens((S, S'), (A, A'))
   &= \int^{M \in \C} \C(S, M \times A) \times \C(M \times A', S') \\
@@ -456,7 +459,7 @@ This last step deserves some explanation. We are applying the isomorphism $KX \c
 Explicitly the isomorphism states that, given an optic $\rep{l}{r} : (S, S') \hto (A, A')$, the corresponding concrete lens is the pair $\fget : S \to A$ and $\fput : S \times A' \to S'$, where $\fget = \pi_2 l$ and $\fput = r (\pi_1 l \times A)$. In the other direction, given $(\fget, \fput)$, the corresponding optic is represented by $\rep{[\id_S, \fget]}{\fput}$.
 
 We leave it to the reader to verify that composition in $\Lens$ corresponds to ordinary composition of concrete lenses using this isomorphism in both directions. (Of course, there is only one sensible way to compose such a collection of morphisms!)
-\end{remark}
+\end{proof}
 
 %The remainder of this section comprises some useful observations that were not made in~\cite{Doubles}.
 
@@ -585,7 +588,7 @@ The remainder of this section comprises a proof of the following fact:
   \begin{align*}
     \Optic(F)(\rep{l}{r}) := \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}}
   \end{align*}
-  where $\phi_{M,A} : FM \otimes FA \to F(M \otimes A)$ denotes the structure map of the monoidal functor. Graphically:
+  where $\phi_{M,A} : FM \otimes FA \to F(M \otimes A)$ and $\phi_I : I \to FI$ denote the structure maps of the monoidal functor. Graphically:
   \begin{center}
     \input{diagrams/induced-by-functor.tikz}
   \end{center}
@@ -594,27 +597,38 @@ The remainder of this section comprises a proof of the following fact:
 
   This preserves identities:
   \begin{align*}
-  \Optic(F)(\id_{(S, S')})
-  &= \Optic(F)(\rep{\lambda^{-1}_S}{\lambda_{S'}}) \\
-  &= \rep{\phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}} \\
-  &= \rep{(\phi^{-1} \otimes S) \phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}(\phi \otimes S) } \\
-  &= \rep{(\phi^{-1} \otimes S) \phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}(\phi \otimes S) } \\
-  &= \rep{\lambda^{-1}_{FS}}{\lambda_{FS'}} \\
+  &\Optic(F)(\id_{(S, S')}) \\
+  &= \Optic(F)(\rep{\lambda^{-1}_S}{\lambda_{S'}}) &&\text{(Definition of $\id$)} \\
+  &= \rep{\phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}} && \text{(Definition of $\Optic(F)$)} \\
+  &= \rep{(\phi_I^{-1} \otimes S) \phi^{-1}_{I,S} (F\lambda^{-1}_S)}{(F\lambda_{S'}) \phi_{I,S'}(\phi_I \otimes S) } && \text{(Introducing isomorphism to both sides)} \\
+  &= \rep{\lambda^{-1}_{FS}}{\lambda_{FS'}} &&\text{($F$ is a monoidal functor)} \\
   &= \id_{(FS, FS')}
   \end{align*}
   And given two optics $\rep{l}{r} : (S, S') \hto (A, A')$ and $\rep{l'}{r'} : (R, R') \hto (S, S')$ with residuals $M$ and $M'$, it preserves composition:
+\begingroup
+\allowdisplaybreaks
 \begin{align*}
 &\Optic(F)(\rep{l}{r} \circ \rep{l'}{r'})  \\
+&\qquad \text{(Definition of $\circ$)} \\
 &= \Optic(F)(\rep{(M' \otimes l)l'}{r'(M' \otimes r)}) \\
+&\qquad \text{(Definition of $\Optic(F)$)} \\
 &= \rep{\phi^{-1}_{M' \otimes M,A} F((M' \otimes l)l')}{F(r'(M' \otimes r)) \phi_{M' \otimes M,A'}} \\
+&\qquad \text{(Functoriality of $F$)} \\
 &= \rep{\phi^{-1}_{M' \otimes M,A} F(M' \otimes l)(Fl')}{(Fr') F(M' \otimes r) \phi_{M' \otimes M,A'}} \\
+&\qquad \text{(Introducing isomorphism to both sides)} \\
 &= \rep{(\phi^{-1}_{M', M} \otimes A)\phi^{-1}_{M' \otimes M,A} F(M' \otimes l)(Fl')}{(Fr') F(M' \otimes r) \phi_{M' \otimes M,A'}(\phi_{M', M} \otimes A)} \\
+&\qquad \text{(Hexagon axiom for $F$)} \\
 &= \rep{(FM' \otimes \phi^{-1}_{M,A})\phi^{-1}_{M',M \otimes A}(F(M' \otimes l)) (Fl')}{(Fr') (F(M' \otimes r)) \phi_{M',M \otimes A'}  (FM' \otimes \phi_{M,A'})} \\
+&\qquad \text{(Naturality of $\phi$)} \\
 &= \rep{(FM' \otimes \phi^{-1}_{M,A})(FM' \otimes Fl)\phi^{-1}_{M',S} (Fl')}{(Fr') \phi_{M',S'} (FM' \otimes Fr) (FM' \otimes \phi_{M,A'})} \\
+&\qquad \text{(Functoriality of $\otimes$)} \\
 &= \rep{(FM' \otimes \phi^{-1}_{M,A} (Fl))(\phi^{-1}_{M',S} (Fl'))}{((Fr') \phi_{M',S'})(FM' \otimes (Fr) \phi_{M,A'})} \\
+&\qquad \text{(Definition of $\circ$)} \\
 &= \rep{\phi^{-1}_{M,A} (Fl)}{(Fr) \phi_{M,A'}} \circ \rep{\phi^{-1}_{M',S} (Fl')}{(Fr') \phi_{M',S'}} \\
+&\qquad \text{(Definition of $\Optic(F)$)} \\
 &= \Optic(F)(\rep{l}{r}) \circ \Optic(F)(\rep{l'}{r'})
 \end{align*}
+\endgroup
 The critical move is adding the isomorphism $(\phi_{M', M} \otimes A)$ to both sides of the coend, so that the hexagon axiom for $F$ may be applied.
 \end{proof}
 
@@ -625,12 +639,18 @@ $\iota$ commutes with $\Optic(F)$, in the sense that
 \begin{proof}
 This is a straightforward calculation:
   \begin{align*}
-    \Optic(F)(\iota(f, g))
+    & \Optic(F)(\iota(f, g)) \\
+    &\qquad \text{(Definition of $iota$)} \\    
     &= \Optic(F)(\rep{\lambda_A^{-1} f}{g \lambda_{A'}}) \\
+    &\qquad \text{(Definition of $\Optic(F)$)} \\    
     &= \rep{\phi^{-1}_{I,A} (F(\lambda_A^{-1} f))}{(F(g \lambda_{A'})) \phi_{I,A'}} \\
+    &\qquad \text{(Functoriality of $F$)} \\    
     &= \rep{\phi^{-1}_{I,A} (F\lambda_A^{-1}) (Ff)}{(Fg)(F \lambda_{A'}) \phi_{I,A'}} \\
+    &\qquad \text{(Introducing $\phi_I$ to both sides)} \\    
     &= \rep{(\phi^{-1}_I \otimes FA) \phi^{-1}_{I,A} (F\lambda_A^{-1}) (Ff)}{(Fg)(F \lambda_{A'}) \phi_{I,A'} (\phi_I \otimes FA)} \\
+    &\qquad \text{($F$ is a monoidal functor)} \\    
     &= \rep{\lambda_{FA}^{-1} (Ff)}{(Fg)\lambda_{FA'}} \\
+    &\qquad \text{(Definition of $\iota$)} \\    
     &= \iota(Ff, Fg)
   \end{align*}
 \end{proof}
@@ -671,7 +691,7 @@ The structure morphisms for monoidality are given by lifting the structure morph
 \phi_{(S, S'), (T, T')} &:= \iota(\phi_{S, T}, \phi_{S', T'}) &&: F(S, S') \otimes F(T, T') \hto F((S, S') \otimes (T, T')) \\
 \phi &:= \iota(\phi, \phi) &&: (I, I) \hto F(I, I)
 \end{align*}
-The monoidality axioms follow by lifting the axioms for $F$. Naturality follows by Proposition~\ref{prop:iota-naturality}.
+The monoidality axioms follow by lifting the axioms for $F$ and naturality follows by Proposition~\ref{prop:iota-naturality}.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:optic-functor}]
@@ -708,7 +728,7 @@ where $\phi$ and $\psi$ denote the structure maps for $F$ and $G$ respectively, 
 This doesn't extend to a strict 2-functor $\SymmMonCat \to \SymmMonCat$, as there is only an action of $\Optic$ on natural \emph{isomorphisms}. It is however functorial on natural isomorphisms, giving a 2-functor on the `homwise-core' of $\SymmMonCat$. We do not explore this any further in the present note.
 
 \begin{proposition}
-  If $\C$ is a strict symmetric monoidal category then $\Optic_\C$ is strict, and $\iota : \C \times \C^\op \to \Optic_\C$ is a strict monoidal functor. For $F$ a strict monoidal functor, the induced $\Optic(F)$ is also strict.
+  If $\C$ is a strict symmetric monoidal category then $\Optic_\C$ is strict, and $\iota : \C \times \C^\op \to \Optic_\C$ is a strict monoidal functor. For $F : \C \to \D$ a strict monoidal functor, the induced functor $\Optic(F) : \Optic_\C \to \Optic_\D$ is also strict.
 \end{proposition}
 \begin{proof}
   The structure maps of $\Optic_\C$ are given by $\iota$ applied to the structure maps of $\C$. If the latter are identities, then so are the former---the identity morphisms in $\Optic_\C$ are by definition $\iota(\id_S, \id_S')$.
@@ -901,19 +921,19 @@ The definition of teleological category suggests a string diagram calculus simil
 \begin{proof}
  We have seen that $\Optic_\C$ is always teleological. We must show that for a symmetric monoidal functor $F : \C \to \D$, the induced functor $\Optic(F) : \Optic_\C \to \Optic_\D$ is teleological. That $\Optic(F)$ preserves the dualisable morphisms is exactly Lemma~\ref{lem:iota-commute-with-opticf}. It also preserves the counits:
   \begin{align*}
-    \Optic(F)(\varepsilon_{(S, S')})
-    &= \Optic(F)(c_{S \otimes S'}) \\
-    &= \Optic(F)(\rep{\rho_S^{-1}}{\rho_{S'}}) \\
-    &= \rep{\phi^{-1}_{S,I} (F \rho_S^{-1})}{(F \rho_{S'}) \phi_{S',I}} \\
-    &= \rep{(FS \otimes \phi_I^{-1}) \phi^{-1}_{S,I} (F \rho_S^{-1})}{(F \rho_{S'}) \phi_{S',I} (FS \otimes \phi_I)} \\
-    &= \rep{\rho_{FS}^{-1}}{\rho_{FS'}} \\
-    &= \varepsilon_{(FS, FS')}
+    &\Optic(F)(\varepsilon_{(S, S')})  \\
+    &= \Optic(F)(c_{S \otimes S'}) && \text{(Definition of the counit)} \\
+    &= \Optic(F)(\rep{\rho_S^{-1}}{\rho_{S'}}) && \text{(Definition of the $c$)} \\
+    &= \rep{\phi^{-1}_{S,I} (F \rho_S^{-1})}{(F \rho_{S'}) \phi_{S',I}}&& \text{(Definition of the $\Optic(F)$)} \\ 
+    &= \rep{(FS \otimes \phi_I^{-1}) \phi^{-1}_{S,I} (F \rho_S^{-1})}{(F \rho_{S'}) \phi_{S',I} (FS \otimes \phi_I)} && \text{(Introduce $\phi_I$ to both sides)} \\
+    &= \rep{\rho_{FS}^{-1}}{\rho_{FS'}} && \text{($F$ is monoidal)} \\
+    &= \varepsilon_{(FS, FS')} && \text{(Definition of the counit)}
   \end{align*}
 
 %For a natural transformation $\alpha : F \Rightarrow F'$, the induced natural transformation $\Optic(\alpha) : \Optic(F) \Rightarrow \Optic(F')$ has components of the form $\iota(\alpha_{S}, \alpha^{-1}_{S'})$ that are dualisable by definition. Compatibility with the dualisation functor is immediate: for any object $(S, S')$, we have $({\Optic(\alpha)}_{(S, S')})^* = {\Optic(\alpha)}_{(S, S')^*}$ on the nose.
 \end{proof}
 
-We will establish the universal property in the somewhat contrived case of \emph{strict} symmetric monoidal categories and \emph{strict} monoidal functors, but anticipate that this result could be weakened to non-strict symmetric monoidal categories at the cost of checking vastly more coherences.
+We will establish the universal property in the somewhat contrived case of \emph{strict} symmetric monoidal categories and \emph{strict} monoidal functors, but anticipate that this result could be weakened to non-strict symmetric monoidal categories at the cost of checking far more coherences.
 
 \begin{definition}
 A teleological category is \emph{strict} if it is strict as a symmetric monoidal category and ${(-)}^*$ is a strict monoidal involution, so ${(A \teletimes B)}^* = B^* \teletimes A^*$ and $I^* = I$, and also ${(A^*)}^* = A$. A teleological functor is \emph{strict} if it is strict as a symmetric monoidal functor and strictly preserves the duality and counits.
@@ -964,11 +984,14 @@ This also holds for monoidal categories that are not necessarily strict, if unit
   \begin{align*}
       K\rep{l}{r} 
       &= K((A, I) \switched \varepsilon_{(M, I)} \switched (I, A')) K(j(s_{M,A}l) \switched {j(rs_{A', M})}^*) \\
-      &= (K(A, I) \teletimes K\varepsilon_{(M, I)} \teletimes K(I, A')) (K(j(s_{M,A}l)) \teletimes K( {j(rs_{A', M})}^*) \\
-      &= (FA \teletimes \varepsilon_{FM} \teletimes {(FA')}^*) (K(j(s_{M,A}l)) \teletimes K( {j(rs_{A', M})}^*) \\
+      &\qquad\text{($K$ is monoidal)} \\
+      &= (K(A, I) \teletimes K\varepsilon_{(M, I)} \teletimes K(I, A')) (K(j(s_{M,A}l)) \teletimes K( {j(rs_{A', M})}^*)) \\
+      &\qquad\text{($K$ preserves the counit and duality)} \\
+      &= (K(A, I) \teletimes \varepsilon_{K(M,I)} \teletimes K(I, A')) (K(j(s_{M,A}l)) \teletimes K( {j(rs_{A', M})})^*) \\
+      &\qquad\text{($K$ satisfies $Kj = F$)} \\
       &= (FA \teletimes \varepsilon_{FM} \teletimes {(FA')}^*) (F(s_{M,A}l) \teletimes F(rs_{A', M})^*)
   \end{align*}
-  by functoriality, monoidality, and preservation of duals and counits. We therefore take \[  K\rep{l}{r} = (FA \teletimes \varepsilon_{FM} \teletimes {(FA')}^*) (F(s_{M,A}l) \teletimes F(rs_{A', M})^*)) \] as our definition of $K$. The diagram for $K\rep{l}{r}$ in $\T$ is as follows:
+  We therefore take \[  K\rep{l}{r} = (FA \teletimes \varepsilon_{FM} \teletimes {(FA')}^*) (F(s_{M,A}l) \teletimes F(rs_{A', M})^*)) \] as our definition of $K$. The diagram for $K\rep{l}{r}$ in $\T$ is as follows:
   \begin{center}
     \input{diagrams/k-generic-optic.tikz}
   \end{center}
@@ -1184,7 +1207,7 @@ Returning to ordinary lenses, we can show that this is equivalent to the laws we
   A concrete lens given by $\fget$ and $\fput$ is lawful (in our sense) iff it obeys the three concrete lens laws.
 \end{proposition}
 \begin{proof}
-  We begin by giving $\Twoptic_\times(S, A)$ the same treatment as $\Optic_\times(S, A)$. Using Yoneda reduction and the universal property of the product as we did for lenses themselves, we have:
+  We begin by giving $\Twoptic_\times(S, A)$ the same treatment as $\Optic_\times(S, A)$. Using the universal property of the product and Yoneda reduction twice each, we have:
   \begin{align*}
   \Twoptic_\times(S, A)
   &= \int^{M_1, M_2 \in \C} \C(S, M_1 \times A) \times \C(M_1 \times A, M_2 \times A) \times \C(M_2 \times A, S) \\
@@ -1247,9 +1270,9 @@ If $p = \rep{l}{r} : S \hto A$ is an optic such that $l$ and $r$ are mutual inve
 \begin{proof}
 The conditions are easy to check:
 \begin{align*}
-\outside(\rep{l}{r}) &= r l = \id_S \\
+\outside(\rep{l}{r}) &= l;r = \id_S \\
 \twice(\rep{l}{r})
-&= \repthree{l}{lr}{r} \\
+&= \repthree{l}{r;l}{r} \\
 &= \repthree{l}{\id_{MA}}{r} \\
 &= \once(\rep{l}{r})
 \end{align*}

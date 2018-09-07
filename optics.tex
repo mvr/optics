@@ -248,7 +248,7 @@ If the two input lenses are lawful then the composite is as well, so we find the
 
 Lenses were discovered to be just one of a hierarchy of data accessors, including prisms, setters, traversals and more. These are collectively called \emph{optics} and have been best explored in the widely uesd Haskell \lenslib{} library: see~\cite{LensLibrary}. Each optic variant has a concrete description as a certain collection of maps, with attendant laws under which we consider them well-behaved, similar to the pair $(\fget, \fput)$ above and the lens laws. We begin in Section~\ref{sec:optics} by defining the \emph{category of optics} for a symmetric monoidal category in a sufficiently general way to encompass almost all the optic variants in use in the wild, using lenses as a running example. The category of lenses is precisely the result of this construction when applied to a symmetric monoidal category where the tensor is given by binary product. Section~\ref{sec:lawful-optics} defines the equivalent of the lens laws for a general category of optics. Then in Section~\ref{sec:examples} we see that these generic definitions specialise correctly to the other basic varieties of optic, including the laws. % We include in Section~\ref{sec:mixed-optics} a more speculative discussion of ``mixed optics'', which include indexed and coindexed lenses and traversals.
 
-When implementing optics, library authors often use a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given in Section~\ref{sec:optics}. As this was being written, Milewski~\cite{ProfunctorOpticsPost} and Boisseau and Gibbons~\cite{YouNeeda} independently described the isomorphism between optics and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we review this isomorphism and verify that the folklore profunctor optic laws are equivalent to lawfulness as defined here.
+When implementing optics, library authors often use a form known as the \emph{profunctor encoding}, which at first glance is completely different to that given in Section~\ref{sec:optics}. (The Haskell \lenslib{} library itself actually uses a variant called the \emph{van Laarhoven encoding}, for both historical and efficiency reasons.) As this was being written, Milewski~\cite{ProfunctorOpticsPost} and Boisseau and Gibbons~\cite{YouNeeda} independently described the isomorphism between optics and their profunctor encoding. In Section~\ref{sec:profunctor-optics} we review this isomorphism and verify that the folklore profunctor optic laws are equivalent to lawfulness as defined here.
 
 More recently, concrete lenses have found use in compositional game theory~\cite{CompositionalGameTheory}. The $\fget$ function is thought of as mapping observations on the state of play to choices of what move to make. The $\fput$ function computes the utility of the moves that the players choose. There is interest in generalising this to a probabilistic setting, but it is not yet clear what the right replacement for concrete lenses is.
 
@@ -1318,13 +1318,13 @@ On the other hand, if $f  = \id_S$ then $\rep{\rho_S^{-1}}{\rho_S}$ is lawful be
     \outside(\rep{l; (M\act l')}{(M\act r') ; r})
     &= l ; (M \act l') ; (M \act r') ; r \\
     &= l ; (M \act l'r') ; r \\
-    &= l ; (M \act \id_{NA}) ; r \\
+    &= l ; (M \act \id_{N \act A}) ; r \\
     &= l ; r \\
     &= \id_S
   \end{align*}
 
   For the second law, we must show that
-  \[ \repthree{ l;(M\act l')}{(M\act r'); r;l;(M\act l')}{(M\act r') ; r} = \repthree{l;(M\act l')}{\id_{MNA}}{(M\act r') ; r}. \]
+  \[ \repthree{ l;(M\act l')}{(M\act r'); r;l;(M\act l')}{(M\act r') ; r} = \repthree{l;(M\act l')}{\id_{M \act N \act A}}{(M\act r') ; r}. \]
   The idea is that, by the lawfulness of $\rep{l}{r}$ and $\rep{l'}{r'}$, there are chains of coend relations that prove
   \begin{align*}
   \repthree{l}{r;l}{r} &= \repthree{l}{\id_{M \act S}}{r} \\
@@ -2556,7 +2556,7 @@ where
 data Procompose p q d c where
   Procompose :: p x c -> q d x -> Procompose p q d c
 \end{minted}
-equipped with appropriate \mintinline{haskell}{Profunctor} and \mintinline{haskell}{Strong} instances denotes profunctor/Tambara module composition.
+denotes profunctor/Tambara module composition, once equipped with appropriate \mintinline{haskell}{Profunctor} and \mintinline{haskell}{Strong} instances.
 
 %The profunctor encoding has a number of benefits. The primary benefit is that the typeclass system allows optics to automatically degrade from one variant to another as needed. For example, if we wish to also encode $\Traversal$s, we would define the corresponding class of Tambara modules
 %\begin{minted}{haskell}
